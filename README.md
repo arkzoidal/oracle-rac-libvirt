@@ -1,7 +1,7 @@
-# vagrant-libvirt-ansible-oracle-rac
+# oracle-rac-libvirt
 
-- Installs Oracle RAC
-- Start with one or more clean machine(s), end up with a fully configured RAC Cluster.
+- Install Oracle RAC
+- Start with two or more clean machine(s), end up with a fully configured RAC Cluster.
 
 ### Getting started
 
@@ -12,10 +12,13 @@ Pre-requisites:
 - Oracle Database/Grid Infrastructure 19.3.0.0
 
 1. Clone this repository:
-   `git clone --recursive https://github.com/arkzoidal/vagrant-libvirt-ansible-oracle-rac`
+   `git clone --recursive https://github.com/arkzoidal/oracle-rac-libvirt`
 
-2. Add the following file to `/tmp` on the controlmachine
-   - `LINUX.X64_180000_db_home.zip`
+2. Add the following file to `host_staging_dir` on the controlmachine
+   host_staging_dir is defined in the oracle_sys_config ansible role , in vars/main.yml
+
+   - `oracle-database-preinstall-19c-1.0-2.el8.x86_64.rpm`
+   - `LINUX.X64_193000_grid_home.zip`
 
 3. Create an Ansible inventory file
    ```
