@@ -1,0 +1,187 @@
+hostgroup: 				rac19c01
+
+gv_oracle_cluster_name:			rac19c01
+gv_oracle_device_persistence:		asmlib
+gv_domain_name:           		poc
+gv_device_persistence:         		udev
+
+gv_gi_server_list:
+  - db1
+  - db2
+
+gv_configure_cluster:			true
+gv_cluster_first_node:			db1
+gv_oracle_grid_release: 		19c
+gv_oracle_install_version_gi: 		19.3.0.0
+gv_oracle_cluster_config_type:    	STANDALONE
+gv_oracle_role_separation: 		true
+gv_oracle_scan_name:          		"{{ gv_oracle_cluster_name }}-scan"
+gv_oracle_fq_scan_name:          	"{{ gv_oracle_cluster_name }}.{{ gv_domain_name }}-scan"
+gv_oracle_scan_port:          		1521
+gv_network_interface_list: 		"eth1:192.168.56.0:1,eth2:192.168.1.0:5"
+gv_oracle_gi_cluster_type:		STANDARD
+
+oracle_gi_gns_subdomain: 		a.b.c
+oracle_gi_gns_vip: 			gnsvip.a.b.c
+
+gv_oracle_gi_nic_pub: 			eth1 # Default interface for 'public' traffic. Only used in RAC
+gv_oracle_gi_nic_priv: 			eth2 # Default interface for interconnect traffic. Only used in RAC
+
+gv_oracle_scan_ip_1:			192.168.125.115
+gv_oracle_scan_ip_2:			192.168.125.116
+gv_oracle_scan_ip_3:			192.168.125.117
+gv_root_user:                           root
+gv_root_password:			root
+gv_grid_user:                           grid
+gv_oracle_user:                         oracle
+gv_grid_base:				/u01/app/oracle
+gv_guest_staging_dir:			/u01/stage
+gv_oracle_install_group:		oinstall
+gv_inventory_loc: 			/u01/app/oracle/oraInventory
+
+gv_oracle_home_gi_cl: 			"/u01/app/{{ gv_oracle_install_version_gi }}/grid" # ORACLE_HOME for Grid Infrastructure (Clustered)
+gv_oracle_home_gi_so: 			"/u01/app/{{ gv_oracle_install_version_gi }}/grid" # ORACLE_HOME for Grid Infrastructure (Stand Alone)
+gv_oracle_home_gi: 			"{% if gv_configure_cluster %}{{ gv_oracle_home_gi_cl }}{% else %}{{ gv_oracle_home_gi_so }}{% endif %}"
+gv_shared_pool:				rac19c01_shared_pool
+
+gv_root_device:                         vda
+
+gv_shared_disks:
+
+  - basename: "asm_{{ hostgroup }}_crs_001"
+    alias: sda
+    size: 1G
+    device: sda
+    serial: a1f1169a-84cb-11ec-9a18-d89d67199d1c
+    wwn: 5000c50015ea71aa
+    cache: none
+    bus: scsi
+    mode: shareable
+  - basename: "asm_{{ hostgroup }}_crs_001"
+    alias: sdb
+    size: 1G
+    device: sdb
+    serial: a1f1169a-84cb-11ec-9a18-d89d67199d1c
+    wwn: 5000c50015ea71aa
+    cache: none
+    bus: scsi
+    mode: shareable
+
+  - basename: "asm_{{ hostgroup }}_crs_002"
+    alias: sdc
+    size: 1G
+    device: sdc
+    serial: a1f1191a-84cb-11ec-9a19-d89d67199d1c
+    wwn: 5000c50015ea71ab
+    cache: none
+    bus: scsi
+    mode: shareable
+  - basename: "asm_{{ hostgroup }}_crs_002"
+    alias: sdd
+    size: 1G
+    device: sdd
+    serial: a1f1191a-84cb-11ec-9a19-d89d67199d1c
+    wwn: 5000c50015ea71ab
+    cache: none
+    bus: scsi
+    mode: shareable
+
+  - basename: "asm_{{ hostgroup }}_crs_003"
+    alias: sde
+    size: 1G
+    device: sde
+    serial: a1f11992-84cb-11ec-9a1a-d89d67199d1c
+    wwn: 5000c50015ea71ac
+    cache: none
+    bus: scsi
+    mode: shareable
+  - basename: "asm_{{ hostgroup }}_crs_003"
+    alias: sdf
+    size: 1G
+    device: sdf
+    serial: a1f11992-84cb-11ec-9a1a-d89d67199d1c
+    wwn: 5000c50015ea71ac
+    cache: none
+    bus: scsi
+    mode: shareable
+
+  - basename: "asm_{{ hostgroup }}_data_001"
+    alias: sdg
+    size: 10G
+    device: sdg
+    serial: a1f119ec-84cb-11ec-9a1b-d89d67199d1c
+    wwn: 5000c50015ea71ad
+    cache: none
+    bus: scsi
+    mode: shareable
+  - basename: "asm_{{ hostgroup }}_data_001"
+    alias: sdh
+    size: 10G
+    device: sdh
+    serial: a1f119ec-84cb-11ec-9a1b-d89d67199d1c
+    wwn: 5000c50015ea71ad
+    cache: none
+    bus: scsi
+    mode: shareable
+
+  - basename: "asm_{{ hostgroup }}_fra_001"
+    alias: sdi
+    size: 10G
+    device: sdi
+    serial: a1f11a46-84cb-11ec-9a1c-d89d67199d1c
+    wwn: 5000c50015ea71ae
+    cache: none
+    bus: scsi
+    mode: shareable
+  - basename: "asm_{{ hostgroup }}_fra_001"
+    alias: sdj
+    size: 10G
+    device: sdj
+    serial: a1f11a46-84cb-11ec-9a1c-d89d67199d1c
+    wwn: 5000c50015ea71ae
+    cache: none
+    bus: scsi
+    mode: shareable
+
+#[root@db2 rules.d]# multipath -ll
+#mpatha (35000c50015ea71ae) dm-1 QEMU,QEMU HARDDISK
+#size=10G features='0' hwhandler='0' wp=rw
+#|-+- policy='service-time 0' prio=1 status=active
+#| `- 2:0:0:4 sde 8:64 active ready running
+#`-+- policy='service-time 0' prio=1 status=enabled
+#  `- 2:0:0:5 sdf 8:80 active ready running
+
+
+gv_configure_oracle_sudo:		true
+gv_use_partition_devices: 		true
+
+gv_asm_diskgroups:
+  - diskgroup: crs
+    properties:
+      - {redundancy: normal, ausize: 1}
+    attributes:
+      - {name: 'compatible.rdbms', value: 11.2.0.4.0}
+      - {name: 'compatible.asm', value: 12.1.0.2.0}
+    disk:
+      - {device: /dev/sda, asmlabel: crs01}
+      - {device: /dev/sdb, asmlabel: crs02}
+      - {device: /dev/sdc, asmlabel: crs03}
+  - diskgroup: data
+    properties:
+      - {redundancy: external, ausize: 4}
+    attributes:
+      - {name: compatible.rdbms, value: 11.2.0.4.0}
+      - {name: compatible.asm, value: 12.1.0.2.0}
+    disk:
+      - {device: /dev/sdd, asmlabel: data01}
+  - diskgroup: fra
+    properties:
+      - {redundancy: external, ausize: 4}
+    attributes:
+      - {name: compatible.rdbms, value: 11.2.0.4.0}
+      - {name: compatible.asm, value: 12.1.0.2.0}
+    disk:
+      - {device: /dev/sde, asmlabel: fra01}
+
+scsi_id_bin:		/usr/lib/udev/scsi_id
+gv_udev_rules_file:	/etc/udev/rules.d/99-oracle-asmdevices.rules
