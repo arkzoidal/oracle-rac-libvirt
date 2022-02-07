@@ -1,0 +1,68 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+params = YAML.load_file 'config/vagrant.yml'
+
+Vagrant.configure("2") do |config|
+  
+  config.vm.provider :libvirt do |libvirt|
+      libvirt.default_prefix = "rac01"
+      libvirt.memory = 8192
+      libvirt.storage :file, :type => 'qcow2', :device => 'vdb', :size => '100G'
+  end
+
+  config.ssh.insert_key = true
+  config.vm.box = "rockylinux/8"
+  config.vm.synced_folder '.', '/vagrant', type: 'nfs',nfs_udp: false, nfs_version: 3
+  config.vm.network "private_network", type: "dhcp"
+  config.vm.network "private_network", type: "dhcp"
+
+  config.vm.provision "create_inventory", type: "ansible", run: "never" do |ansible|
+    ansible.playbook = "playbook.yml"
+    ansible.verbose = true
+    ansible.groups = {
+    "rac19c01" => [
+      "db1",
+      "db2"
+      ]
+    }
+  end
+
+  #####################################
+  # add host root ssh pub key to guests
+  #####################################
+  config.vm.provision "add_root_pubkey_vagrant", type: "shell", run: "always" do |s|
+    ssh_pub_key = File.readlines("#{Dir.home}/.ssh/id_rsa.pub").first.strip
+    s.inline = <<-SHELL
+      echo #{ssh_pub_key} >> /home/vagrant/.ssh/authorized_keys
+    SHELL
+  end
+  #####################################
+  #####################################
+  # add host root ssh pub key to guests
+  #####################################
+  config.vm.provision "shell", inline: "sudo mkdir -p /root/.ssh"
+  config.vm.provision "add_root_pubkey_root", type: "shell", run: "always" do |s|
+    ssh_pub_key = File.readlines("#{Dir.home}/.ssh/id_rsa.pub").first.strip
+    s.privileged = true
+    s.inline = <<-SHELL
+      echo #{ssh_pub_key} > /root/.ssh/authorized_keys
+    SHELL
+  end
+
+  config.vm.define "db1" do | db1|    
+    db1.vm.hostname = "db1"  
+  end
+
+  config.vm.define "db2" do | db2|    
+    db2.vm.hostname = "db2"  
+  end
+
+  config.group.groups = {
+  "rac01" => [
+    "db1",
+    "db2"
+  ]
+  }
+
+end
