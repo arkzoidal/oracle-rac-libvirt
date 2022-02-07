@@ -1,0 +1,22 @@
+# =============================================================================
+
+- name: Add powertools
+  ansible.builtin.shell: dnf config-manager --set-enabled powertools
+
+- name: Install the latest version of packages
+  dnf:
+    name:
+      - libvirt-devel
+      - libvirt-libs
+      - epel-release
+      - device-mapper-multipath
+      - smartmontools
+      - avahi
+      - chrony
+    state: latest
+
+- name: Add powertools
+  ansible.builtin.shell: dnf install -y rlwrap
+
+- name: enable multipath
+  ansible.builtin.shell: mpathconf --enable --with_multipathd y

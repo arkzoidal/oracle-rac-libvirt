@@ -1,0 +1,43 @@
+- name: Comment out all lines of /etc/hosts
+  remote_user: "{{ gv_root_user }}"
+  replace:
+      path: /etc/hosts
+      regexp: '.*'
+      replace: '#removed ...'
+
+- name: Display all variables/facts known for a host
+  remote_user: "{{ gv_root_user }}"
+  ansible.builtin.debug:
+    var: "hostvars[inventory_hostname].{{ item }}"
+  with_items:
+     - gv_oracle_scan_ip_1
+     - gv_oracle_scan_ip_2
+     - gv_oracle_scan_ip_3
+
+- name: amend hosts file with public, private and virtual ips.
+  remote_user: "{{ gv_root_user }}"
+  blockinfile:
+    path: /etc/hosts
+    marker: "<!-- {mark} ANSIBLE MANAGED BLOCK {{ item }} -->"
+    block: |
+       # public
+       {{ hostvars[item]['node_public_ip'] }} {{ hostvars[item]['node_fq_host_name'] }} {{ hostvars[item]['node_host_name'] }} 
+       # private
+       {{ hostvars[item]['node_priv_ip'] }} {{ hostvars[item]['node_priv_name'] }}
+       # virtual
+       {{ hostvars[item]['node_vip_ip'] }} {{ hostvars[item]['node_fq_vip_name'] }} {{ hostvars[item]['node_vip_name'] }}
+       # scan
+  with_items:
+     - "{{ gv_gi_server_list }}"
+
+- name: amend hosts file with public, private and virtual ips.
+  remote_user: "{{ gv_root_user }}"
+  blockinfile:
+    path: /etc/hosts
+    marker: "<!-- {mark} ANSIBLE MANAGED BLOCK SCAN  -->"
+    block: |
+       {{ hostvars[item]['gv_oracle_scan_ip_1'] }} {{ hostvars[item]['gv_oracle_fq_scan_name'] }} {{ hostvars[item]['gv_oracle_scan_name'] }}
+       {{ hostvars[item]['gv_oracle_scan_ip_2'] }} {{ hostvars[item]['gv_oracle_fq_scan_name'] }} {{ hostvars[item]['gv_oracle_scan_name'] }}
+       {{ hostvars[item]['gv_oracle_scan_ip_3'] }} {{ hostvars[item]['gv_oracle_fq_scan_name'] }} {{ hostvars[item]['gv_oracle_scan_name'] }}
+  with_items:
+     - "{{ gv_gi_server_list }}"

@@ -1,0 +1,1 @@
+{{ gv_oracle_home_gi }}/runcluvfy.sh comp nodecon -n {% for host in groups[hostgroup] -%} {{ hostvars[host].node_host_name }}{{ "," if not loop.last else "" }} {%- endfor %}

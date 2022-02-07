@@ -1,0 +1,1 @@
+ACTION=="add|change", ENV{DM_UUID}=="mpath-3{{item.wwn}}", SUBSYSTEM=="block", SYMLINK+="oracleasm/{{item.basename}}", OWNER="grid", GROUP="asmadmin", MODE="0660"

@@ -1,0 +1,11 @@
+# defaults file for roles/oracle_gi_install
+
+oracle_install_option_gi: "{% if configure_cluster %}CRS_CONFIG{% else %}HA_CONFIG{% endif %}"
+hostgroup_hub: "{{ hostgroup }}-hub"
+hostgroup_leaf: "{{ hostgroup }}-leaf"
+
+default_gipass: "{% if oracle_password is defined %}{{ oracle_password }}{% else %}Oracle123{% endif%}" # The check for the old passwords are there for backwards compatibility and only temporary, will be removed
+sysasmpassword: "{% if oracle_password is defined %}{{ oracle_password }}{% else %}Oracle123{% endif%}" # The check for the old passwords are there for backwards compatibility and only temporary, will be removed
+asmmonitorpassword: "{% if oracle_password is defined %}{{ oracle_password }}{% else %}Oracle123{% endif%}" # The check for the old passwords are there for backwards compatibility and only temporary, will be removed
+oracle_asm_init_dg: crs
+oracle_asm_storage_option: "{% if oracle_install_version_gi is version('12.2', '>=') %}FLEX_ASM_STORAGE{% else %}LOCAL_ASM_STORAGE{% endif %}"

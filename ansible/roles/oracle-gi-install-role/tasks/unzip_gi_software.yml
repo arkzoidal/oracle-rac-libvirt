@@ -1,0 +1,61 @@
+- name: copy grid 19c grid software home zip file to the target database server
+  when: inventory_hostname in gv_cluster_first_node
+  copy: src={{ v_host_staging_dir }}/{{ item }} dest={{ gv_guest_staging_dir }} owner={{ gv_grid_user }} group=oinstall mode=0775 force=no
+  with_items:
+    - "{{ rv_grid_home_zip_file }}"
+
+- name: copy grid zip cvu pack
+  when: inventory_hostname in gv_cluster_first_node
+  copy: src={{ v_host_staging_dir }}/{{ item }} dest=/home/{{ gv_grid_user }} owner={{ gv_grid_user }} group=oinstall mode=0775 force=no
+  with_items:
+    - "{{ rv_cvu_pack }}"
+
+- name: Creates directory gv_oracle_home_gi
+  when: inventory_hostname == gv_cluster_first_node
+  file:
+    path: "{{ gv_oracle_home_gi }}"
+    state: directory
+    owner: "{{ gv_grid_user }}"
+    group: "{{ gv_oracle_install_group }}"
+    mode: 0775
+    recurse: yes
+
+- name: Creates directory cvu
+  when: inventory_hostname == gv_cluster_first_node
+  file:
+    path: "/home/{{ gv_grid_user }}/cvu"
+    state: directory
+    owner: "{{ gv_grid_user }}"
+    group: "{{ gv_oracle_install_group }}"
+    mode: 0775
+    recurse: yes
+
+- name: Unpack Oracle 19c GI Software
+  when: inventory_hostname == gv_cluster_first_node
+  become: yes
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_grid_user }}"
+  unarchive:
+     src="{{ gv_guest_staging_dir }}/{{ rv_grid_home_zip_file }}"
+     dest="{{ gv_oracle_home_gi }}"
+     remote_src=yes
+     mode=0775
+     group="{{ gv_oracle_install_group }}"
+     owner="{{ gv_grid_user }}"
+
+- name: Unpack Oracle CVU 
+  when: inventory_hostname == gv_cluster_first_node
+  become: yes
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_grid_user }}"
+  unarchive:
+     src="/home/{{ gv_grid_user }}/{{ rv_cvu_pack }}"
+     dest="/home/{{ gv_grid_user }}/cvu"
+     remote_src=yes
+     mode=0775
+     group="{{ gv_oracle_install_group }}"
+     owner="{{ gv_grid_user }}"

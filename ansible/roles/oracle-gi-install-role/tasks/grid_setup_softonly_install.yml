@@ -1,0 +1,70 @@
+- name: oracle_gi_install | grid_setup_softonly_install | Creates directory gv_oracle_home_gi/install
+  when: ansible_hostname == gv_cluster_first_node
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_grid_user }}"
+  file:
+    path: "/home/{{ gv_grid_user }}/install/{{ item }}"
+    state: directory
+    owner: "{{ gv_grid_user }}"
+    group: "{{ gv_oracle_install_group }}"
+    mode: 0775
+    recurse: yes
+  with_items:
+    - log
+    - response
+
+- name: oracle_gi_install | grid_setup_softonly_install | Create install/grid_setup_softonly_install.sh
+  when: ansible_hostname == gv_cluster_first_node
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_grid_user }}"
+  template:
+     src: grid_setup_softonly_install.yml.j2
+     dest: "/home/{{ gv_grid_user }}/install/grid_setup_softonly_install.sh"
+     owner: "{{ gv_grid_user }}"
+     group: "{{ gv_oracle_install_group }}"
+     mode: u=rwx,g=rx,o=r
+
+- name: oracle_gi_install | grid_setup_softonly_install | Create response/grid_setup_softonly_install.rsp 
+  when: ansible_hostname == gv_cluster_first_node
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_grid_user }}"
+  template:
+     src: "grid_crs_swonly.rsp.{{ gv_oracle_install_version_gi }}.j2"
+     dest: "/home/{{ gv_grid_user }}/install/response/grid_setup_softonly_install.rsp"
+     owner: "{{ gv_grid_user }}"
+     group: "{{ gv_oracle_install_group }}"
+     mode: u=rwx,g=rx,o=r
+
+- name: oracle_gi_install | grid_setup_softonly_install | run install/grid_setup_softonly_install.sh
+  when: ansible_hostname == gv_cluster_first_node
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_grid_user }}"
+  ansible.builtin.shell: "/home/{{ gv_grid_user }}/install/grid_setup_softonly_install.sh | tee -a /home/{{ gv_grid_user }}/install/log/grid_setup_softonly_install.log"
+  args:
+      warn: false # set warn=false to prevent warning
+  failed_when: grid_setup_softonly_install.rc != 0   #### This condition is based on my own setup
+  register: grid_setup_softonly_install
+  no_log:             false
+
+- name: Get the output log status
+  when: ansible_hostname == gv_cluster_first_node
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_grid_user }}"
+  shell: grep -ir "Successfully" /home/{{ gv_grid_user }}/install/log/grid_setup_softonly_install.log
+  register: gisoftinstall_log
+
+- name: "Output from Post GI Software Installation Check"
+  debug:
+    var: gisoftinstall_log.stdout
+    verbosity: 0
+  when: ansible_hostname == gv_cluster_first_node and "'Successfully' in gisoftinstall_log.stdout"

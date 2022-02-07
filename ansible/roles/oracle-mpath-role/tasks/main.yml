@@ -1,0 +1,22 @@
+# tasks file for provision/ansible/roles/oracle_database_preinstall
+# =============================================================================
+# Install Oracle 
+#  -  Necessay network setup is in place
+#  -  Oracle GI software is downloaded and staged
+# Summary Steps -
+# =============================================================================
+
+- name: display message
+  debug:
+    msg:
+      - 'This role is for linux devices, started at {{ansible_date_time.iso8601}}:'
+
+# Variable configuration.
+
+- import_tasks: variables.yml
+
+- name:  main block
+  block:
+    - import_tasks:     udev-mpath.yml
+  become:               yes
+  become_user:          root

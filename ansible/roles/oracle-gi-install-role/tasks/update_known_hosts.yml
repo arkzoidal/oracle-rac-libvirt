@@ -1,0 +1,81 @@
+---
+# ansible playbook that adds ssh fingerprints to known_hosts
+
+- name: ssh-keyscan ansible_host
+  command: "/usr/bin/ssh-keyscan -t {{ item.1 }} -T 10 {{ item.0 }}"
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_root_user }}"
+  no_log: false
+  register: keyscan1
+  with_nested:
+     - "{{ gv_gi_server_list }}"
+     - "{{ protocals }}"
+  vars:
+    protocals:
+     - rsa
+     - ecdsa
+
+- name: set_fact keys
+  set_fact: keys="{{ keys| default([]) + item.stdout_lines }}"
+  loop: "{{ keyscan1.results }}"
+  loop_control:
+      label: "{{ item.stdout_lines }}"
+      index_var: i
+  no_log: false
+
+- name: ssh-keyscan  ansible_default_ipv4.address
+  command: "/usr/bin/ssh-keyscan -t {{ item.1 }} -T 10 {{ hostvars[item.0]['ansible_eth1']['ipv4']['address'] }}"
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_root_user }}"
+  register: keyscan2
+  with_nested:
+     - "{{ gv_gi_server_list }}"
+     - "{{ protocals }}"
+  vars:
+    protocals:
+     - rsa
+     - ecdsa
+
+- name: set_fact keys
+  set_fact: keys="{{ keys| default([])  + item.stdout_lines }}"
+  loop: "{{ keyscan2.results }}"
+  loop_control:
+      label: "{{ item.stdout_lines }}"
+  no_log: false
+
+- name: ensure file exists
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_root_user }}"
+  copy:
+    content: ""
+    dest: "/home/{{ gv_grid_user }}/.ssh/known_hosts"
+    force: no
+    owner: "{{ gv_grid_user }}"
+    group: "{{ gv_oracle_install_group }}"
+    mode: 0600
+
+- name : update known_hosts
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_root_user }}"
+  lineinfile: dest=/home/{{ gv_grid_user }}/.ssh/known_hosts line="{{ item }}"
+  with_items:
+    - "{{ keys }}"
+
+- name: Change file ownership, group and permissions
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_root_user }}"
+  ansible.builtin.file:
+    path: "/home/{{ gv_grid_user }}/.ssh/known_hosts"
+    owner: "{{ gv_grid_user }}"
+    group: "{{ gv_oracle_install_group }}"
+    mode: '0600'

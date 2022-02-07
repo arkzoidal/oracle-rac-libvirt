@@ -1,0 +1,15 @@
+- set_fact:
+    oracle_users:
+    - { username: oracle }
+    grid_users:
+    - { username: grid }
+
+- name: User | Add Oracle user to sudoers
+  template: src=sudoers.j2 dest=/etc/sudoers.d/{{ gv_oracle_user }} owner=root mode=0600
+  with_items: "{{oracle_users}}"
+  when: gv_configure_oracle_sudo
+
+- name: User | Add Grid user to sudoers
+  template: src=sudoers.j2 dest=/etc/sudoers.d/{{ gv_grid_user }} owner=root mode=0600
+  with_items: "{{grid_users}}"
+  when: gv_oracle_role_separation and gv_configure_oracle_sudo

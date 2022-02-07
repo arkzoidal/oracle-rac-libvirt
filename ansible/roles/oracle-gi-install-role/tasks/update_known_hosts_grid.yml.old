@@ -1,0 +1,52 @@
+    - name: SSH keyscan command
+      remote_user: "{{ gv_root_user }}"
+      become: yes
+      become_method: sudo
+      become_user: "{{ gv_grid_user }}"
+      tags: run
+      shell: > 
+        ssh-keyscan -4 -t rsa {{ ansible_hostname }} > /tmp/{{ ansible_hostname }}.key
+      tags:
+        #- add_oracle_groups
+        - always
+
+    - name: Fetch the keyfile from the node to master
+      remote_user: "{{ gv_root_user }}"
+      become: yes
+      become_method: sudo
+      become_user: "{{ gv_grid_user }}"
+      tags: run
+      fetch: 
+        src: "/tmp/{{ ansible_hostname }}.key"
+        dest: "buffer/{{ansible_hostname}}-key.pub"
+        flat: yes
+      tags:
+        #- add_oracle_groups
+        - always
+
+    - name: ensure file exists
+      remote_user: "{{ gv_root_user }}"
+      become: yes
+      become_method: sudo
+      become_user: "{{ gv_grid_user }}"
+      copy:
+        content: ""
+        dest: "~/.ssh/known_hosts"
+      tags:
+        #- add_oracle_groups
+        - always
+
+    - name: Update known_hosts
+      remote_user: "{{ gv_root_user }}"
+      become: yes
+      become_method: sudo
+      become_user: "{{ gv_grid_user }}"
+      lineinfile:
+        dest: "~/.ssh/known_hosts"
+        regexp: '.*{{ item }}.*$'
+        line: "{{ lookup('file','buffer/{{item}}-key.pub')}}"
+      with_items: 
+        - "{{ gv_gi_server_list }}"       
+      tags:
+        #- add_oracle_groups
+        - always

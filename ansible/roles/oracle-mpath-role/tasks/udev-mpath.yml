@@ -1,0 +1,24 @@
+    - name: Creating an empty file
+      file:
+        path: "{{ gv_udev_rules_file }}"
+        state: touch
+
+    - name: adding entries to /etc/udev/rules.d/99-oracle-asmdevices.rules
+      lineinfile:
+        insertafter: EOF
+        path: "{{ gv_udev_rules_file }}"
+        line: "{{ lookup('template', 'udev-mpath.txt.j2') }}"
+      loop: "{{ gv_shared_disks }}"
+
+    - name: Removing duplicates 1/2
+      shell: sort -u {{ gv_udev_rules_file }} > /tmp/gv_udev_rules_file.{{ date }}
+      vars:
+        date: "{{ ansible_date_time.year }}-{{ ansible_date_time.month }}-{{ ansible_date_time.day }}"
+
+    - name: Removing duplicates 2/2
+      shell: /usr/bin/cp -f /tmp/gv_udev_rules_file.{{ date }} {{ gv_udev_rules_file }}
+      vars:
+        date: "{{ ansible_date_time.year }}-{{ ansible_date_time.month }}-{{ ansible_date_time.day }}"
+
+    - name: reload udev rules without reboot
+      shell: udevadm control --reload-rules && udevadm trigger

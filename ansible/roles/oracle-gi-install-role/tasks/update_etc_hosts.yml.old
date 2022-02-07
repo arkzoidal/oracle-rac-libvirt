@@ -1,0 +1,17 @@
+- name: amend hosts file with public, private and virtual ips.
+  blockinfile:
+    path: /etc/hosts
+    block: |
+       # public
+       {{node1_public_ip}}  {{node2_fq_hostname}}  {{node1_hostname}}
+       {{node2_public_ip}}  {{node1_fq_hostname}}  {{node2_hostname}}
+       # private
+       {{node1_priv_ip}}  {{node1_fq_privname}}   {{node1_privname}}
+       {{node2_priv_ip}}  {{node2_fq_privname}}   {{node2_privname}}
+       # virtual
+       {{node1_vip_ip}}  {{node1_fq_vipname}}    {{node1_vipname}}
+       {{node2_vip_ip}}  {{node2_fq_vipname}}    {{node2_vipname}}
+       # scan
+       {{scan_ip_1}}    {{fq_scan_name}}    {{scan_name}}
+       {{scan_ip_2}}    {{fq_scan_name}}    {{scan_name}}
+       {{scan_ip_3}}    {{fq_scan_name}}    {{scan_name}}

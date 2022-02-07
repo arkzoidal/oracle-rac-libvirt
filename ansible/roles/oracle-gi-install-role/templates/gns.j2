@@ -1,0 +1,7 @@
+{%  if oracle_gi_cluster_type|upper  == "FLEX" or oracle_gi_cluster_type|upper  == 'STANDARD' or oracle_gi_cluster_type|upper  == 'STANDALONE' or oracle_gi_cluster_type|upper  == 'DOMAIN' %}
+oracle.install.crs.config.gpnp.gnsSubDomain={{ oracle_gi_gns_subdomain }}
+oracle.install.crs.config.gpnp.gnsVIPAddress={{ oracle_gi_gns_vip }}
+{%  else %}
+oracle.install.crs.config.gpnp.gnsSubDomain=
+oracle.install.crs.config.gpnp.gnsVIPAddress=
+{%  endif %}

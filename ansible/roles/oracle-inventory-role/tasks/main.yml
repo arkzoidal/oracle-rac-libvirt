@@ -1,0 +1,2 @@
+- name: "Check oracle inventory requirements"
+  include_tasks: checkOraInst.yml

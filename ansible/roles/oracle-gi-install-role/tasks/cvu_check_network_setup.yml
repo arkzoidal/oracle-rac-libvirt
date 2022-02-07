@@ -1,0 +1,42 @@
+- name: cvu_check_network_setup | Creates directory gv_oracle_home_gi/install
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_grid_user }}"
+  when: ansible_hostname == gv_cluster_first_node
+  file:
+    path: "/home/{{ gv_grid_user }}/install/log"
+    state: directory
+    owner: "{{ gv_grid_user }}"
+    group: "{{ gv_oracle_install_group }}"
+    mode: 0775
+    recurse: yes
+
+- name: cvu_check_network_setup | Create install/cvu_check_network_setup.sh
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_grid_user }}"
+  when: ansible_hostname == gv_cluster_first_node
+  template:
+     src: cvu_check_network_setup.sh.j2
+     dest: "/home/{{ gv_grid_user }}/install/cvu_check_network_setup.sh"
+     owner: "{{ gv_grid_user }}"
+     group: "{{ gv_oracle_install_group }}"
+     mode: u=rwx,g=rx,o=r
+
+- name: cvu_check_network_setup | run install/cvu_check_network_setup.sh
+  when: ansible_hostname == gv_cluster_first_node
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_grid_user }}"
+  ansible.builtin.shell: "/home/{{ gv_grid_user }}/install/cvu_check_network_setup.sh | tee -a /home/{{ gv_grid_user }}/install/log/cvu_check_network_setup.log.{{ ansible_date_time.iso8601 }}"
+  register: cvu_check_network_setup
+
+- name: copy cvu_check_network_setup.log locally
+  when: ansible_hostname == gv_cluster_first_node
+  ansible.builtin.fetch:
+    src: "/home/{{ gv_grid_user }}/install/log/cvu_check_network_setup.log.{{ ansible_date_time.iso8601 }}"
+    dest: trc/
+    flat: yes

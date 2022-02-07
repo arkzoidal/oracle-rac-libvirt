@@ -1,0 +1,68 @@
+#- name: SSH KeyGen root command
+#  remote_user: "{{ gv_root_user }}"
+#  become: yes
+#  become_method: sudo
+#  become_user: "{{ gv_root_user }}"
+#  shell: > 
+#    ssh-keygen -t rsa -C "ansible" -f ~/.ssh/id_rsa
+#    creates="~/.ssh/id_rsa"
+
+- name: Generate an OpenSSH keypair with the default values (4096 bits, rsa)
+  remote_user: "{{ gv_root_user }}"
+  become: no
+  become_method: sudo
+  become_user: "{{ gv_root_user }}"
+  openssh_keypair:
+    path: /root/.ssh/id_rsa
+    owner: "{{ gv_root_user }}"
+    group: "{{ gv_root_user }}"
+
+- name: Fix owner of the generated pub key
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_root_user }}"
+  file:
+    path: /root/.ssh/id_rsa.pub
+    owner: "{{ gv_root_user }}"
+    group: "{{ gv_root_user }}"
+    mode: 0600
+
+#- name: put pubkey
+#  remote_user: "{{ gv_root_user }}"
+#  become: yes
+#  become_method: sudo
+#  become_user: "{{ gv_root_user }}"
+#  lineinfile:
+#      path: "/root/.ssh/authorized_keys"
+#      line: "{{ pubkey }}"
+
+- name: Fetch the root keyfile from one server to another
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_root_user }}"
+  fetch: 
+    src: "/root/.ssh/id_rsa.pub"
+    dest: "buffer/{{ansible_hostname}}-id_rsa.pub"
+    flat: yes
+
+- name: Debug
+  debug: msg="push buffer/{{ansible_hostname}}-id_rsa.pub"
+
+- name: Copy the root key add to authorized_keys using Ansible module
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_root_user }}"
+  authorized_key:
+    user: root
+    state: present
+    key: "{{ lookup('file','buffer/{{item}}-id_rsa.pub')}}"
+  with_items: 
+    - "{{ gv_gi_server_list }}"
+
+- name: Debug
+  debug: msg="lookup buffer/{{item}}-id_rsa.pub')}}"
+  with_items: 
+    - "{{ gv_gi_server_list }}"

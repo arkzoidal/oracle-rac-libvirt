@@ -1,0 +1,21 @@
+- name: Transfer cvu file from n1 to nn
+  when: inventory_hostname == 'n1'
+  remote_user: "{{ gv_root_user }}"
+  synchronize:
+    src: /u01/app/19.3.0/grid/cv/rpm/cvuqdisk-1.0.10-1.rpm
+    dest: "{{ v_host_staging_dir }}"
+    mode: pull
+  delegate_to: localhost
+
+- name: Transfer cvu file from localhost to dbservers
+  copy: src={{ v_host_staging_dir }}/{{ item }} dest=/u01/stage
+  remote_user: "{{ gv_root_user }}"
+  with_items:
+    - cvuqdisk-1.0.10-1.rpm
+
+- name: install cvu rpm from a local file
+  remote_user: "{{ gv_root_user }}"
+  yum:
+    name: /u01/stage/cvuqdisk-1.0.10-1.rpm
+    state: present
+    disable_gpg_check: yes

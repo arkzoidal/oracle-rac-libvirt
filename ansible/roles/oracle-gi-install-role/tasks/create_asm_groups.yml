@@ -1,0 +1,16 @@
+# =============================================================================
+# Prepare Cluster for installation (Oracle Groups)
+# =============================================================================
+
+- name: Add Grid ASM groups
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_root_user }}"
+  group: 
+    name:   "{{ item.name }}"
+    gid:    "{{ item.gid }}"
+    state:  present
+    system: no
+  with_items:
+    - "{{ v_oracle_asm_groups }}"

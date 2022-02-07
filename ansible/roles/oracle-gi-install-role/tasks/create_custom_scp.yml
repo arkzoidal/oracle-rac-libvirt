@@ -1,0 +1,59 @@
+- name: create_custom_scp | Creates directory gv_oracle_home_gi/install
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_root_user }}"
+  file:
+    path: "/etc/oracle"
+    state: directory
+    owner: "{{ gv_oracle_user }}"
+    group: "{{ gv_oracle_install_group }}"
+    mode: 0775
+    recurse: yes
+
+- name: return motd to registered var
+  command: which scp
+  register: scp
+
+- name: Add mappings to /etc/hosts
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_root_user }}"
+  blockinfile:
+    path: /etc/oracle/scp
+    state: present
+    create: yes
+    owner: "{{ gv_oracle_user }}"
+    group: "{{ gv_oracle_install_group }}"
+    mode: 0775
+    block: |
+        {{ scp.stdout }} -T $*    
+    marker: "# {mark} ANSIBLE MANAGED BLOCK scp"
+
+#- name: Debug
+#  debug: msg="{{ gv_cluster_first_node }}"
+
+- name: Add mappings ORACLE_SRVM_REMOTECOPY to cvu_config
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_grid_user }}"
+  when: ansible_hostname == gv_cluster_first_node
+  blockinfile:
+    path: "{{ gv_oracle_home_gi }}/cv/admin/cvu_config" 
+    block: |
+       ORACLE_SRVM_REMOTECOPY=/etc/oracle/scp
+    marker: "# {mark} ANSIBLE MANAGED BLOCK ORACLE_SRVM_REMOTECOPY"
+
+- name: Add mappings CV_ASSUME_DISTID=OEL8 to cvu_config
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_grid_user }}"
+  when: ansible_hostname == gv_cluster_first_node
+  blockinfile:
+    path: "{{ gv_oracle_home_gi }}/cv/admin/cvu_config" 
+    block: |
+      CV_ASSUME_DISTID=OEL8
+    marker: "# {mark} ANSIBLE MANAGED BLOCK CV_ASSUME_DISTID"

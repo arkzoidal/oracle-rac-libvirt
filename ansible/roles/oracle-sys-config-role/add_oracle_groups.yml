@@ -1,0 +1,22 @@
+# =============================================================================
+# Prepare Cluster for installation (Oracle Groups)
+# =============================================================================
+
+- name: Determine available groups
+  getent:
+    database: group
+
+
+- name: display message
+  debug:
+    msg:
+      - '{{ ansible_facts.getent_group }}'
+
+- name: Add additional groups 
+  remote_user: "{{ v_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ v_root_user }}"
+  group: name={{ item.group }} gid={{ item.gid }} state=present
+  when: 'item.group not in ansible_facts.getent_group '
+  with_items: "{{v_oracle_groups}}"

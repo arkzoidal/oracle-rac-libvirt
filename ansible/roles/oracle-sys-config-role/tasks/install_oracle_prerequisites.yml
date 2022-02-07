@@ -1,0 +1,37 @@
+# =============================================================================
+# Install Oracle GI 19.3.0 Software Only:
+# =============================================================================
+
+- name: Display all variables/facts known for a host
+  ansible.builtin.debug:
+    var: "hostvars[inventory_hostname].{{ item }}"
+  with_items: 
+     - rv_oracle_database_preinstall
+  tags:
+      #- setup_responsile_file
+      - always
+
+#- meta: end_play
+
+- name: copy oracle-database-preinstall-19c-1.0-2.el8.x86_64.rpm file to the target database server
+  remote_user: "{{ v_root_user }}"
+  copy: src="{{ v_host_staging_dir }}/{{ item }}" dest={{ v_guest_tmp_dir }}
+  with_items:
+    - "{{ rv_oracle_database_preinstall }}"
+
+- name: Install all the packages
+  dnf:
+       name: '{{ item }}'
+       state: present
+       update_cache: True
+       disable_gpg_check: yes
+  #name: ['net-tools','policycoreutils-python-utils']
+  with_items:
+        - net-tools
+        - policycoreutils-python-utils 
+
+- name: install predbinstall rpm from a local file
+  yum:
+    name: "{{ v_guest_tmp_dir }}/{{ rv_oracle_database_preinstall }}"
+    state: present
+    disable_gpg_check: yes

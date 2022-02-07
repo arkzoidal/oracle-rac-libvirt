@@ -1,0 +1,70 @@
+# =============================================================================
+
+- name: Execute root.sh 
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_root_user }}"
+  when: inventory_hostname in gv_gi_server_list
+  shell: "{{ gv_oracle_home_gi_cl }}/root.sh"
+  register: rootnode
+
+- debug:
+    msg: "{{ rootnode }}"
+  when: inventory_hostname in gv_gi_server_list
+
+- meta: end_play
+
+- name: Get the logfile name on the first node
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_root_user }}"
+  shell: "echo {{ rootnode.stdout }} | grep -oP '(?<=Check).*?(?=for)' "
+  register: logfile
+
+
+- name: Get the logfile information on the first node
+  remote_user: "{{ root_user }}"
+  become: yes
+  shell: "cat {{ logfile.stdout }} "
+  with_items:
+    - logino.log
+  args:
+    chdir: /u01/app
+  register: rootloginfon1
+
+- debug:
+    var: rootloginfon1.results[0].stdout_lines
+  when: inventory_hostname in groups['ora-x1']
+
+- name: Execute root.sh on the second node
+  when: inventory_hostname in groups['ora-x2'] 
+  remote_user: "{{ root_user }}"
+  become: yes
+  shell: "{{ grid_home }}/root.sh"
+  register: rootnode2
+  tags:
+    - gisoftinstall_exeroot
+
+- name: Get the logfile information on the second node
+  when: inventory_hostname in groups['ora-x2']
+  remote_user: "{{ root_user }}"
+  become: yes
+  shell: "echo {{ rootnode2.stdout }} | grep -oP '(?<=Check).*?(?=for)' "
+  register: logfile
+
+- name: Get the logfile information on the second node
+  when: inventory_hostname in groups['ora-x2']
+  remote_user: "{{ root_user }}"
+  become: yes
+  shell: "cat {{ logfile.stdout }} "
+  with_items:
+    - logino.log
+  args:
+    chdir: /u01/app
+  register: rootloginfon2
+
+- debug:
+    var: rootloginfon2.results[0].stdout_lines
+  when: inventory_hostname in groups['ora-x2']

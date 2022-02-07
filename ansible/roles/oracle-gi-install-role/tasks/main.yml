@@ -1,0 +1,35 @@
+# tasks file for provision/ansible/roles/oracle_database_preinstall
+# =============================================================================
+# Install Oracle 
+#  -  Necessay network setup is in place
+#  -  Oracle GI software is downloaded and staged
+# Summary Steps -
+# =============================================================================
+
+- name: display message
+  debug:
+    msg:
+      - 'This playbook is for Oracle Installation Prerequisites, started at {{ansible_date_time.iso8601}}:'
+
+# Variable configuration.
+
+- import_tasks: variables.yml
+
+- name:  main block
+  block:
+    - import_tasks:     unzip_gi_software.yml
+    - import_tasks:     install_cvuqdisk.yml
+    - import_tasks:     update_etc_hosts.yml
+    - import_tasks:     exchange_ssh_keys_between_servers_root.yml
+    - import_tasks:     exchange_ssh_keys_between_servers_grid.yml
+    - import_tasks:     install_home_gi.yml
+    - import_tasks:     update_known_hosts.yml
+    - import_tasks:     create_custom_scp.yml
+    - import_tasks:     update_sudoers.yml
+    - import_tasks:     cvu_check_network_setup.yml
+    - import_tasks:     cvu_check_grid_prerequisites.yml
+    - import_tasks:     grid_setup_softonly_install.yml
+    - import_tasks:     orainstroot.yml
+    - import_tasks:     racgi_root.yml
+  become:               yes
+  become_user:          root

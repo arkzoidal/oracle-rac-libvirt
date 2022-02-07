@@ -1,0 +1,12 @@
+  - name: install_home_gi | Add new dotprofile (GI)
+    template: src=dotprofile-gi.j2 dest=/home/{{ gv_grid_user }}/{{ v_oracle_profile_name_gi }} owner={{ gv_grid_user }} group={{ v_oracle_group }} mode=755 backup=yes
+    tags:
+      #- install_home_gi
+      - always
+
+  - name: install_home_gi | update .bash_profile
+    lineinfile:
+      dest: "/home/{{ gv_grid_user }}/.bash_profile"
+      create: yes
+      line: ". {{ v_oracle_profile_name_gi }}"
+      state: present

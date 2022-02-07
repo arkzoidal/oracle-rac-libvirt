@@ -1,0 +1,3 @@
+---
+# defaults file for provision/ansible/roles/oracle-storage
+oracle_asm_disk_string: "{% if device_persistence|lower == 'asmlib' %}{% elif device_persistence |lower == 'udev' %}/dev/oracle/{% else %}{% endif %}"

@@ -1,0 +1,46 @@
+# =============================================================================
+# Install Oracle GI 19.3.0 Software Only:
+# =============================================================================
+
+    - name: create partition
+      parted:
+        device: /dev/vdb
+        number: 1
+        flags: [ lvm ]
+        state: present
+
+    - name: Install lvm2 dependency
+      package:
+        name: lvm2
+        state: present
+
+    - name: task for creating volume group
+      lvg:
+          vg: u01-vg
+          pvs: /dev/vdb1
+          pesize: 16
+
+    - name: task for creating logical volume
+      lvol:
+          vg: u01-vg
+          lv:  u01-lv
+          size: 99g
+          force: yes
+
+    - name: Create directory data1 if does not exist
+      file:
+        path: /u01
+        state: directory
+        mode: '0755'
+
+    - name: format the xfs filesystem
+      filesystem:
+        fstype: xfs
+        dev: /dev/u01-vg/u01-lv
+
+    - name: mount the lv on /data1
+      mount:
+        path: /u01
+        src: /dev/u01-vg/u01-lv
+        fstype: xfs
+        state: mounted

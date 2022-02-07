@@ -1,0 +1,5 @@
+# =============================================================================
+# Install Oracle GI 19.3.0 Software Only:
+# =============================================================================
+- name: create grid required directories
+  include_tasks: create_grid_dirs.yml

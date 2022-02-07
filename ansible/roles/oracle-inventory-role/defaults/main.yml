@@ -1,0 +1,8 @@
+---
+# defaults file for provision/ansible/roles/oracle-inventory
+# For Oracle Universal Installer
+install_group: 'oinstall'
+# Oracle inventory directory
+inventory_directory: '/etc/oraInventory'
+# Oracle inventory and installation group location file
+ora_inst: '/etc/oraInst.loc'

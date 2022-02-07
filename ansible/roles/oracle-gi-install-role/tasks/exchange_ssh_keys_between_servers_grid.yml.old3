@@ -1,0 +1,33 @@
+- name: SSH KeyGen command
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_grid_user }}"
+  tags: copysshkeys
+  shell: > 
+    ssh-keygen -q -b 2048 -t rsa -N "" -C "creating SSH" -f ~/.ssh/id_rsa
+    creates="~/.ssh/id_rsa"
+
+- name: Fetch the keyfile from one server to another
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_grid_user }}"
+  tags: copysshkeys
+  fetch: 
+    src: "~/.ssh/id_rsa.pub"
+    dest: "buffer/{{ansible_hostname}}-id_rsa.pub"
+    flat: yes
+
+- name: Copy the key add to authorized_keys using Ansible module
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_grid_user }}"
+  tags: copysshkeys
+  authorized_key:
+    user: grid
+    state: present
+    key: "{{ lookup('file','buffer/{{item}}-id_rsa.pub')}}"
+  with_items: 
+    - "{{ gv_gi_server_list }}"
