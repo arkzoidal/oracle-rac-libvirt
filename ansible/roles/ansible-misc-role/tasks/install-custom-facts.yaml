@@ -1,0 +1,24 @@
+  - name: Setting facts 
+    set_fact:
+      remote_dir: /etc/ansible/facts.d
+      facts_file_virsh: "./facts.d/{{ ansible_hostname }}/virsh.fact"
+      facts_file_nic: "./facts.d/{{ ansible_hostname }}/nic.fact"
+
+  - name: Create Facts Dir on Managed Hosts
+    file:
+      path: "{{ remote_dir }}"
+      state: directory
+      recurse: yes
+
+  - name: Copy Contents virsh.fact
+    copy:
+      src: "{{ facts_file_virsh }}"
+      dest: "{{ remote_dir }}"
+
+  - name: Copy Contents nic.fact
+    copy:
+      src: "{{ facts_file_nic }}"
+      dest: "{{ remote_dir }}"
+
+  - name: do facts module to get latest information
+    setup:
