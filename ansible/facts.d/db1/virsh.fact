@@ -1,0 +1,5 @@
+[domblklist]
+domain = rac01db1 
+device = vda
+image = /home/libvirt/images/rac01db1.img 
+image_size = 100G
