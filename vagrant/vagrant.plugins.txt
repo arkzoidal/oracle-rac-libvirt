@@ -1,0 +1,10 @@
+[root@del2 RACROC]# vagrant plugin list
+vagrant-group (0.8.2, global)
+vagrant-kvm (0.1.9, global)
+  - Version Constraint: > 0
+vagrant-libvirt (0.7.0, global)
+  - Version Constraint: > 0
+vagrant-proxyconf (2.0.10, global)
+  - Version Constraint: > 0
+vagrant-reload (0.0.1, global)
+  - Version Constraint: > 0
