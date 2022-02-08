@@ -1,0 +1,136 @@
+- hosts: "{{ hostgroup | default('rac19c01') }}"
+  user: root
+  vars:
+    swap_file_size_mb: '8192'
+  tasks:
+
+    - set_fact: home="{{ lookup('env','ANSIBLE_HOME') }}"
+
+    - name: Include vars of var/common
+      include_vars:
+        dir: "{{ home }}/vars/common"
+      tags:
+        - always
+
+    ########################################
+    #- meta: end_play
+    ########################################
+
+    ########################################
+    # resize disable ipv6
+    ########################################
+
+    - include_role:
+        name: ansible-ipv6-role
+
+    ########################################
+    # configure eth1/eth2
+    ########################################
+
+    # install custom facts
+    - include_role:
+        name: ansible-misc-role
+        tasks_from: "{{ item }}"
+      loop:
+        - install-custom-facts
+
+    - name: set facts to override oracle-mpath-role role defaults
+      set_fact:
+        local_network_ifaces:
+          - device: eth1
+            ip: "{{ ansible_facts['ansible_local']['nic']['eth1']['ipaddr'] }}"
+            netmask: "{{ ansible_facts['ansible_local']['nic']['eth1']['netmask'] }}"
+            type: ethernet
+          - device: eth2
+            ip: "{{ ansible_facts['ansible_local']['nic']['eth2']['ipaddr'] }}"
+            netmask: "{{ ansible_facts['ansible_local']['nic']['eth2']['netmask'] }}"
+            type: ethernet
+
+    - name: Print network_interfaces
+      debug: var=local_network_ifaces
+      tags:
+         - never
+
+    - include_role:
+         name: ansible-role-network
+      vars:
+         network_ifaces: "{{ local_network_ifaces }}"
+      tags:
+         - always
+
+    ########################################
+    # resize vm root disk
+    ########################################
+
+    - include_role:
+        name: libvirt-shared-storage-role
+        tasks_from: "{{ item }}"
+      loop:
+        - install-custom-facts
+        - resize_domains_disk_image
+
+    ########################################
+    # set swap size
+    ########################################
+    - include_role:
+        name: ansible-role-swap 
+
+    - include_role:
+        name: oracle-sys-config-role
+
+    ########################################
+    # create libvirt shared disks for ASM
+    ########################################
+    - include_role:
+        name: libvirt-shared-storage-role
+
+    ########################################
+    # oracle-mpath-role - configure udev/mpath
+    ########################################
+
+    - name: set facts to override oracle-mpath-role role defaults
+      set_fact:
+        device_persistence: "{{ gv_device_persistence }}"
+        asm_diskgroups: "{{ gv_asm_diskgroups }}"
+        oracle_stage: "{{ gv_guest_staging_dir }}"
+        oracle_rsp_stage: "{{ gv_guest_staging_dir }}"
+        grid_install_user: "{{ gv_grid_user }}"
+        use_partition_devices: "{{ gv_use_partition_devices }}"
+        partition_devices: false
+        configure_cluster: true
+
+    - include_role:
+        name: oracle-mpath-role
+      vars:
+        become: yes
+        remote_user: "{{ gv_root_user }}"
+        become_user: "{{ gv_root_user }}"
+
+    ########################################
+    # oracle-inventory
+    ########################################
+
+    - name: set facts to override oracle-inventory role defaults
+      set_fact:
+        inventory_directory: "{{ gv_inventory_loc }}"
+        inventory_owner: "{{ gv_grid_user }}"
+        install_group: "{{ gv_oracle_install_group }}"
+
+    - include_role:
+        name: oracle-inventory
+      vars:
+        become: yes
+        remote_user: "{{ gv_root_user }}"
+        become_user: "{{ gv_root_user }}"
+
+    ########################################
+    # 
+    ########################################
+
+    - meta: end_play
+
+    - name: Unconditionally reboot the machine with all defaults
+      reboot:
+
+    - include_role:
+        name: oracle_gi_install
