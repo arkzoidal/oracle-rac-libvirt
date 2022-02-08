@@ -1,0 +1,5 @@
+ Name                   State    Autostart
+--------------------------------------------
+ default                active   yes
+ rac19c01_shared_pool   active   yes
+

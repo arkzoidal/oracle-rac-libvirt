@@ -1,0 +1,40 @@
+ Name                        Path
+-------------------------------------------------------------------------------------------
+ asm_rac19c01_crs_001.raw    /home/libvirt/rac19c01_shared_pool/asm_rac19c01_crs_001.raw
+ asm_rac19c01_crs_002.raw    /home/libvirt/rac19c01_shared_pool/asm_rac19c01_crs_002.raw
+ asm_rac19c01_crs_003.raw    /home/libvirt/rac19c01_shared_pool/asm_rac19c01_crs_003.raw
+ asm_rac19c01_data_001.raw   /home/libvirt/rac19c01_shared_pool/asm_rac19c01_data_001.raw
+ asm_rac19c01_fra_001.raw    /home/libvirt/rac19c01_shared_pool/asm_rac19c01_fra_001.raw
+ asm_rac19c01_fra_002.raw    /home/libvirt/rac19c01_shared_pool/asm_rac19c01_fra_002.raw
+ asm_rac19c01_fra_003.raw    /home/libvirt/rac19c01_shared_pool/asm_rac19c01_fra_003.raw
+
+ Name                        Path
+-------------------------------------------------------------------------------------------
+ asm_rac19c01_crs_001.raw    /home/libvirt/rac19c01_shared_pool/asm_rac19c01_crs_001.raw
+ asm_rac19c01_crs_002.raw    /home/libvirt/rac19c01_shared_pool/asm_rac19c01_crs_002.raw
+ asm_rac19c01_crs_003.raw    /home/libvirt/rac19c01_shared_pool/asm_rac19c01_crs_003.raw
+ asm_rac19c01_data_001.raw   /home/libvirt/rac19c01_shared_pool/asm_rac19c01_data_001.raw
+ asm_rac19c01_fra_001.raw    /home/libvirt/rac19c01_shared_pool/asm_rac19c01_fra_001.raw
+ asm_rac19c01_fra_002.raw    /home/libvirt/rac19c01_shared_pool/asm_rac19c01_fra_002.raw
+ asm_rac19c01_fra_003.raw    /home/libvirt/rac19c01_shared_pool/asm_rac19c01_fra_003.raw
+
+ Name                        Path
+-------------------------------------------------------------------------------------------
+ asm_rac19c01_crs_001.raw    /home/libvirt/rac19c01_shared_pool/asm_rac19c01_crs_001.raw
+ asm_rac19c01_crs_002.raw    /home/libvirt/rac19c01_shared_pool/asm_rac19c01_crs_002.raw
+ asm_rac19c01_crs_003.raw    /home/libvirt/rac19c01_shared_pool/asm_rac19c01_crs_003.raw
+ asm_rac19c01_data_001.raw   /home/libvirt/rac19c01_shared_pool/asm_rac19c01_data_001.raw
+ asm_rac19c01_fra_001.raw    /home/libvirt/rac19c01_shared_pool/asm_rac19c01_fra_001.raw
+ asm_rac19c01_fra_002.raw    /home/libvirt/rac19c01_shared_pool/asm_rac19c01_fra_002.raw
+ asm_rac19c01_fra_003.raw    /home/libvirt/rac19c01_shared_pool/asm_rac19c01_fra_003.raw
+
+ Name                        Path
+-------------------------------------------------------------------------------------------
+ asm_rac19c01_crs_001.raw    /home/libvirt/rac19c01_shared_pool/asm_rac19c01_crs_001.raw
+ asm_rac19c01_crs_002.raw    /home/libvirt/rac19c01_shared_pool/asm_rac19c01_crs_002.raw
+ asm_rac19c01_crs_003.raw    /home/libvirt/rac19c01_shared_pool/asm_rac19c01_crs_003.raw
+ asm_rac19c01_data_001.raw   /home/libvirt/rac19c01_shared_pool/asm_rac19c01_data_001.raw
+ asm_rac19c01_fra_001.raw    /home/libvirt/rac19c01_shared_pool/asm_rac19c01_fra_001.raw
+ asm_rac19c01_fra_002.raw    /home/libvirt/rac19c01_shared_pool/asm_rac19c01_fra_002.raw
+ asm_rac19c01_fra_003.raw    /home/libvirt/rac19c01_shared_pool/asm_rac19c01_fra_003.raw
+
