@@ -27,8 +27,9 @@
     dest: /etc/sysconfig/network-scripts/ifcfg-{{ item.device }}
     mode: 0644
   with_items: "{{ network_ifaces | default([]) }}"
+  register: setup_nic_output 
   notify:
-    - restart network
+    - restart nic
 
 - name: network | disable nics
   become: true

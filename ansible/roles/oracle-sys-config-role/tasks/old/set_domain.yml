@@ -1,0 +1,11 @@
+- name: Update /etc/hosts
+  become: true
+  blockinfile:
+      path: /etc/hosts
+      create: yes
+      block: |
+        127.0.0.1 {{ host_name }}.{{ domain_name }} {{ host_name }}
+  tags:
+    - oracle_sys_config
+    - set_domain
+

@@ -1,0 +1,15 @@
+- name: Create a new ext4 primary partition
+  community.general.parted:
+    device: /dev/vdc
+    number: 1
+    state: present
+    fs_type: ext4
+
+#- name: mount /tmp
+#  ansible.posix.mount:
+#    path: /tmp
+#    src: /dev/vdc1
+#    fstype: ext4
+#    state: present
+#  tags:
+#    - never

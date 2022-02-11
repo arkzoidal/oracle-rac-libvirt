@@ -1,8 +1,18 @@
-  - name: Setting facts 
-    set_fact:
-      remote_dir: /etc/ansible/facts.d
-      facts_file_virsh: "{{ home }}/facts.d/{{ ansible_hostname }}/virsh.fact"
-      facts_file_nic: "{{ home }}/facts.d/{{ ansible_hostname }}/nic.fact"
+---
+- name: Install custom facts
+  hosts: "{{ hostgroup | default('rac19c01') }}"
+  remote_user: vagrant
+  become: yes
+  become_method: sudo
+  become_user: root
+
+  vars:
+
+    remote_dir: /etc/ansible/facts.d
+    facts_file_virsh: "./facts.d/{{ ansible_hostname }}/virsh.fact"
+    facts_file_nic: "./facts.d/{{ ansible_hostname }}/nic.fact"
+
+  tasks:
 
   - name: Create Facts Dir on Managed Hosts
     file:
@@ -19,6 +29,3 @@
     copy:
       src: "{{ facts_file_nic }}"
       dest: "{{ remote_dir }}"
-
-  - name: do facts module to get latest information
-    setup:

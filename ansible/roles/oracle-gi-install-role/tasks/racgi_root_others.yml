@@ -1,40 +1,5 @@
 # =============================================================================
 
-- name: Execute root.sh on first node 
-  remote_user: "{{ gv_root_user }}"
-  become: yes
-  become_method: sudo
-  become_user: "{{ gv_root_user }}"
-  when: inventory_hostname in gv_cluster_first_node
-  shell: "{{ gv_oracle_home_gi_cl }}/root.sh"
-  register: first_root_node
-
-- debug:
-    msg: "{{ first_root_node }}"
-  when: inventory_hostname in gv_cluster_first_node
-
-- name: Get the root.sh logfile name on the first node
-  remote_user: "{{ gv_root_user }}"
-  become: yes
-  become_method: sudo
-  become_user: "{{ gv_root_user }}"
-  shell: "echo {{ first_root_node.stdout }} | grep -oP '(?<=Check).*?(?=for)' "
-  when: inventory_hostname in gv_cluster_first_node
-  register: first_root_node_log_file
-
-- name: Get the logfile information on the first node
-  remote_user: "{{ gv_root_user }}"
-  become: yes
-  become_method: sudo
-  become_user: "{{ gv_root_user }}"
-  when: inventory_hostname in gv_cluster_first_node
-  shell: "cat {{ first_root_node_log_file.stdout }} "
-  register: rootloginfon1
-
-- debug:
-    var: rootloginfon1.stdout_lines
-  when: inventory_hostname in gv_cluster_first_node
-
 - name: Execute root.sh on the other nodes
   remote_user: "{{ gv_root_user }}"
   become: yes

@@ -5,3 +5,8 @@
   become: true
   service: name=network state=restarted
   ignore_errors: yes
+
+- name: restart nic
+  command: bash -c "ifdown {{ item.item.device }} && ifup {{ item.item.device }}"
+  when: item.changed == true
+  with_items: "{{ setup_nic_output.results }}"

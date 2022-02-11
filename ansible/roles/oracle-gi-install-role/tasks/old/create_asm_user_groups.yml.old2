@@ -1,0 +1,23 @@
+# =============================================================================
+# Prepare Cluster for installation (Oracle Groups)
+# =============================================================================
+
+  - name: Add Grid groups
+    group: 
+      name:   "{{ item.name }}"
+      gid:    "{{ item.gid }}"
+      state:  present
+      system: no
+    with_items:
+      - { name: "asmdba" ,   gid: 54327 }
+      - { name: "asmoper" ,  gid: 54328 }
+      - { name: "asmadmin" , gid: 54329 }
+    tags:
+    - create_asm_user_groups
+
+  - name: User | Add group(s)
+    group: name={{ item.group }} gid={{ item.gid }} state=present
+    with_items: "{{v_oracle_groups}}"
+    tags:
+     - group
+

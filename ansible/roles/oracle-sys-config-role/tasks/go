@@ -1,1 +1,1 @@
-./test_unit.sh import_packages.yml
+./test_unit.sh configuse_tmpfs.yml

@@ -1,24 +1,12 @@
-# tasks file for provision/ansible/roles/oracle_database_preinstall
 # =============================================================================
-# Install Oracle 
-# Assumption:
-#  -  Two separate machines ( example - Ora-X1 and Ora-x2 ) are configured
-#  -  All required OS groups and users are in place
-#  -  Necessay network setup is in place
-#  -  Oracle GI software is downloaded and staged
-# Summary Steps -
 # =============================================================================
-
-# Variable configuration.
 
 - import_tasks: variables.yml
 
 - name: display message
   debug:
     msg:
-      - 'This playbook is for Oracle Installation Prerequisites, started at {{ansible_date_time.iso8601}}:'
-  tags:
-      - always
+      - 'This oracle-sys-config-role role , started at {{ansible_date_time.iso8601}}:'
 
 - name: 
   block:
@@ -30,8 +18,7 @@
     - import_tasks:     create_u01_filesystem.yml
     - import_tasks:     add_oracle_groups.yml
     - import_tasks:     add_grid_user.yml
+    - import_tasks:     configuse_tmpfs.yml
     - import_tasks:     create_required_dirs.yml
   become:               yes
   become_user:          root
-  tags:
-    - oracle_sys_config

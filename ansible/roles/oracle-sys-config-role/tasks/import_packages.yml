@@ -1,6 +1,6 @@
 # =============================================================================
 
-- name: Add powertools
+- name: Enable powertools
   ansible.builtin.shell: dnf config-manager --set-enabled powertools
 
 - name: Install the latest version of packages
@@ -13,9 +13,10 @@
       - smartmontools
       - avahi
       - chrony
+      - net-tools
     state: latest
 
-- name: Add powertools
+- name: Install rlwrap
   ansible.builtin.shell: dnf install -y rlwrap
 
 - name: enable multipath

@@ -19,7 +19,7 @@ export PS1='[$LOGNAME'@'$ORACLE_SID `basename $PWD`]$'
         export LD_LIBRARY_PATH
         SQLPATH=/home/oracle/.Scripts
         export SQLPATH
-        ORACLE_SID="<grid>"
+        ORACLE_SID="{{ hv_gi_oracle_sid }}"
         export ORACLE_SID
         export ORA_DB_UNQ_NAME=
         export NLS_DATE_FORMAT='YYYY-MM-DD HH24:MI:SS'

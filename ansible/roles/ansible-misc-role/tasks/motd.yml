@@ -1,0 +1,8 @@
+  - name: Start and enable ntp or chrony
+    service: name={{ ntp_type }}d  state=started  enabled=yes
+    when: configure_ntp
+
+  - name: Add motd
+    template: src=motd.j2 dest=/etc/motd
+    tags: motd
+    when: configure_motd

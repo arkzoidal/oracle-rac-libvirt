@@ -1,6 +1,9 @@
 ---
 # ansible playbook that adds ssh fingerprints to known_hosts
 
+- name: Gather facts from ALL hosts (regardless of limit or tags)
+  setup:
+
 - name: ssh-keyscan ansible_host
   command: "/usr/bin/ssh-keyscan -t {{ item.1 }} -T 10 {{ item.0 }}"
   remote_user: "{{ gv_root_user }}"

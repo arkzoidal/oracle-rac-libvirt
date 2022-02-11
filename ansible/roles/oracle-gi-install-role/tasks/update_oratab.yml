@@ -1,0 +1,14 @@
+  - name: check ASM pmon
+    shell:  ps -u {{ gv_grid_user }} | grep -i "asm_pmon_{{ hv_gi_oracle_sid }}" | grep -v grep | sed 's/^.*pmon_//g' | tr '[:lower:]' '[:upper:]'
+    register: dbs
+    changed_when: False
+
+  - name: Print return information from the previous task
+    ansible.builtin.debug:
+      var: dbs
+      verbosity: 2
+
+  - name: Update oratab
+    lineinfile: dest=/etc/oratab line="{{ item.stdout }}:{{ gv_oracle_home_gi }}:N" state=present
+    with_items:
+    - "{{ dbs }}"

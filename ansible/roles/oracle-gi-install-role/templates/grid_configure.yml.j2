@@ -1,0 +1,7 @@
+{{ gv_oracle_home_gi }}/gridSetup.sh -silent -ignorePrereqFailure -waitforcompletion -skipStackCheck -responseFile /home/{{ gv_grid_user }}/install/response/grid_configure.rsp 
+if [ $? -ne 6 ]
+then
+    exit 1
+else
+    exit 0
+fi

@@ -13,11 +13,6 @@
   tags:
    - never
 
-- debug: msg="{{item.stdout}}"
-  with_items: "{{ u01_stat.results }}"
-  tags:
-   - never
-
 - name: create required directories
   become: yes
   remote_user: "{{ gv_root_user }}"

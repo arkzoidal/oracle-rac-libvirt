@@ -8,10 +8,7 @@
   with_items: 
      - rv_oracle_database_preinstall
   tags:
-      #- setup_responsile_file
-      - always
-
-#- meta: end_play
+     - never
 
 - name: copy oracle-database-preinstall-19c-1.0-2.el8.x86_64.rpm file to the target database server
   remote_user: "{{ v_root_user }}"
@@ -25,7 +22,6 @@
        state: present
        update_cache: True
        disable_gpg_check: yes
-  #name: ['net-tools','policycoreutils-python-utils']
   with_items:
         - net-tools
         - policycoreutils-python-utils 

@@ -1,0 +1,13 @@
+- name: Increase size of shm to 12G
+  become: yes
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_root_user }}"
+  ansible.posix.mount:
+    path: /dev/shm
+    src: tmpfs
+    fstype: tmpfs
+    opts: defaults,size=8G,nodev,nosuid
+    state: present
+

@@ -1,0 +1,65 @@
+- name: resize_domains_disk_image
+  hosts: "{{ hostgroup | default('rac19c01') }}"
+  gather_facts: yes
+  tasks:
+
+    - name: Prints two lines of messages, but only if there is an environment value set
+      ansible.builtin.debug:
+        msg:
+        - "{{ ansible_facts['ansible_local']['virsh']['domblklist']['image_size'] }}"
+
+    - name: fdisk -l root disk
+      shell: >
+         fdisk -l {{ ansible_facts['ansible_local']['virsh']['domblklist']['image'] }}
+      delegate_to: localhost
+      register: fdisk
+
+    - debug: msg="{{ fdisk.stdout }}"
+    
+
+#   - meta: end_play
+
+    - name: Delete /home/libvirt/images/tmp.qcow2
+      file:
+        state: absent
+        path: /home/libvirt/images/{{ ansible_facts['ansible_local']['virsh']['domblklist']['domain'] }}.tmp.qcow2
+      delegate_to: localhost
+
+    - name: qemu-img create
+      shell: >
+          LIBGUESTFS_BACKEND=direct qemu-img create -f qcow2 -o preallocation=metadata /home/libvirt/images/{{ ansible_facts['ansible_local']['virsh']['domblklist']['domain'] }}.tmp.qcow2 {{ ansible_facts['ansible_local']['virsh']['domblklist']['image_size'] }}
+      delegate_to: localhost
+
+    - name: virt-resize --expand
+      shell: >
+          LIBGUESTFS_BACKEND=direct virt-resize --expand /dev/{{ ansible_facts['ansible_local']['virsh']['domblklist']['device'] }}1  {{ ansible_facts['ansible_local']['virsh']['domblklist']['image'] }} /home/libvirt/images/{{ ansible_facts['ansible_local']['virsh']['domblklist']['domain'] }}.tmp.qcow2
+      delegate_to: localhost
+
+    - name: virsh destroy domain
+      shell: >
+          virsh destroy {{ ansible_facts['ansible_local']['virsh']['domblklist']['domain'] }}
+      delegate_to: localhost
+
+    - name: mv -f
+      shell: >
+          mv -f /home/libvirt/images/{{ ansible_facts['ansible_local']['virsh']['domblklist']['domain'] }}.tmp.qcow2 {{ ansible_facts['ansible_local']['virsh']['domblklist']['image'] }}
+      delegate_to: localhost
+
+    - name: Delete /home/libvirt/images/tmp.qcow2
+      file:
+        state: absent
+        path: /home/libvirt/images/{{ ansible_facts['ansible_local']['virsh']['domblklist']['domain'] }}.tmp.qcow2
+      delegate_to: localhost
+
+    - name: virsh start domain
+      shell: >
+          virsh start {{ ansible_facts['ansible_local']['virsh']['domblklist']['domain'] }}
+      delegate_to: localhost
+
+    - name: fdisk -l
+      shell: >
+         fdisk -l {{ ansible_facts['ansible_local']['virsh']['domblklist']['image'] }}
+      delegate_to: localhost
+      register: fdisk
+
+    - debug: msg="{{ fdisk.stdout }}"

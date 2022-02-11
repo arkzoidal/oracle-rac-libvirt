@@ -19,6 +19,3 @@
     copy:
       src: "{{ facts_file_nic }}"
       dest: "{{ remote_dir }}"
-
-  - name: do facts module to get latest information
-    setup:
