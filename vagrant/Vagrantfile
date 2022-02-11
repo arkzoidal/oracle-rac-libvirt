@@ -8,6 +8,7 @@ Vagrant.configure("2") do |config|
   config.vm.provider :libvirt do |libvirt|
       libvirt.default_prefix = "rac01"
       libvirt.memory = 8192
+      libvirt.storage_pool_name = "rac19c01_shared_pool"
       libvirt.storage :file, :type => 'qcow2', :device => 'vdb', :size => '100G'
   end
 
@@ -18,7 +19,7 @@ Vagrant.configure("2") do |config|
   config.vm.network "private_network", type: "dhcp"
 
   config.vm.provision "create_inventory", type: "ansible", run: "never" do |ansible|
-    ansible.playbook = "playbook.yml"
+    ansible.playbook = "uptime.yml"
     ansible.verbose = true
     ansible.groups = {
     "rac19c01" => [
