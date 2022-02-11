@@ -9,6 +9,10 @@ gv_gi_server_list:
   - db1
   - db2
 
+gv_cluster_nodes:
+  - db1
+  - db2
+
 gv_configure_cluster:			true
 gv_cluster_first_node:			db1
 gv_oracle_grid_release: 		19c
@@ -18,7 +22,7 @@ gv_oracle_role_separation: 		true
 gv_oracle_scan_name:          		"{{ gv_oracle_cluster_name }}-scan"
 gv_oracle_fq_scan_name:          	"{{ gv_oracle_cluster_name }}.{{ gv_domain_name }}-scan"
 gv_oracle_scan_port:          		1521
-gv_network_interface_list: 		"eth1:192.168.56.0:1,eth2:192.168.1.0:5"
+gv_network_interface_list: 		"eth1:192.168.125.0:1,eth2:192.168.200.0:5"
 gv_oracle_gi_cluster_type:		STANDARD
 
 oracle_gi_gns_subdomain: 		a.b.c
@@ -37,7 +41,7 @@ gv_oracle_user:                         oracle
 gv_grid_base:				/u01/app/oracle
 gv_guest_staging_dir:			/u01/stage
 gv_oracle_install_group:		oinstall
-gv_inventory_loc: 			/u01/app/oracle/oraInventory
+gv_inventory_loc: 			/u01/app/oraInventory
 
 gv_oracle_home_gi_cl: 			"/u01/app/{{ gv_oracle_install_version_gi }}/grid" # ORACLE_HOME for Grid Infrastructure (Clustered)
 gv_oracle_home_gi_so: 			"/u01/app/{{ gv_oracle_install_version_gi }}/grid" # ORACLE_HOME for Grid Infrastructure (Stand Alone)
@@ -46,6 +50,8 @@ gv_shared_pool:				rac19c01_shared_pool
 
 gv_root_device:                         vda
 
+gv_shared_disks_bus: scsi
+gv_shared_disks_cache: writethrough
 gv_shared_disks:
 
   - basename: "asm_{{ hostgroup }}_crs_001"
@@ -54,8 +60,8 @@ gv_shared_disks:
     device: sda
     serial: a1f1169a-84cb-11ec-9a18-d89d67199d1c
     wwn: 5000c50015ea71aa
-    cache: none
-    bus: scsi
+    cache: "{{ gv_shared_disks_cache }}"
+    bus: "{{ gv_shared_disks_bus }}"
     mode: shareable
   - basename: "asm_{{ hostgroup }}_crs_001"
     alias: sdb
@@ -63,8 +69,8 @@ gv_shared_disks:
     device: sdb
     serial: a1f1169a-84cb-11ec-9a18-d89d67199d1c
     wwn: 5000c50015ea71aa
-    cache: none
-    bus: scsi
+    cache: "{{ gv_shared_disks_cache }}"
+    bus: "{{ gv_shared_disks_bus }}"
     mode: shareable
 
   - basename: "asm_{{ hostgroup }}_crs_002"
@@ -73,8 +79,8 @@ gv_shared_disks:
     device: sdc
     serial: a1f1191a-84cb-11ec-9a19-d89d67199d1c
     wwn: 5000c50015ea71ab
-    cache: none
-    bus: scsi
+    cache: "{{ gv_shared_disks_cache }}"
+    bus: "{{ gv_shared_disks_bus }}"
     mode: shareable
   - basename: "asm_{{ hostgroup }}_crs_002"
     alias: sdd
@@ -82,8 +88,8 @@ gv_shared_disks:
     device: sdd
     serial: a1f1191a-84cb-11ec-9a19-d89d67199d1c
     wwn: 5000c50015ea71ab
-    cache: none
-    bus: scsi
+    cache: "{{ gv_shared_disks_cache }}"
+    bus: "{{ gv_shared_disks_bus }}"
     mode: shareable
 
   - basename: "asm_{{ hostgroup }}_crs_003"
@@ -92,8 +98,8 @@ gv_shared_disks:
     device: sde
     serial: a1f11992-84cb-11ec-9a1a-d89d67199d1c
     wwn: 5000c50015ea71ac
-    cache: none
-    bus: scsi
+    cache: "{{ gv_shared_disks_cache }}"
+    bus: "{{ gv_shared_disks_bus }}"
     mode: shareable
   - basename: "asm_{{ hostgroup }}_crs_003"
     alias: sdf
@@ -101,8 +107,8 @@ gv_shared_disks:
     device: sdf
     serial: a1f11992-84cb-11ec-9a1a-d89d67199d1c
     wwn: 5000c50015ea71ac
-    cache: none
-    bus: scsi
+    cache: "{{ gv_shared_disks_cache }}"
+    bus: "{{ gv_shared_disks_bus }}"
     mode: shareable
 
   - basename: "asm_{{ hostgroup }}_data_001"
@@ -111,8 +117,8 @@ gv_shared_disks:
     device: sdg
     serial: a1f119ec-84cb-11ec-9a1b-d89d67199d1c
     wwn: 5000c50015ea71ad
-    cache: none
-    bus: scsi
+    cache: "{{ gv_shared_disks_cache }}"
+    bus: "{{ gv_shared_disks_bus }}"
     mode: shareable
   - basename: "asm_{{ hostgroup }}_data_001"
     alias: sdh
@@ -120,8 +126,27 @@ gv_shared_disks:
     device: sdh
     serial: a1f119ec-84cb-11ec-9a1b-d89d67199d1c
     wwn: 5000c50015ea71ad
-    cache: none
-    bus: scsi
+    cache: "{{ gv_shared_disks_cache }}"
+    bus: "{{ gv_shared_disks_bus }}"
+    mode: shareable
+
+  - basename: "asm_{{ hostgroup }}_data_002"
+    alias: sdo
+    size: 10G
+    device: sdo
+    serial: a1f119ec-84cb-11ec-9a1b-d99d67199d1c
+    wwn: 5000c50015ea71bd
+    cache: "{{ gv_shared_disks_cache }}"
+    bus: "{{ gv_shared_disks_bus }}"
+    mode: shareable
+  - basename: "asm_{{ hostgroup }}_data_002"
+    alias: sdp
+    size: 10G
+    device: sdp
+    serial: a1f119ec-84cb-11ec-9a1b-d99d67199d1c
+    wwn: 5000c50015ea71bd
+    cache: "{{ gv_shared_disks_cache }}"
+    bus: "{{ gv_shared_disks_bus }}"
     mode: shareable
 
   - basename: "asm_{{ hostgroup }}_fra_001"
@@ -130,8 +155,8 @@ gv_shared_disks:
     device: sdi
     serial: a1f11a46-84cb-11ec-9a1c-d89d67199d1c
     wwn: 5000c50015ea71ae
-    cache: none
-    bus: scsi
+    cache: "{{ gv_shared_disks_cache }}"
+    bus: "{{ gv_shared_disks_bus }}"
     mode: shareable
   - basename: "asm_{{ hostgroup }}_fra_001"
     alias: sdj
@@ -139,8 +164,46 @@ gv_shared_disks:
     device: sdj
     serial: a1f11a46-84cb-11ec-9a1c-d89d67199d1c
     wwn: 5000c50015ea71ae
-    cache: none
-    bus: scsi
+    cache: "{{ gv_shared_disks_cache }}"
+    bus: "{{ gv_shared_disks_bus }}"
+    mode: shareable
+
+  - basename: "asm_{{ hostgroup }}_fra_002"
+    alias: sdk
+    size: 10G
+    device: sdk
+    serial: a1f11a46-84cb-11ec-9a1c-d89d67199d1d
+    wwn: 5000c50015ea71af
+    cache: "{{ gv_shared_disks_cache }}"
+    bus: "{{ gv_shared_disks_bus }}"
+    mode: shareable
+  - basename: "asm_{{ hostgroup }}_fra_002"
+    alias: sdl
+    size: 10G
+    device: sdl
+    serial: a1f11a46-84cb-11ec-9a1c-d89d67199d1d
+    wwn: 5000c50015ea71af
+    cache: "{{ gv_shared_disks_cache }}"
+    bus: "{{ gv_shared_disks_bus }}"
+    mode: shareable
+
+  - basename: "asm_{{ hostgroup }}_fra_003"
+    alias: sdm
+    size: 10G
+    device: sdm
+    serial: a1f11a46-84cb-11ec-9a1c-d89d67199d1e
+    wwn: 5000c50015ea71bf
+    cache: "{{ gv_shared_disks_cache }}"
+    bus: "{{ gv_shared_disks_bus }}"
+    mode: shareable
+  - basename: "asm_{{ hostgroup }}_fra_003"
+    alias: sdn
+    size: 10G
+    device: sdn
+    serial: a1f11a46-84cb-11ec-9a1c-d89d67199d1e
+    wwn: 5000c50015ea71bf
+    cache: "{{ gv_shared_disks_cache }}"
+    bus: "{{ gv_shared_disks_bus }}"
     mode: shareable
 
 #[root@db2 rules.d]# multipath -ll
@@ -185,3 +248,13 @@ gv_asm_diskgroups:
 
 scsi_id_bin:		/usr/lib/udev/scsi_id
 gv_udev_rules_file:	/etc/udev/rules.d/99-oracle-asmdevices.rules
+
+gv_disk_discovery_string: 	/dev/oracleasm/asm*	
+gv_disk_group_disks:		/dev/oracleasm/asm_rac19c01_data_001,/dev/oracleasm/asm_rac19c01_data_002
+gv_cluster_nodes:	db1:db1-vip:HUB,db2:db2-vip:HUB
+gv_asm_diskgroup_name:	DATA
+gv_crs_storage_option:	FLEX_ASM_STORAGE
+gv_asm_osdba: asmdba 
+gv_asm_osoper: asmoper
+gv_asm_osasm: asmadmin
+gv_crs_install_option: CRS_CONFIG

@@ -11,3 +11,4 @@ node_public_ip:        192.168.125.121
 node_vip_ip:           192.168.125.122
 
 hv_virtdomain_name:    "rac01{{ node_host_name }}"
+hv_gi_oracle_sid:      "+ASM2"
