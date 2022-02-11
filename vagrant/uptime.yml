@@ -1,0 +1,11 @@
+- name:  get uptime and triggers .vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory creation
+  hosts: all
+  gather_facts: yes
+  remote_user: vagrant
+  become: yes
+  become_method: sudo
+  become_user: root
+  tasks:
+    - name: Get uptime information
+      ansible.builtin.shell: /usr/bin/uptime
+      register: result
