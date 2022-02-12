@@ -1,0 +1,339 @@
+
+Performing following verification checks ...
+
+  Physical Memory ...
+  Node Name     Available                 Required                  Status    
+  ------------  ------------------------  ------------------------  ----------
+  db2           7.7748GB (8152424.0KB)    8GB (8388608.0KB)         passed    
+  db1           7.7747GB (8152416.0KB)    8GB (8388608.0KB)         passed    
+  Physical Memory ...PASSED
+  Available Physical Memory ...
+  Node Name     Available                 Required                  Status    
+  ------------  ------------------------  ------------------------  ----------
+  db2           7.5943GB (7963208.0KB)    50MB (51200.0KB)          passed    
+  db1           7.3479GB (7704884.0KB)    50MB (51200.0KB)          passed    
+  Available Physical Memory ...PASSED
+  Swap Size ...
+  Node Name     Available                 Required                  Status    
+  ------------  ------------------------  ------------------------  ----------
+  db2           9.7744GB (1.0249208E7KB)  7.7748GB (8152424.0KB)    passed    
+  db1           9.7744GB (1.0249208E7KB)  7.7747GB (8152416.0KB)    passed    
+  Swap Size ...PASSED
+  Free Space: db2:/usr,db2:/var,db2:/etc,db2:/sbin,db2:/tmp ...
+  Path              Node Name     Mount point   Available     Required      Status      
+  ----------------  ------------  ------------  ------------  ------------  ------------
+  /usr              db2           /             8.8613GB      25MB          passed      
+  /var              db2           /             8.8613GB      5MB           passed      
+  /etc              db2           /             8.8613GB      25MB          passed      
+  /sbin             db2           /             8.8613GB      10MB          passed      
+  /tmp              db2           /             8.8613GB      1GB           passed      
+  Free Space: db2:/usr,db2:/var,db2:/etc,db2:/sbin,db2:/tmp ...PASSED
+  Free Space: db1:/usr,db1:/var,db1:/etc,db1:/sbin,db1:/tmp ...
+  Path              Node Name     Mount point   Available     Required      Status      
+  ----------------  ------------  ------------  ------------  ------------  ------------
+  /usr              db1           /             7.6367GB      25MB          passed      
+  /var              db1           /             7.6367GB      5MB           passed      
+  /etc              db1           /             7.6367GB      25MB          passed      
+  /sbin             db1           /             7.6367GB      10MB          passed      
+  /tmp              db1           /             7.6367GB      1GB           passed      
+  Free Space: db1:/usr,db1:/var,db1:/etc,db1:/sbin,db1:/tmp ...PASSED
+  User Existence: grid ...
+  Node Name     Status                    Comment                 
+  ------------  ------------------------  ------------------------
+  db2           passed                    exists(54331)           
+  db1           passed                    exists(54331)           
+
+    Users With Same UID: 54331 ...PASSED
+  User Existence: grid ...PASSED
+  Group Existence: dba ...
+  Node Name     Status                    Comment                 
+  ------------  ------------------------  ------------------------
+  db2           passed                    exists                  
+  db1           passed                    exists                  
+  Group Existence: dba ...PASSED
+  Group Existence: oinstall ...
+  Node Name     Status                    Comment                 
+  ------------  ------------------------  ------------------------
+  db2           passed                    exists                  
+  db1           passed                    exists                  
+  Group Existence: oinstall ...PASSED
+  Group Membership: dba ...
+  Node Name         User Exists   Group Exists  User in Group  Status          
+  ----------------  ------------  ------------  ------------  ----------------
+  db2               yes           yes           yes           passed          
+  db1               yes           yes           yes           passed          
+  Group Membership: dba ...PASSED
+  Group Membership: oinstall(Primary) ...
+  Node Name         User Exists   Group Exists  User in Group  Primary       Status      
+  ----------------  ------------  ------------  ------------  ------------  ------------
+  db2               yes           yes           yes           yes           passed      
+  db1               yes           yes           yes           yes           passed      
+  Group Membership: oinstall(Primary) ...PASSED
+  Run Level ...
+  Node Name     run level                 Required                  Status    
+  ------------  ------------------------  ------------------------  ----------
+  db2           3                         3,5                       passed    
+  db1           3                         3,5                       passed    
+  Run Level ...PASSED
+  Hard Limit: maximum open file descriptors ...
+  Node Name         Type          Available     Required      Status          
+  ----------------  ------------  ------------  ------------  ----------------
+  db2               hard          262144        65536         passed          
+  db1               hard          262144        65536         passed          
+  Hard Limit: maximum open file descriptors ...PASSED
+  Soft Limit: maximum open file descriptors ...
+  Node Name         Type          Available     Required      Status          
+  ----------------  ------------  ------------  ------------  ----------------
+  db2               soft          1024          1024          passed          
+  db1               soft          1024          1024          passed          
+  Soft Limit: maximum open file descriptors ...PASSED
+  Hard Limit: maximum user processes ...
+  Node Name         Type          Available     Required      Status          
+  ----------------  ------------  ------------  ------------  ----------------
+  db2               hard          31701         16384         passed          
+  db1               hard          31701         16384         passed          
+  Hard Limit: maximum user processes ...PASSED
+  Soft Limit: maximum user processes ...
+  Node Name         Type          Available     Required      Status          
+  ----------------  ------------  ------------  ------------  ----------------
+  db2               soft          31701         2047          passed          
+  db1               soft          31701         2047          passed          
+  Soft Limit: maximum user processes ...PASSED
+  Soft Limit: maximum stack size ...
+  Node Name         Type          Available     Required      Status          
+  ----------------  ------------  ------------  ------------  ----------------
+  db2               soft          10240         10240         passed          
+  db1               soft          10240         10240         passed          
+  Soft Limit: maximum stack size ...PASSED
+  Architecture ...
+  Node Name     Available                 Required                  Status    
+  ------------  ------------------------  ------------------------  ----------
+  db2           x86_64                    x86_64                    passed    
+  db1           x86_64                    x86_64                    passed    
+  Architecture ...PASSED
+  OS Kernel Version ...
+  Node Name     Available                 Required                  Status    
+  ------------  ------------------------  ------------------------  ----------
+  db2           4.18.0-305.3.1.el8_4.x86_64  4.18.0                    passed    
+  db1           4.18.0-305.3.1.el8_4.x86_64  4.18.0                    passed    
+  OS Kernel Version ...PASSED
+  OS Kernel Parameter: semmsl ...
+  Node Name         Current       Configured    Required      Status        Comment     
+  ----------------  ------------  ------------  ------------  ------------  ------------
+  db1               250           250           250           passed          
+  db2               250           250           250           passed          
+  OS Kernel Parameter: semmsl ...PASSED
+  OS Kernel Parameter: semmns ...
+  Node Name         Current       Configured    Required      Status        Comment     
+  ----------------  ------------  ------------  ------------  ------------  ------------
+  db1               32000         32000         32000         passed          
+  db2               32000         32000         32000         passed          
+  OS Kernel Parameter: semmns ...PASSED
+  OS Kernel Parameter: semopm ...
+  Node Name         Current       Configured    Required      Status        Comment     
+  ----------------  ------------  ------------  ------------  ------------  ------------
+  db1               100           100           100           passed          
+  db2               100           100           100           passed          
+  OS Kernel Parameter: semopm ...PASSED
+  OS Kernel Parameter: semmni ...
+  Node Name         Current       Configured    Required      Status        Comment     
+  ----------------  ------------  ------------  ------------  ------------  ------------
+  db1               128           128           128           passed          
+  db2               128           128           128           passed          
+  OS Kernel Parameter: semmni ...PASSED
+  OS Kernel Parameter: shmmax ...
+  Node Name         Current       Configured    Required      Status        Comment     
+  ----------------  ------------  ------------  ------------  ------------  ------------
+  db1               4398046511104  4398046511104  4174036992    passed          
+  db2               4398046511104  4398046511104  4174041088    passed          
+  OS Kernel Parameter: shmmax ...PASSED
+  OS Kernel Parameter: shmmni ...
+  Node Name         Current       Configured    Required      Status        Comment     
+  ----------------  ------------  ------------  ------------  ------------  ------------
+  db1               4096          4096          4096          passed          
+  db2               4096          4096          4096          passed          
+  OS Kernel Parameter: shmmni ...PASSED
+  OS Kernel Parameter: shmall ...
+  Node Name         Current       Configured    Required      Status        Comment     
+  ----------------  ------------  ------------  ------------  ------------  ------------
+  db1               1073741824    1073741824    1073741824    passed          
+  db2               1073741824    1073741824    1073741824    passed          
+  OS Kernel Parameter: shmall ...PASSED
+  OS Kernel Parameter: file-max ...
+  Node Name         Current       Configured    Required      Status        Comment     
+  ----------------  ------------  ------------  ------------  ------------  ------------
+  db1               6815744       6815744       6815744       passed          
+  db2               6815744       6815744       6815744       passed          
+  OS Kernel Parameter: file-max ...PASSED
+  OS Kernel Parameter: ip_local_port_range ...
+  Node Name         Current       Configured    Required      Status        Comment     
+  ----------------  ------------  ------------  ------------  ------------  ------------
+  db1               between 9000 & 65500  between 9000 & 65500  between 9000 & 65535  passed          
+  db2               between 9000 & 65500  between 9000 & 65500  between 9000 & 65535  passed          
+  OS Kernel Parameter: ip_local_port_range ...PASSED
+  OS Kernel Parameter: rmem_default ...
+  Node Name         Current       Configured    Required      Status        Comment     
+  ----------------  ------------  ------------  ------------  ------------  ------------
+  db1               262144        262144        262144        passed          
+  db2               262144        262144        262144        passed          
+  OS Kernel Parameter: rmem_default ...PASSED
+  OS Kernel Parameter: rmem_max ...
+  Node Name         Current       Configured    Required      Status        Comment     
+  ----------------  ------------  ------------  ------------  ------------  ------------
+  db1               4194304       4194304       4194304       passed          
+  db2               4194304       4194304       4194304       passed          
+  OS Kernel Parameter: rmem_max ...PASSED
+  OS Kernel Parameter: wmem_default ...
+  Node Name         Current       Configured    Required      Status        Comment     
+  ----------------  ------------  ------------  ------------  ------------  ------------
+  db1               262144        262144        262144        passed          
+  db2               262144        262144        262144        passed          
+  OS Kernel Parameter: wmem_default ...PASSED
+  OS Kernel Parameter: wmem_max ...
+  Node Name         Current       Configured    Required      Status        Comment     
+  ----------------  ------------  ------------  ------------  ------------  ------------
+  db1               1048576       1048576       1048576       passed          
+  db2               1048576       1048576       1048576       passed          
+  OS Kernel Parameter: wmem_max ...PASSED
+  OS Kernel Parameter: aio-max-nr ...
+  Node Name         Current       Configured    Required      Status        Comment     
+  ----------------  ------------  ------------  ------------  ------------  ------------
+  db1               1048576       1048576       1048576       passed          
+  db2               1048576       1048576       1048576       passed          
+  OS Kernel Parameter: aio-max-nr ...PASSED
+  OS Kernel Parameter: panic_on_oops ...
+  Node Name         Current       Configured    Required      Status        Comment     
+  ----------------  ------------  ------------  ------------  ------------  ------------
+  db1               1             1             1             passed          
+  db2               1             1             1             passed          
+  OS Kernel Parameter: panic_on_oops ...PASSED
+  OS Kernel Parameter: kernel.panic ...
+  Node Name         Current       Configured    Required      Status        Comment     
+  ----------------  ------------  ------------  ------------  ------------  ------------
+  db1               1             1             1             passed          
+  db2               1             1             1             passed          
+  OS Kernel Parameter: kernel.panic ...PASSED
+  Package: kmod-20-21 (x86_64) ...
+  Node Name     Available                 Required                  Status    
+  ------------  ------------------------  ------------------------  ----------
+  db2           kmod(x86_64)-25-17.el8    kmod(x86_64)-20-21        passed    
+  db1           kmod(x86_64)-25-17.el8    kmod(x86_64)-20-21        passed    
+  Package: kmod-20-21 (x86_64) ...PASSED
+  Package: kmod-libs-20-21 (x86_64) ...
+  Node Name     Available                 Required                  Status    
+  ------------  ------------------------  ------------------------  ----------
+  db2           kmod-libs(x86_64)-25-17.el8  kmod-libs(x86_64)-20-21   passed    
+  db1           kmod-libs(x86_64)-25-17.el8  kmod-libs(x86_64)-20-21   passed    
+  Package: kmod-libs-20-21 (x86_64) ...PASSED
+  Package: binutils-2.30-49.0.2 ...
+  Node Name     Available                 Required                  Status    
+  ------------  ------------------------  ------------------------  ----------
+  db2           binutils-2.30-108.el8_5.1  binutils-2.30-49.0.2      passed    
+  db1           binutils-2.30-108.el8_5.1  binutils-2.30-49.0.2      passed    
+  Package: binutils-2.30-49.0.2 ...PASSED
+  Package: libgcc-8.2.1 (x86_64) ...
+  Node Name     Available                 Required                  Status    
+  ------------  ------------------------  ------------------------  ----------
+  db2           libgcc(x86_64)-8.4.1-1.el8  libgcc(x86_64)-8.2.1      passed    
+  db1           libgcc(x86_64)-8.4.1-1.el8  libgcc(x86_64)-8.2.1      passed    
+  Package: libgcc-8.2.1 (x86_64) ...PASSED
+  Package: libstdc++-8.2.1 (x86_64) ...
+  Node Name     Available                 Required                  Status    
+  ------------  ------------------------  ------------------------  ----------
+  db2           libstdc++(x86_64)-8.5.0-4.el8_5  libstdc++(x86_64)-8.2.1   passed    
+  db1           libstdc++(x86_64)-8.5.0-4.el8_5  libstdc++(x86_64)-8.2.1   passed    
+  Package: libstdc++-8.2.1 (x86_64) ...PASSED
+  Package: libstdc++-devel-8.2.1 (x86_64) ...
+  Node Name     Available                 Required                  Status    
+  ------------  ------------------------  ------------------------  ----------
+  db2           libstdc++-devel(x86_64)-8.5.0-4.el8_5  libstdc++-devel(x86_64)-8.2.1  passed    
+  db1           libstdc++-devel(x86_64)-8.5.0-4.el8_5  libstdc++-devel(x86_64)-8.2.1  passed    
+  Package: libstdc++-devel-8.2.1 (x86_64) ...PASSED
+  Package: sysstat-10.1.5 ...
+  Node Name     Available                 Required                  Status    
+  ------------  ------------------------  ------------------------  ----------
+  db2           sysstat-11.7.3-6.el8      sysstat-10.1.5            passed    
+  db1           sysstat-11.7.3-6.el8      sysstat-10.1.5            passed    
+  Package: sysstat-10.1.5 ...PASSED
+  Package: ksh ...
+  Node Name     Available                 Required                  Status    
+  ------------  ------------------------  ------------------------  ----------
+  db2           ksh                       ksh                       passed    
+  db1           ksh                       ksh                       passed    
+  Package: ksh ...PASSED
+  Package: make-4.2.1 ...
+  Node Name     Available                 Required                  Status    
+  ------------  ------------------------  ------------------------  ----------
+  db2           make-4.2.1-10.el8         make-4.2.1                passed    
+  db1           make-4.2.1-10.el8         make-4.2.1                passed    
+  Package: make-4.2.1 ...PASSED
+  Package: glibc-2.28 (x86_64) ...
+  Node Name     Available                 Required                  Status    
+  ------------  ------------------------  ------------------------  ----------
+  db2           glibc(x86_64)-2.28-164.el8  glibc(x86_64)-2.28        passed    
+  db1           glibc(x86_64)-2.28-164.el8  glibc(x86_64)-2.28        passed    
+  Package: glibc-2.28 (x86_64) ...PASSED
+  Package: glibc-devel-2.28 (x86_64) ...
+  Node Name     Available                 Required                  Status    
+  ------------  ------------------------  ------------------------  ----------
+  db2           glibc-devel(x86_64)-2.28-164.el8  glibc-devel(x86_64)-2.28  passed    
+  db1           glibc-devel(x86_64)-2.28-164.el8  glibc-devel(x86_64)-2.28  passed    
+  Package: glibc-devel-2.28 (x86_64) ...PASSED
+  Package: libaio-0.3.110 (x86_64) ...
+  Node Name     Available                 Required                  Status    
+  ------------  ------------------------  ------------------------  ----------
+  db2           libaio(x86_64)-0.3.112-1.el8  libaio(x86_64)-0.3.110    passed    
+  db1           libaio(x86_64)-0.3.112-1.el8  libaio(x86_64)-0.3.110    passed    
+  Package: libaio-0.3.110 (x86_64) ...PASSED
+  Package: libaio-devel-0.3.110 (x86_64) ...
+  Node Name     Available                 Required                  Status    
+  ------------  ------------------------  ------------------------  ----------
+  db2           libaio-devel(x86_64)-0.3.112-1.el8  libaio-devel(x86_64)-0.3.110  passed    
+  db1           libaio-devel(x86_64)-0.3.112-1.el8  libaio-devel(x86_64)-0.3.110  passed    
+  Package: libaio-devel-0.3.110 (x86_64) ...PASSED
+  Package: libvirt-devel-4.5.0-10.0 ...
+  Node Name     Available                 Required                  Status    
+  ------------  ------------------------  ------------------------  ----------
+  db2           libvirt-devel-6.0.0-37.1.module+el8.5.0+732+d204e9f7  libvirt-devel-4.5.0-10.0  passed    
+  db1           libvirt-devel-6.0.0-37.1.module+el8.5.0+732+d204e9f7  libvirt-devel-4.5.0-10.0  passed    
+  Package: libvirt-devel-4.5.0-10.0 ...PASSED
+  Package: libvirt-libs-4.5.0-10.0 ...
+  Node Name     Available                 Required                  Status    
+  ------------  ------------------------  ------------------------  ----------
+  db2           libvirt-libs-6.0.0-37.1.module+el8.5.0+732+d204e9f7  libvirt-libs-4.5.0-10.0   passed    
+  db1           libvirt-libs-6.0.0-37.1.module+el8.5.0+732+d204e9f7  libvirt-libs-4.5.0-10.0   passed    
+  Package: libvirt-libs-4.5.0-10.0 ...PASSED
+  Package: nfs-utils-2.3.3-14 ...
+  Node Name     Available                 Required                  Status    
+  ------------  ------------------------  ------------------------  ----------
+  db2           nfs-utils-2.3.3-41.el8    nfs-utils-2.3.3-14        passed    
+  db1           nfs-utils-2.3.3-41.el8    nfs-utils-2.3.3-14        passed    
+  Package: nfs-utils-2.3.3-14 ...PASSED
+  Package: smartmontools-6.6-3 ...
+  Node Name     Available                 Required                  Status    
+  ------------  ------------------------  ------------------------  ----------
+  db2           smartmontools-7.1-1.el8   smartmontools-6.6-3       passed    
+  db1           smartmontools-7.1-1.el8   smartmontools-6.6-3       passed    
+  Package: smartmontools-6.6-3 ...PASSED
+  Package: net-tools-2.0-0.51 ...
+  Node Name     Available                 Required                  Status    
+  ------------  ------------------------  ------------------------  ----------
+  db2           net-tools-2.0-0.52.20160912git.el8  net-tools-2.0-0.51        passed    
+  db1           net-tools-2.0-0.52.20160912git.el8  net-tools-2.0-0.51        passed    
+  Package: net-tools-2.0-0.51 ...PASSED
+  Users With Same UID: 0 ...PASSED
+  Root user consistency ...
+  Node Name                             Status                  
+  ------------------------------------  ------------------------
+  db2                                   passed                  
+  db1                                   passed                  
+  Root user consistency ...PASSED
+  Time zone consistency ...PASSED
+
+Verification of system requirement was successful. 
+
+CVU operation performed:      system requirement
+Date:                         Feb 11, 2022 3:49:56 PM
+CVU home:                     /home/grid/cvu/bin/..
+User:                         grid
+Operating system:             Linux4.18.0-305.3.1.el8_4.x86_64

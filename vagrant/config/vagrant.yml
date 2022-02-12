@@ -1,0 +1,3 @@
+shared:
+  prefix_name: rac01 
+  storage_pool_name: rac19c01_shared_pool
