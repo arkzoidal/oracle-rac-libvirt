@@ -10,9 +10,12 @@ Pre-requisites:
 - Ansible >= 2.4
 - Rocky Linux >= 8
 - Oracle Database/Grid Infrastructure 19.3.0.0
+- Vagrant with libvirt plugin
 
 1. Clone this repository:
    `git clone --recursive https://github.com/arkzoidal/oracle-rac-libvirt`
+
+2. 
 
 2. Add the following file to `host_staging_dir` on the controlmachine
    host_staging_dir is defined in the oracle_sys_config ansible role , in vars/main.yml
@@ -20,7 +23,8 @@ Pre-requisites:
    - `oracle-database-preinstall-19c-1.0-2.el8.x86_64.rpm`
    - `LINUX.X64_193000_grid_home.zip`
 
-3. Create an Ansible inventory file
+3. Create an Ansible inventory file ( there is one generated from Vagrant inventory , provided )  
+   and update your ansible.cfg accordingly 
    ```
    [myhostgroup]
     dbhost
@@ -29,7 +33,6 @@ Pre-requisites:
 4. Run the playbook:
 
    `ansible-playbook single-instance-db-on-fs.yml -e hostgroup=myhostgroup -i /path/to/inventory`
-
    where the `-i` part is optional
 
 

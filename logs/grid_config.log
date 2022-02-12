@@ -26,3 +26,33 @@ As install user, execute the following command to complete the configuration.
 [grid@+ASM1 install]$echo $?
 6
 
+first node
+time /u01/app/19.3.0.0/grid/root.sh
+
+real	16m40.864s
+user	4m31.701s
+sys	0m44.291s
+
+other node
+time /u01/app/19.3.0.0/grid/root.sh
+
+real	4m1.958s
+user	1m0.501s
+sys	0m14.453s
+
+[grid@+ASM1 grid]$time /u01/app/19.3.0.0/grid/gridSetup.sh -executeConfigTools -responseFile /home/grid/install/response/grid_configure.rsp -silent
+Launching Oracle Grid Infrastructure Setup Wizard...
+
+You can find the logs of this session at:
+/u01/app/oraInventory/logs/GridSetupActions2022-02-11_10-35-54AM
+
+You can find the log of this install session at:
+ /u01/app/oraInventory/logs/UpdateNodeList2022-02-11_10-35-54AM.log
+Configuration failed.
+[WARNING] [INS-43080] Some of the configuration assistants failed, were cancelled or skipped.
+   ACTION: Refer to the logs or contact Oracle Support Services.
+
+real	4m36.352s
+user	1m8.052s
+sys	0m13.773s
+[grid@+ASM1 grid]$
