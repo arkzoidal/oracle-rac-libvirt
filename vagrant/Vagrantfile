@@ -47,6 +47,7 @@ Vagrant.configure("2") do |config|
       libvirt.default_prefix =  var_prefix_name
       libvirt.memory = 8192
       libvirt.storage_pool_name = var_vm_storage
+      libvirt.storage :file, :type => 'qcow2', :device => 'vdb', :size => '100G'
   end
 
   config.ssh.insert_key = true
