@@ -56,7 +56,7 @@ Vagrant.configure("2") do |config|
   config.vm.network "private_network", type: "dhcp"
   config.vm.network "private_network", type: "dhcp"
 
-  config.vm.provision "create_inventory", type: "ansible", run: "never" do |ansible|
+  config.vm.provision "create_inventory", type: "ansible", run: "always" do |ansible|
     ansible.playbook = "uptime.yml"
     ansible.verbose = true
     ansible.groups = {
