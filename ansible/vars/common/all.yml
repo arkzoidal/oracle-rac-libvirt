@@ -1,0 +1,4 @@
+v_host_staging_dir:                   	/home/vagrant/RACROC/provision/staging
+v_guest_tmp_dir:                        /tmp
+v_root_user:			  	root	
+v_grid_user:			  	grid	

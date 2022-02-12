@@ -1,0 +1,32 @@
+oracle_inventory_loc: /u01/app/oraInventory
+oracle_user: oracle                        # User that will own the Oracle Installations.
+grid_user: grid
+grid_user_home: "/home/{{ grid_install_user }}" # Home directory for oracle_user. Needed for passing in ssh-keys, profiles etc
+oracle_grid_responsefile: oracle_grid_responsefile.rsp
+oracle_rsp_stage: "/u01/stage"
+oracle_group: oinstall  
+oper_group: oper
+dba_group: dba 
+asmoper_group: asmoper
+asmdba_group: asmdba 
+asmadmin_group: asmadmin 
+oracle_base: /u01/app/oracle
+
+v_oracle_groups:
+    - { group: asmdba, gid: 54318 }
+    - { group: asmoper, gid: 54319 }
+    - { group: asmadmin, gid: 54320 }
+    - { group: oinstall, gid: 54321 }
+    - { group: dba, gid: 54322 }
+    - { group: backupdba, gid: 54323 }
+    - { group: oper, gid: 54324 }
+    - { group: dgdba, gid: 54325 }
+    - { group: kmdba, gid: 54326 }
+v_oracle_profile_name_gi: ".profile_grid"
+v_oracle_group: dba
+v_oracle_inventory_group: oinstall  
+
+v_oracle_asm_groups:
+    - { group: asmdba, gid: 54318 }
+    - { group: asmoper, gid: 54319 }
+    - { group: asmadmin, gid: 54320 }
