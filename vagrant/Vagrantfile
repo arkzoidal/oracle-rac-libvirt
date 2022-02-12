@@ -1,7 +1,6 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
-
-params = YAML.load_file 'config/vagrant.yml'
+#params = YAML.load_file 'config/vagrant.yml'
 
 Vagrant.configure("2") do |config|
   
