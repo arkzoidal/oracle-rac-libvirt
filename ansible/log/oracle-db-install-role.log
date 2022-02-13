@@ -1,0 +1,36 @@
+[oracle@db1 install]$ ./oracle_setup_softonly_install.sh 
+Launching Oracle Database Setup Wizard...
+
+[WARNING] [INS-13013] Target environment does not meet some mandatory requirements.
+   CAUSE: Some of the mandatory prerequisites are not met. See logs for details. /u01/app/oraInventory/logs/InstallActions2022-02-13_05-20-08PM/installActions2022-02-13_05-20-08PM.log
+   ACTION: Identify the list of failed prerequisite checks from the log: /u01/app/oraInventory/logs/InstallActions2022-02-13_05-20-08PM/installActions2022-02-13_05-20-08PM.log. Then either from the log file or from installation manual find the appropriate configuration to meet the prerequisites and fix it manually.
+The response file for this session can be found at:
+ /u01/app/oracle/product/19.3.0.0/dbhome_1/install/response/db_2022-02-13_05-20-08PM.rsp
+
+You can find the log of this install session at:
+ /u01/app/oraInventory/logs/InstallActions2022-02-13_05-20-08PM/installActions2022-02-13_05-20-08PM.log
+
+
+As a root user, execute the following script(s):
+	1. /u01/app/oracle/product/19.3.0.0/dbhome_1/root.sh
+
+Execute /u01/app/oracle/product/19.3.0.0/dbhome_1/root.sh on the following nodes: 
+[db1, db2]
+
+
+Successfully Setup Software with warning(s).
+[oracle@db1 install]$ 
+[oracle@db1 install]$ echo $?
+6
+[oracle@db1 install]$ 
+
+[oracle@db1 install]$ exit
+logout
+[root@db1 ~]# /u01/app/oracle/product/19.3.0.0/dbhome_1/root.sh
+Check /u01/app/oracle/product/19.3.0.0/dbhome_1/install/root_db1_2022-02-13_17-39-57-666006125.log for the output of root script
+[root@db1 ~]# ssh db2
+Last login: Sun Feb 13 17:18:58 2022 from 192.168.125.111
+[root@db2 ~]# /u01/app/oracle/product/19.3.0.0/dbhome_1/root.sh
+Check /u01/app/oracle/product/19.3.0.0/dbhome_1/install/root_db2_2022-02-13_17-40-09-730698839.log for the output of root script
+[root@db2 ~]# 
+
