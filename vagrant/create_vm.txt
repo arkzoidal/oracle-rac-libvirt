@@ -1,0 +1,174 @@
+
+│▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒│
+ Oracle RAC (Real Application Cluster) Vagrant box for libvirt                    
+ Copyright (c) Arkzoidal                                                          
+----------------------------------------------------------------------------------
+ Author: Arkzoidal      <https://www.arkzoidal.xyz>                               
+│▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒│
+
+
+Bringing machine 'db1' up with 'libvirt' provider...
+Bringing machine 'db2' up with 'libvirt' provider...
+==> db1: Checking if box 'rockylinux/8' version '4.0.0' is up to date...
+==> db1: Creating image (snapshot of base box volume).
+==> db1: Creating domain with the following settings...
+==> db1:  -- Name:              rac01db1
+==> db1:  -- Description:       Source: /home/vagrant/RACROC0/oracle-rac-libvirt/vagrant/Vagrantfile
+==> db1:  -- Domain type:       kvm
+==> db1:  -- Cpus:              1
+==> db1:  -- Feature:           acpi
+==> db1:  -- Feature:           apic
+==> db1:  -- Feature:           pae
+==> db1:  -- Clock offset:      utc
+==> db1:  -- Memory:            8192M
+==> db1:  -- Management MAC:    
+==> db1:  -- Loader:            
+==> db1:  -- Nvram:             
+==> db1:  -- Base box:          rockylinux/8
+==> db1:  -- Storage pool:      rac19c01_shared_pool
+==> db1:  -- Image():     /home/libvirt/rac19c01_shared_pool/rac01db1.img, 4G
+==> db1:  -- Disk driver opts:  cache='default'
+==> db1:  -- Kernel:            
+==> db1:  -- Initrd:            
+==> db1:  -- Graphics Type:     vnc
+==> db1:  -- Graphics Port:     -1
+==> db1:  -- Graphics IP:       127.0.0.1
+==> db1:  -- Graphics Password: Not defined
+==> db1:  -- Video Type:        cirrus
+==> db1:  -- Video VRAM:        9216
+==> db1:  -- Video 3D accel:    false
+==> db1:  -- Sound Type:	
+==> db1:  -- Keymap:            en-us
+==> db1:  -- TPM Backend:       passthrough
+==> db1:  -- TPM Path:          
+==> db1:  -- Disks:         vdb(qcow2,100G)
+==> db1:  -- Disk(vdb):     /home/libvirt/rac19c01_shared_pool/rac01db1-vdb.qcow2
+==> db1:  -- INPUT:             type=mouse, bus=ps2
+==> db2: Checking if box 'rockylinux/8' version '4.0.0' is up to date...
+==> db2: Creating image (snapshot of base box volume).
+==> db2: Creating domain with the following settings...
+==> db2:  -- Name:              rac01db2
+==> db2:  -- Description:       Source: /home/vagrant/RACROC0/oracle-rac-libvirt/vagrant/Vagrantfile
+==> db2:  -- Domain type:       kvm
+==> db2:  -- Cpus:              1
+==> db2:  -- Feature:           acpi
+==> db2:  -- Feature:           apic
+==> db2:  -- Feature:           pae
+==> db2:  -- Clock offset:      utc
+==> db2:  -- Memory:            8192M
+==> db2:  -- Management MAC:    
+==> db2:  -- Loader:            
+==> db2:  -- Nvram:             
+==> db2:  -- Base box:          rockylinux/8
+==> db2:  -- Storage pool:      rac19c01_shared_pool
+==> db2:  -- Image():     /home/libvirt/rac19c01_shared_pool/rac01db2.img, 4G
+==> db2:  -- Disk driver opts:  cache='default'
+==> db2:  -- Kernel:            
+==> db2:  -- Initrd:            
+==> db2:  -- Graphics Type:     vnc
+==> db2:  -- Graphics Port:     -1
+==> db2:  -- Graphics IP:       127.0.0.1
+==> db2:  -- Graphics Password: Not defined
+==> db2:  -- Video Type:        cirrus
+==> db2:  -- Video VRAM:        9216
+==> db2:  -- Video 3D accel:    false
+==> db2:  -- Sound Type:	
+==> db2:  -- Keymap:            en-us
+==> db2:  -- TPM Backend:       passthrough
+==> db2:  -- TPM Path:          
+==> db2:  -- Disks:         vdb(qcow2,100G)
+==> db2:  -- Disk(vdb):     /home/libvirt/rac19c01_shared_pool/rac01db2-vdb.qcow2
+==> db2:  -- INPUT:             type=mouse, bus=ps2
+==> db1: Creating shared folders metadata...
+==> db1: Starting domain.
+==> db1: Waiting for domain to get an IP address...
+==> db2: Creating shared folders metadata...
+==> db2: Starting domain.
+==> db2: Waiting for domain to get an IP address...
+==> db2: Waiting for machine to boot. This may take a few minutes...
+==> db1: Waiting for machine to boot. This may take a few minutes...
+    db1: SSH address: 192.168.121.244:22
+    db2: SSH address: 192.168.121.91:22
+    db2: SSH username: vagrant
+    db1: SSH username: vagrant
+    db2: SSH auth method: private key
+    db1: SSH auth method: private key
+    db1: 
+    db1: Vagrant insecure key detected. Vagrant will automatically replace
+    db1: this with a newly generated keypair for better security.
+    db2: 
+    db2: Vagrant insecure key detected. Vagrant will automatically replace
+    db2: this with a newly generated keypair for better security.
+    db2: 
+    db2: Inserting generated public key within guest...
+    db1: 
+    db1: Inserting generated public key within guest...
+    db2: Removing insecure key from the guest if it's present...
+    db1: Removing insecure key from the guest if it's present...
+    db1: Key inserted! Disconnecting and reconnecting using new SSH key...
+    db2: Key inserted! Disconnecting and reconnecting using new SSH key...
+==> db2: Machine booted and ready!
+==> db2: Setting hostname...
+==> db1: Machine booted and ready!
+==> db1: Setting hostname...
+==> db2: Configuring and enabling network interfaces...
+==> db1: Configuring and enabling network interfaces...
+==> db1: Configuring proxy environment variables...
+==> db2: Configuring proxy environment variables...
+==> db1: Configuring proxy for Yum...
+==> db2: Configuring proxy for Yum...
+==> db1: Exporting NFS shared folders...
+==> db1: Preparing to edit /etc/exports. Administrator privileges will be required...
+==> db1: Mounting NFS shared folders...
+==> db2: Exporting NFS shared folders...
+==> db2: Preparing to edit /etc/exports. Administrator privileges will be required...
+==> db2: Mounting NFS shared folders...
+==> db1: Running provisioner: create_inventory (ansible)...
+==> db2: Running provisioner: create_inventory (ansible)...
+    db1: Running ansible-playbook...
+PYTHONUNBUFFERED=1 ANSIBLE_FORCE_COLOR=true ANSIBLE_HOST_KEY_CHECKING=false ANSIBLE_SSH_ARGS='-o UserKnownHostsFile=/dev/null -o IdentitiesOnly=yes -o ControlMaster=auto -o ControlPersist=60s' ansible-playbook --connection=ssh --timeout=30 --limit="db1" --inventory-file=/home/vagrant/RACROC0/oracle-rac-libvirt/vagrant/.vagrant/provisioners/ansible/inventory -v uptime.yml
+    db2: Running ansible-playbook...
+PYTHONUNBUFFERED=1 ANSIBLE_FORCE_COLOR=true ANSIBLE_HOST_KEY_CHECKING=false ANSIBLE_SSH_ARGS='-o UserKnownHostsFile=/dev/null -o IdentitiesOnly=yes -o ControlMaster=auto -o ControlPersist=60s' ansible-playbook --connection=ssh --timeout=30 --limit="db2" --inventory-file=/home/vagrant/RACROC0/oracle-rac-libvirt/vagrant/.vagrant/provisioners/ansible/inventory -v uptime.yml
+Using /home/vagrant/RACROC0/oracle-rac-libvirt/ansible/ansible.cfg as config file
+Using /home/vagrant/RACROC0/oracle-rac-libvirt/ansible/ansible.cfg as config file
+
+PLAY [get uptime and triggers .vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory creation] ***
+
+PLAY [get uptime and triggers .vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory creation] ***
+
+TASK [Gathering Facts] *********************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [db2]
+
+TASK [Get uptime information] **************************************************
+ok: [db1]
+
+TASK [Get uptime information] **************************************************
+changed: [db2] => {"changed": true, "cmd": "/usr/bin/uptime", "delta": "0:00:00.010960", "end": "2022-02-13 07:41:10.661098", "msg": "", "rc": 0, "start": "2022-02-13 07:41:10.650138", "stderr": "", "stderr_lines": [], "stdout": " 07:41:10 up 1 min,  1 user,  load average: 1.08, 0.35, 0.12", "stdout_lines": [" 07:41:10 up 1 min,  1 user,  load average: 1.08, 0.35, 0.12"]}
+changed: [db1] => {"changed": true, "cmd": "/usr/bin/uptime", "delta": "0:00:00.009005", "end": "2022-02-13 07:41:10.653466", "msg": "", "rc": 0, "start": "2022-02-13 07:41:10.644461", "stderr": "", "stderr_lines": [], "stdout": " 07:41:10 up 1 min,  1 user,  load average: 0.72, 0.23, 0.08", "stdout_lines": [" 07:41:10 up 1 min,  1 user,  load average: 0.72, 0.23, 0.08"]}
+
+PLAY RECAP *********************************************************************
+db2                        : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+
+PLAY RECAP *********************************************************************
+db1                        : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+==> db2: Running provisioner: add_root_pubkey_vagrant (shell)...
+==> db1: Running provisioner: add_root_pubkey_vagrant (shell)...
+    db2: Running: inline script
+    db1: Running: inline script
+==> db2: Running provisioner: shell...
+==> db1: Running provisioner: shell...
+    db2: Running: inline script
+    db1: Running: inline script
+==> db2: Running provisioner: add_root_pubkey_root (shell)...
+==> db1: Running provisioner: add_root_pubkey_root (shell)...
+    db2: Running: inline script
+    db1: Running: inline script
+echo copying vagrant_ansible_inventory to ../ansible/inventory/inventory
+copying vagrant_ansible_inventory to ../ansible/inventory/inventory
+/usr/bin/cp -f .vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory ../ansible/inventory/inventory
+[root@del2 vagrant]# 
+
