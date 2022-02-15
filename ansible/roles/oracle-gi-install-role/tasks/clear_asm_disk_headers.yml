@@ -1,0 +1,19 @@
+#
+
+- name: Get files on remote machine
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_root_user }}"
+  when: inventory_hostname in gv_cluster_first_node
+  shell   : ls /dev/oracleasm
+  register: path_files
+
+- name: Clear disk headers
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_root_user }}"
+  when: inventory_hostname in gv_cluster_first_node
+  shell: dd if=/dev/zero of=/dev/oracleasm/{{ item }} bs=8192 count=12800
+  with_items: "{{ path_files.stdout_lines }}"
