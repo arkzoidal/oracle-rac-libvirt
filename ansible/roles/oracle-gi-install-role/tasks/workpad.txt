@@ -1,1 +1,0 @@
-Warning: Permanently added 'db2,192.168.125.121' (ECDSA) to the list of known hosts.
