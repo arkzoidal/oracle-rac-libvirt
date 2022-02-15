@@ -1,0 +1,73 @@
+#INPUT 
+#
+#gv_asm_diskgroups:
+#  - diskgroup: crs
+#    properties:
+#      - {redundancy: normal, ausize: 1}
+#    attributes:
+#      - {name: 'compatible.rdbms', value: 11.2.0.4.0}
+#      - {name: 'compatible.asm', value: 12.1.0.2.0}
+#    disk:
+#      - {device: /dev/sda, asmlabel: crs01}
+#      - {device: /dev/sdb, asmlabel: crs02}
+#      - {device: /dev/sdc, asmlabel: crs03}
+#  - diskgroup: data
+#    properties:
+#      - {redundancy: external, ausize: 4}
+#    attributes:
+#      - {name: compatible.rdbms, value: 11.2.0.4.0}
+#      - {name: compatible.asm, value: 12.1.0.2.0}
+#    disk:
+#      - {device: /dev/sdd, asmlabel: data01}
+#  - diskgroup: fra
+#    properties:
+#      - {redundancy: external, ausize: 4}
+#    attributes:
+#      - {name: compatible.rdbms, value: 11.2.0.4.0}
+#      - {name: compatible.asm, value: 12.1.0.2.0}
+#    disk:
+#      - {device: /dev/oracleasm/asm_rac19c01_fra_001, asmlabel: fra01}
+#      - {device: /dev/oracleasm/asm_rac19c01_fra_002, asmlabel: fra02}
+#      - {device: /dev/oracleasm/asm_rac19c01_fra_003, asmlabel: fra03}
+#
+#
+#OUTPUT
+#
+#CREATE DISKGROUP FRA EXTERNAL REDUNDANCY
+#  DISK
+#'/dev/oracleasm/asm_rac19c01_fra_001' NAME fra01,
+#'/dev/oracleasm/asm_rac19c01_fra_002' NAME fra02,
+#'/dev/oracleasm/asm_rac19c01_fra_003' NAME fra03
+
+- name: oracle-gi-install-role | generate_create_fra_script.yml | Extract fra data from diskgroup
+  when: inventory_hostname in gv_cluster_first_node
+  set_fact: 
+    disks: "{{ disks| default([]) + gv_asm_diskgroups | json_query(jmesquery) }}"
+  vars:
+    jmesquery: "[? diskgroup==`fra`].disk"
+
+- name: oracle-gi-install-role | generate_create_fra_script.yml | Create devtags array
+  when: inventory_hostname in gv_cluster_first_node
+  set_fact: 
+    devtags: "{{ devtags | default([]) + [{ 'dev' : item.device, 'tag' : item.asmlabel }] }}"
+    cacheable: yes
+  loop: "{{ disks|flatten(levels=1) }}"
+  loop_control:
+    index_var: index
+
+- name: oracle-gi-install-role | generate_create_fra_script.yml | Create install/create_fra.sh
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_grid_user }}"
+  when: ansible_hostname == gv_cluster_first_node
+  template:
+     src: create_fra.sh.j2
+     dest: "/home/{{ gv_grid_user }}/install/create_fra.sh"
+     owner: "{{ gv_grid_user }}"
+     group: "{{ gv_oracle_install_group }}"
+     mode: u=rwx,g=rx,o=r
+
+- name: oracle-gi-install-role | generate_create_fra_script.yml | Generate the create disk group sql script
+  when: inventory_hostname in gv_cluster_first_node
+  template: src=create_fra.j2 dest="/home/{{ gv_grid_user }}/install/create_fra.sql"

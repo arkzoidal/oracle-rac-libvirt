@@ -1,0 +1,6 @@
+CREATE DISKGROUP FRA EXTERNAL REDUNDANCY
+  DISK
+{% for item in hostvars[inventory_hostname].devtags %}
+'{{ item.dev }}' NAME {{ item.tag }}{{ "," if not loop.last else "" }}
+{% endfor %}
+ATTRIBUTE 'AU_SIZE' = '4M';
