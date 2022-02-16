@@ -1,0 +1,194 @@
+2c2
+< ## Copyright(c) Oracle Corporation 1998,2019. All rights reserved.           ##
+---
+> ## Copyright(c) Oracle Corporation 1998,2021. All rights reserved.           ##
+46c46
+< oracle.install.responseFileVersion=/oracle/install/rspfmt_crsinstall_response_schema_v19.0.0
+---
+> oracle.install.responseFileVersion=/oracle/install/rspfmt_crsinstall_response_schema_v21.0.0
+150c150
+< # Allowed values: STANDALONE, DOMAIN, MEMBERDB, MEMBERAPP
+---
+> # Allowed values: STANDALONE, DOMAIN
+164,170d163
+< # Specify the Member Cluster Manifest file
+< #
+< # Applicable only for MEMBERDB and MEMBERAPP cluster configuration
+< #-------------------------------------------------------------------------------
+< oracle.install.crs.config.memberClusterManifestFile=
+< 
+< #-------------------------------------------------------------------------------
+181c174
+< # Applicable only for STANDALONE, DOMAIN, MEMBERDB cluster configuration.
+---
+> # Applicable only for STANDALONE, DOMAIN cluster configuration.
+198d190
+< # Only USE_SHARED_GNS value is allowed for MEMBERDB cluster configuration.
+227,230c219,221
+< # - 1 field if configuring an Application Cluster, or
+< # - 3 fields if configuring a Flex Cluster
+< # - 3 fields if adding more nodes to the configured cluster, or
+< # - 4 fields if configuring an Extended Cluster
+---
+> # - 2 fields if configuring a Flex Cluster
+> # - 2 fields if adding more nodes to the configured cluster, or
+> # - 3 fields if configuring an Extended Cluster
+239c230
+< # Only the 1st field is applicable if configuring an Application Cluster
+---
+> 
+244d234
+< # For configuring Application Cluster: oracle.install.crs.config.clusterNodes=node1,node2
+248c238
+< # hostnameprefix:lowerbound-upperbound:hostnamesuffix:vipsuffix:role of node
+---
+> # hostnameprefix:lowerbound-upperbound:hostnamesuffix:vipsuffix
+269,285d258
+< #------------------------------------------------------------------------------
+< # Specify 'true' if you would like to configure Grid Infrastructure Management
+< # Repository (GIMR), else specify 'false'.
+< # This option is only applicable when CRS_CONFIG is chosen as install option,
+< # and STANDALONE is chosen as cluster configuration.
+< #------------------------------------------------------------------------------
+< oracle.install.crs.configureGIMR=
+< 
+< #------------------------------------------------------------------------------
+< # Create a separate ASM DiskGroup to store GIMR data.
+< # Specify 'true' if you would like to separate GIMR data with clusterware data, 
+< # else specify 'false'
+< # Value should be 'true' for DOMAIN cluster configurations
+< # Value can be true/false for STANDALONE cluster configurations.
+< #------------------------------------------------------------------------------
+< oracle.install.asm.configureGIMRDataDG=
+< 
+294c267
+< # Disks files. Only applicable for Standalone and MemberDB cluster.
+---
+> # Disks files. Only applicable for Standalone cluster.
+297a271
+> #   - EXASCALE_STORAGE
+302c276,281
+< 
+---
+> #-------------------------------------------------------------------------------
+> # Specify the vault name if EXASCALE_STORAGE is selected as storage option.
+> # Example:
+> #     oracle.install.crs.exascale.vault.name=myvault
+> #-------------------------------------------------------------------------------
+> oracle.install.crs.exascale.vault.name=
+316a296,301
+> 
+> #-------------------------------------------------------------------------------
+> # Applicable only if configuring CLIENT_ASM_STORAGE for OCR/Voting Disk storage
+> # Specify the path to Client ASM Data file
+> #-------------------------------------------------------------------------------
+> oracle.install.asm.ClientDataFile=
+331a317
+> # Specify the location of the ipmiutil binary 
+333a320
+> oracle.install.crs.config.ipmi.bmcBinpath=
+335a323
+> 
+362c350,351
+< #   - FLEX#   - EXTENDED (required if oracle.install.crs.config.ClusterConfiguration=EXTENDED)
+---
+> #   - FLEX
+> #   - EXTENDED (required if oracle.install.crs.config.ClusterConfiguration=EXTENDED)
+440a430,482
+> # Configure AFD - ASM Filter Driver
+> # Applicable only for FLEX_ASM_STORAGE option
+> # Specify 'true' if you want to configure AFD, else specify 'false'
+> #-------------------------------------------------------------------------------
+> oracle.install.asm.configureAFD=
+> #-------------------------------------------------------------------------------
+> # Configure RHPS - Rapid Home Provisioning Service
+> # Applicable only for DOMAIN cluster configuration
+> # Specify 'true' if you want to configure RHP service, else specify 'false'
+> #-------------------------------------------------------------------------------
+> oracle.install.crs.configureRHPS=
+> 
+> ################################################################################
+> #                                                                              #
+> #                             SECTION H - UPGRADE                              #
+> #                                                                              #
+> ################################################################################
+> #-------------------------------------------------------------------------------
+> # Specify whether to ignore down nodes during upgrade operation.
+> # Value should be 'true' to ignore down nodes otherwise specify 'false'
+> #-------------------------------------------------------------------------------
+> oracle.install.crs.config.ignoreDownNodes=
+> 
+> ################################################################################
+> #                                                                              #
+> #                               SECTION I - GIMR                               #
+> #                                                                              #
+> ################################################################################
+> 
+> #------------------------------------------------------------------------------
+> # Specify 'true' if you would like to configure Grid Infrastructure Management
+> # Repository (GIMR), else specify 'false'. Applicable only if CRS_CONFIG is 
+> # chosen as install option and STANDALONE is chosen as cluster configuration.
+> # If you want to use or configure 
+> # Local GIMR : oracle.install.crs.configureGIMR=true and oracle.install.crs.configureRemoteGIMR=false
+> # Remote GIMR : oracle.install.crs.configureGIMR=true, oracle.install.crs.configureRemoteGIMR=true
+> # and oracle.install.crs.RemoteGIMRCredFile= path of the GIMR cred file
+> # No GIMR : oracle.install.crs.configureGIMR=false
+> #------------------------------------------------------------------------------
+> oracle.install.crs.configureGIMR=
+> oracle.install.crs.configureRemoteGIMR=
+> oracle.install.crs.RemoteGIMRCredFile=
+> 
+> #------------------------------------------------------------------------------
+> # Create a separate ASM DiskGroup to store GIMR data.
+> # Specify 'true' if you would like to separate GIMR data with clusterware data, 
+> # else specify 'false'
+> # Value should be 'true' for DOMAIN cluster configurations
+> # Value can be true/false for STANDALONE cluster configurations.
+> #------------------------------------------------------------------------------
+> oracle.install.asm.configureGIMRDataDG=
+> 
+> #-------------------------------------------------------------------------------
+455c497,498
+< #   - FLEX#   - EXTENDED (only if oracle.install.crs.config.ClusterConfiguration=EXTENDED)
+---
+> #   - FLEX
+> #   - EXTENDED (only if oracle.install.crs.config.ClusterConfiguration=EXTENDED)
+515,538d557
+< 
+< #-------------------------------------------------------------------------------
+< # Configure AFD - ASM Filter Driver
+< # Applicable only for FLEX_ASM_STORAGE option
+< # Specify 'true' if you want to configure AFD, else specify 'false'
+< #-------------------------------------------------------------------------------
+< oracle.install.asm.configureAFD=
+< #-------------------------------------------------------------------------------
+< # Configure RHPS - Rapid Home Provisioning Service
+< # Applicable only for DOMAIN cluster configuration
+< # Specify 'true' if you want to configure RHP service, else specify 'false'
+< #-------------------------------------------------------------------------------
+< oracle.install.crs.configureRHPS=
+< 
+< ################################################################################
+< #                                                                              #
+< #                             SECTION H - UPGRADE                              #
+< #                                                                              #
+< ################################################################################
+< #-------------------------------------------------------------------------------
+< # Specify whether to ignore down nodes during upgrade operation.
+< # Value should be 'true' to ignore down nodes otherwise specify 'false'
+< #-------------------------------------------------------------------------------
+< oracle.install.crs.config.ignoreDownNodes=
+623d641
+< #
+632,642d649
+< ################################################################################
+< #                                                                              #
+< #                           APPLICATION CLUSTER OPTIONS                        #
+< #                                                                              #
+< ################################################################################
+< 
+< #-------------------------------------------------------------------------------
+< # Specify the Virtual hostname to configure virtual access for your Application
+< # The value to be specified for Virtual hostname is optional.
+< #-------------------------------------------------------------------------------
+< oracle.install.crs.app.applicationAddress=
