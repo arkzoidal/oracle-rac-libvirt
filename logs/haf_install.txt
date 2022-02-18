@@ -1,0 +1,76 @@
+[root@db1 tmp]# ./run_tfa.sh 
+
+AHF Installer for Platform Linux Architecture x86_64
+
+AHF Installation Log : /tmp/ahf_install_214200_200259_2022_02_18-16_44_19.log
+
+Starting Autonomous Health Framework (AHF) Installation
+
+AHF Version: 21.4.2 Build Date: 202202111356
+
+AHF is already installed at /opt/oracle.ahf
+
+Installed AHF Version: 20.4.6 Build Date: 202106181214
+
+AHF will also be installed/upgraded on these Cluster Nodes :
+
+1. db2
+
+The AHF Location and AHF Data Directory must exist on the above nodes
+AHF Location : /opt/oracle.ahf
+AHF Data Directory : /u01/app/grid/oracle.ahf/data
+AHF TMP Location : /u01/app/tmp
+
+Upgrading /opt/oracle.ahf
+
+Shutting down AHF Services
+Stopped OSWatcher
+Nothing to do !
+Shutting down TFA
+Removed /etc/systemd/system/multi-user.target.wants/oracle-tfa.service.
+Removed /etc/systemd/system/graphical.target.wants/oracle-tfa.service.
+. . . . . 
+. . . 
+Successfully shutdown TFA..
+Telemetry adapter is not running
+
+Starting AHF Services
+Starting TFA..
+Created symlink /etc/systemd/system/multi-user.target.wants/oracle-tfa.service -> /etc/systemd/system/oracle-tfa.service.
+Created symlink /etc/systemd/system/graphical.target.wants/oracle-tfa.service -> /etc/systemd/system/oracle-tfa.service.
+Waiting up to 100 seconds for TFA to be started..
+. . . . . 
+. . . . . 
+Successfully started TFA Process..
+. . . . . 
+TFA Started and listening for commands
+No new directories were added to TFA
+Directory /u01/app/grid/crsdata/db1/trace/chad was already added to TFA Directories.
+
+
+INFO: Starting orachk scheduler in background. Details for the process can be found at /u01/app/grid/oracle.ahf/data/db1/diag/orachk/compliance_start_180222_164802.log
+
+
+AHF upgrade completed on db1
+
+Upgrading AHF on Remote Nodes :
+
+AHF will be installed on db2, Please wait.
+
+Upgrading AHF on db2 :
+
+[db2] Copying AHF Installer
+
+[db2] Running AHF Installer
+
+AHF is successfully upgraded to latest version
+
+.------------------------------------------------------------.
+| Host | TFA Version | TFA Build ID         | Upgrade Status |
++------+-------------+----------------------+----------------+
+| db1  |  21.4.2.0.0 | 21420020220211135650 | UPGRADED       |
+| db2  |  21.4.2.0.0 | 21420020220211135650 | UPGRADED       |
+'------+-------------+----------------------+----------------'
+
+Moving /tmp/ahf_install_214200_200259_2022_02_18-16_44_19.log to /u01/app/grid/oracle.ahf/data/db1/diag/ahf/
+
