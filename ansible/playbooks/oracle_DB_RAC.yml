@@ -1,0 +1,31 @@
+- hosts: "{{ hostgroup | default('rac21c01') }}"
+  user: root
+  tasks:
+
+    - set_fact: home="{{ lookup('env','ANSIBLE_HOME') }}"
+
+    - name: Include vars of var/common
+      include_vars:
+        dir: "{{ home }}/vars/common"
+      tags:
+        - always
+
+    ########################################
+    #- meta: end_play
+    ########################################
+
+    - include_role:
+        name: oracle-db-install-role
+        tasks_from: "{{ item }}"
+      loop:
+         - exchange_ssh_keys_between_servers_oracle
+         - exchange_ssh_keys_between_servers_root
+         - update_known_hosts.yml
+
+    - include_role:
+        name: oracle-db-install-role
+        tasks_from: install_db_product
+      vars:
+        oracle_home: "{{ gv_oracle_home_db }}"
+        oracle_base: "{{ gv_oracle_base }}"
+        oracle_inventory: "{{ gv_inventory_loc }}"

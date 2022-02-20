@@ -1,0 +1,53 @@
+- hosts: "{{ hostgroup | default('rac21c01') }}"
+  user: root
+  tasks:
+
+    - set_fact: home="{{ lookup('env','ANSIBLE_HOME') }}"
+
+    - name: Include vars of var/common
+      include_vars:
+        dir: "{{ home }}/vars/common"
+      tags:
+        - always
+
+    - include_role:
+        name: oracle-inventory-role
+        tasks_from: ora_inventory
+
+    - name: Populate rv_homes K/V
+      set_fact:
+        rv_homes: "{{ rv_homes|default({}) | combine( {item.HOME.NAME: item.HOME.LOC} ) }}"
+      with_items:
+        - "{{ rv_oracle_inventory_entries }}"
+
+    #- set_fact:
+    #    tmp_gv_oracle_database:
+    #      home: "{{ rv_homes[item.home_name] }}"
+    #  with_items: "{{ gv_oracle_databases }}"
+    #  register: tmp_gv_oracle_database
+    #  tags:
+    #    - never
+    #
+    #- set_fact:
+    #    tmp_gv_oracle_database: "{{ item.item | combine(item.ansible_facts.tmp_gv_oracle_database) }}"
+    #  with_items: "{{ tmp_gv_oracle_database.results }}"
+    #  register: tmp_gv_oracle_database
+    #  tags:
+    #    - never
+
+    #- name: tmp_gv_oracle_database ...
+    #  debug:
+    #    msg: "{{ tmp_gv_oracle_database.results | map(attribute='ansible_facts.tmp_gv_oracle_database') }}"
+    #  tags:
+    #    - never
+
+    - include_role:
+        name: oracle-db-create-role 
+        tasks_from: create_database
+      vars:
+        rv_oracle_database: "{{ db_item }}"
+        rv_oracle_home: "{{ rv_homes }}"
+      with_items:
+        - "{{ gv_oracle_databases }}"
+      loop_control:
+        loop_var: db_item
