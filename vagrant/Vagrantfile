@@ -40,14 +40,18 @@ params = YAML.load_file 'config/vagrant.yml'
 #
 var_prefix_name     = params['shared']['prefix_name']
 var_vm_storage      = params['shared']['storage_pool_name']
+var_vm_memory      = params['shared']['memory']
+var_vm_cpus      = params['shared']['cpus']
 
 Vagrant.configure("2") do |config|
   
   config.vm.provider :libvirt do |libvirt|
       libvirt.default_prefix =  var_prefix_name
-      libvirt.memory = 8192
+      libvirt.memory = var_vm_memory
+      libvirt.cpus = var_vm_cpus
       libvirt.storage_pool_name = var_vm_storage
       libvirt.storage :file, :type => 'qcow2', :device => 'vdb', :size => '100G'
+      libvirt.channel type: 'unix', target_name: 'org.qemu.guest_agent.0', target_type: 'virtio'
   end
 
   config.ssh.insert_key = true
@@ -56,11 +60,11 @@ Vagrant.configure("2") do |config|
   config.vm.network "private_network", type: "dhcp"
   config.vm.network "private_network", type: "dhcp"
 
-  config.vm.provision "create_inventory", type: "ansible", run: "always" do |ansible|
+  config.vm.provision "create_inventory", type: "ansible", run: "never" do |ansible|
     ansible.playbook = "uptime.yml"
     ansible.verbose = true
     ansible.groups = {
-    "rac19c01" => [
+    "rac21c01" => [
       "db1",
       "db2"
       ]
@@ -78,6 +82,16 @@ Vagrant.configure("2") do |config|
   end
   #####################################
   #####################################
+  # add host ansible ssh pub key to guests
+  #####################################
+  config.vm.provision "add_ansible_pubkey_vagrant", type: "shell", run: "always" do |s|
+    ssh_pub_key = File.readlines("/home/ansible/.ssh/id_rsa.pub").first.strip
+    s.inline = <<-SHELL
+      echo #{ssh_pub_key} >> /home/vagrant/.ssh/authorized_keys
+    SHELL
+  end
+  #####################################
+  #####################################
   # add host root ssh pub key to guests
   #####################################
   config.vm.provision "shell", inline: "sudo mkdir -p /root/.ssh"
@@ -85,7 +99,18 @@ Vagrant.configure("2") do |config|
     ssh_pub_key = File.readlines("#{Dir.home}/.ssh/id_rsa.pub").first.strip
     s.privileged = true
     s.inline = <<-SHELL
-      echo #{ssh_pub_key} > /root/.ssh/authorized_keys
+      echo #{ssh_pub_key} >> /root/.ssh/authorized_keys
+    SHELL
+  end
+  #####################################
+  # add host root ssh pub key to guests
+  #####################################
+  config.vm.provision "shell", inline: "sudo mkdir -p /root/.ssh"
+  config.vm.provision "add_root_pubkey_root", type: "shell", run: "always" do |s|
+    ssh_pub_key = File.readlines("/home/ansible/.ssh/id_rsa.pub").first.strip
+    s.privileged = true
+    s.inline = <<-SHELL
+      echo #{ssh_pub_key} >> /root/.ssh/authorized_keys
     SHELL
   end
 

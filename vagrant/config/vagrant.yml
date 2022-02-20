@@ -1,3 +1,5 @@
 shared:
   prefix_name: rac01 
-  storage_pool_name: rac19c01_shared_pool
+  storage_pool_name: oracle_rac_libvirt
+  memory: 32768
+  cpus: 4
