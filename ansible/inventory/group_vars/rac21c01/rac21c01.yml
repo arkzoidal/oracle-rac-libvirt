@@ -1,6 +1,6 @@
-hostgroup: 				rac19c01
+hostgroup: 				rac21c01
 
-gv_oracle_cluster_name:			rac19c01
+gv_oracle_cluster_name:			rac21c01
 gv_oracle_device_persistence:		asmlib
 gv_domain_name:           		poc
 gv_device_persistence:         		udev
@@ -15,9 +15,9 @@ gv_cluster_nodes:
 
 gv_configure_cluster:			true
 gv_cluster_first_node:			db1
-gv_oracle_grid_release: 		19c
-gv_oracle_install_version_gi: 		19.3.0.0
-gv_oracle_db_release: 			19.3.0.0
+gv_oracle_grid_release: 		21c
+gv_oracle_install_version_gi: 		21.3.0.0
+gv_oracle_db_release: 			21.3.0.0
 gv_oracle_cluster_config_type:    	STANDALONE
 gv_oracle_role_separation: 		true
 gv_oracle_scan_name:          		"{{ gv_oracle_cluster_name }}-scan"
@@ -25,6 +25,7 @@ gv_oracle_fq_scan_name:          	"{{ gv_oracle_cluster_name }}.{{ gv_domain_nam
 gv_oracle_scan_port:          		1521
 gv_network_interface_list: 		"eth1:192.168.125.0:1,eth2:192.168.200.0:5"
 gv_oracle_gi_cluster_type:		STANDARD
+gv_oracle_gi_home_name:			OraGI21Home1
 
 oracle_gi_gns_subdomain: 		a.b.c
 oracle_gi_gns_vip: 			gnsvip.a.b.c
@@ -48,7 +49,7 @@ gv_inventory_loc: 			/u01/app/oraInventory
 gv_oracle_home_gi_cl: 			"/u01/app/{{ gv_oracle_install_version_gi }}/grid" # ORACLE_HOME for Grid Infrastructure (Clustered)
 gv_oracle_home_gi_so: 			"/u01/app/{{ gv_oracle_install_version_gi }}/grid" # ORACLE_HOME for Grid Infrastructure (Stand Alone)
 gv_oracle_home_gi: 			"{% if gv_configure_cluster %}{{ gv_oracle_home_gi_cl }}{% else %}{{ gv_oracle_home_gi_so }}{% endif %}"
-gv_shared_pool:				rac19c01_shared_pool
+gv_shared_pool:				rac21c01_shared_pool
 gv_oracle_home_db:			"/u01/app/oracle/product/{{ gv_oracle_install_version_gi }}/dbhome_1"
 
 gv_root_device:                         vda
@@ -247,15 +248,15 @@ gv_asm_diskgroups:
       - {name: compatible.rdbms, value: 11.2.0.4.0}
       - {name: compatible.asm, value: 12.1.0.2.0}
     disk:
-      - {device: /dev/oracleasm/asm_rac19c01_fra_001, asmlabel: fra01}
-      - {device: /dev/oracleasm/asm_rac19c01_fra_002, asmlabel: fra02}
-      - {device: /dev/oracleasm/asm_rac19c01_fra_003, asmlabel: fra03}
+      - {device: /dev/oracleasm/asm_rac21c01_fra_001, asmlabel: fra01}
+      - {device: /dev/oracleasm/asm_rac21c01_fra_002, asmlabel: fra02}
+      - {device: /dev/oracleasm/asm_rac21c01_fra_003, asmlabel: fra03}
 
 scsi_id_bin:		/usr/lib/udev/scsi_id
 gv_udev_rules_file:	/etc/udev/rules.d/99-oracle-asmdevices.rules
 
 gv_disk_discovery_string: 	/dev/oracleasm/asm*	
-gv_disk_group_disks:		/dev/oracleasm/asm_rac19c01_data_001,/dev/oracleasm/asm_rac19c01_data_002
+gv_disk_group_disks:		/dev/oracleasm/asm_rac21c01_data_001,/dev/oracleasm/asm_rac21c01_data_002
 gv_cluster_nodes:	db1:db1-vip:HUB,db2:db2-vip:HUB
 gv_asm_diskgroup_name:	DATA
 gv_crs_storage_option:	FLEX_ASM_STORAGE
@@ -267,19 +268,95 @@ gv_oracle_profile_name:	.oracle_profile
 
 # Dictionary describing the databases to be installed
 
-oracle_databases: 
-        - home: rachome1
-          oracle_edition: EE                                   # The edition of database-server (EE,SE,SEONE)
-          oracle_db_name: racdba                                 # Database name
-          oracle_db_type: RAC                                   # Type of database (RAC,RACONENODE,SI)
-          is_container: "false"                                # (true/false) Is the database a container database
-          pdb_prefix: pdb
-          num_pdbs: 1
-          is_racone: "false"                                   # (true/false) Is the database a RAC ONE NODE Database
-          storage_type: ASM                                     # Database storage to be used. ASM or FS.
-          service_name: racdb_serv                               # Inital service to be created (not in use yet)
-          oracle_init_params: "open_cursors=300,processes=500" # Specific parameters to be set during installation. Comma-separated list
-          oracle_db_mem_percent: 25                            # Amount of RAM to be used for SGA
-          oracle_database_type: MULTIPURPOSE                   # MULTIPURPOSE|DATA_WAREHOUSING|OLTP
-          redolog_size_in_mb: 100
-          state: present
+gv_oracle_databases: 
+        - db_name: 			CDB1                        
+          sys_password:                 Oracle123
+          system_password:              Oracle123
+          character_set: 		we8iso8859p1 
+          national_character_set:       AL16UTF16
+          home_name: 			OraDB19Home1
+          db_type: 			RAC                                   
+          is_cdb:			true
+          storage_type: 		ASM                                     
+          service_name: 		racdb_serv                               
+          init_params: 			"open_cursors=300,processes=500" 
+          database_type: 		MULTIPURPOSE                   
+          redolog_size_in_mb: 		100
+          asmsnmp_password:             Oracle123
+          state: 			present
+          disk_group_name:              +DATA
+          recovery_group_name:          +FRA 		
+          use_omf:                      true
+          pdbs:
+
+            - name:	pdb1
+              service:  svc1
+              use_omf:                  true
+              create_user_tbs:          true
+              create_from:              default
+              admin_user_name:          pdb1dba
+              adlin_password:           wOnW5WeAg4P9
+              template_name:            GIP.dbt
+
+            - name:	pdb2
+              service:  svc2
+              use_omf:                  true
+              create_user_tbs:          true
+              create_from:              default
+              admin_user_name:          pdb1dba
+              adlin_password:           wOnW5WeAg4P9
+              template_name:            GIP.dbt
+
+        - db_name: 			CDB2
+          sys_password:                 Oracle123
+          system_password:              Oracle123
+          character_set: 		we8iso8859p1 
+          national_character_set:       AL16UTF16
+          home_name: 			OraDB21Home1
+          db_type: 			RAC                                   
+          is_cdb:			true
+          storage_type: 		ASM                                     
+          service_name: 		racdb_serv                               
+          init_params: 			"open_cursors=300,processes=500" 
+          database_type: 		MULTIPURPOSE                   
+          redolog_size_in_mb: 		100
+          asmsnmp_password:             Oracle123
+          state: 			present
+          disk_group_name:              +DATA
+          recovery_group_name:          +FRA 		
+          use_omf:                      true
+          pdbs:
+
+            - name:	                pdb1
+              service:                  svc1
+              use_omf:                  true
+              create_user_tbs:          true
+              create_from:              default
+              admin_user_name:          pdb1dba
+              adlin_password:           wOnW5WeAg4P9
+              template_name:            GIP.dbt
+
+            - name:	                pdb2
+              service:                  svc2
+              use_omf:                  true
+              create_user_tbs:          true
+              create_from:              default
+              admin_user_name:          pdb1dba
+              adlin_password:           wOnW5WeAg4P9
+              template_name:            GIP.dbt
+
+gv_oracle_products:
+        - home_name: 		OraDB19Home1
+          type:			database
+          release:              19.3.0.0
+          info:            	Whatever
+          present:		yes
+        - home_name: 		OraDB21Home1
+          type:			database
+          release:              21.3.0.0
+          info:            	Whatever
+          present:		yes
+
+gv_haf_data_dir: 		/u01/app/oracle.ahf/data
+gv_haf_loc_dir: 		/u01/app/oracle.ahf
+gv_haf_tmp_dir: 		/u01/app/tmp
