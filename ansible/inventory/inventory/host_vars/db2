@@ -1,0 +1,14 @@
+node_host_name:        db2
+
+node_fq_host_name:     "{{ node_host_name }}.{{ gv_domain_name }}"
+node_fq_vip_name:      "{{ node_host_name }}-vip.{{ gv_domain_name }}"
+
+node_priv_name:        "{{ node_host_name }}-priv"
+node_vip_name:	       "{{ node_host_name }}-vip"
+
+node_priv_ip:          192.168.200.122
+node_public_ip:        192.168.125.121
+node_vip_ip:           192.168.125.122
+
+hv_virtdomain_name:    "rac01{{ node_host_name }}"
+hv_gi_oracle_sid:      "+ASM2"

@@ -1,0 +1,348 @@
+hostgroup: 				rac21c01
+
+gv_oracle_cluster_name:			rac21c01
+gv_oracle_device_persistence:		asmlib
+gv_domain_name:           		poc
+gv_device_persistence:         		udev
+
+gv_gi_server_list:
+  - db1
+  - db2
+
+gv_cluster_nodes:
+  - db1
+  - db2
+
+gv_configure_cluster:			true
+gv_cluster_first_node:			db1
+gv_oracle_grid_release: 		21c
+gv_oracle_install_version_gi: 		21.3.0.0
+gv_oracle_db_release: 			21.3.0.0
+gv_oracle_cluster_config_type:    	STANDALONE
+gv_oracle_role_separation: 		true
+gv_oracle_scan_name:          		"{{ gv_oracle_cluster_name }}-scan"
+gv_oracle_fq_scan_name:          	"{{ gv_oracle_cluster_name }}.{{ gv_domain_name }}-scan"
+gv_oracle_scan_port:          		1521
+gv_network_interface_list: 		"eth1:192.168.125.0:1,eth2:192.168.200.0:5"
+gv_oracle_gi_cluster_type:		STANDARD
+gv_oracle_gi_home_name:			OraGI21Home1
+
+oracle_gi_gns_subdomain: 		a.b.c
+oracle_gi_gns_vip: 			gnsvip.a.b.c
+
+gv_oracle_gi_nic_pub: 			eth1 # Default interface for 'public' traffic. Only used in RAC
+gv_oracle_gi_nic_priv: 			eth2 # Default interface for interconnect traffic. Only used in RAC
+
+gv_oracle_scan_ip_1:			192.168.125.115
+gv_oracle_scan_ip_2:			192.168.125.116
+gv_oracle_scan_ip_3:			192.168.125.117
+gv_root_user:                           root
+gv_root_password:			root
+gv_grid_user:                           grid
+gv_oracle_user:                         oracle
+gv_grid_base:				/u01/app/grid
+gv_oracle_base:				/u01/app/oracle
+gv_guest_staging_dir:			/u01/stage
+gv_oracle_install_group:		oinstall
+gv_inventory_loc: 			/u01/app/oraInventory
+
+gv_oracle_home_gi_cl: 			"/u01/app/{{ gv_oracle_install_version_gi }}/grid" # ORACLE_HOME for Grid Infrastructure (Clustered)
+gv_oracle_home_gi_so: 			"/u01/app/{{ gv_oracle_install_version_gi }}/grid" # ORACLE_HOME for Grid Infrastructure (Stand Alone)
+gv_oracle_home_gi: 			"{% if gv_configure_cluster %}{{ gv_oracle_home_gi_cl }}{% else %}{{ gv_oracle_home_gi_so }}{% endif %}"
+gv_shared_pool:				rac21c01_shared_pool
+gv_oracle_home_db:			"/u01/app/oracle/product/{{ gv_oracle_install_version_gi }}/dbhome_1"
+
+gv_root_device:                         vda
+
+gv_shared_disks_bus: scsi
+gv_shared_disks_cache: writethrough
+gv_shared_disks:
+
+  - basename: "asm_{{ hostgroup }}_crs_001"
+    alias: sda
+    size: 1G
+    device: sda
+    serial: a1f1169a-84cb-11ec-9a18-d89d67199d1c
+    wwn: 5000c50015ea71aa
+    cache: "{{ gv_shared_disks_cache }}"
+    bus: "{{ gv_shared_disks_bus }}"
+    mode: shareable
+  - basename: "asm_{{ hostgroup }}_crs_001"
+    alias: sdb
+    size: 1G
+    device: sdb
+    serial: a1f1169a-84cb-11ec-9a18-d89d67199d1c
+    wwn: 5000c50015ea71aa
+    cache: "{{ gv_shared_disks_cache }}"
+    bus: "{{ gv_shared_disks_bus }}"
+    mode: shareable
+
+  - basename: "asm_{{ hostgroup }}_crs_002"
+    alias: sdc
+    size: 1G
+    device: sdc
+    serial: a1f1191a-84cb-11ec-9a19-d89d67199d1c
+    wwn: 5000c50015ea71ab
+    cache: "{{ gv_shared_disks_cache }}"
+    bus: "{{ gv_shared_disks_bus }}"
+    mode: shareable
+  - basename: "asm_{{ hostgroup }}_crs_002"
+    alias: sdd
+    size: 1G
+    device: sdd
+    serial: a1f1191a-84cb-11ec-9a19-d89d67199d1c
+    wwn: 5000c50015ea71ab
+    cache: "{{ gv_shared_disks_cache }}"
+    bus: "{{ gv_shared_disks_bus }}"
+    mode: shareable
+
+  - basename: "asm_{{ hostgroup }}_crs_003"
+    alias: sde
+    size: 1G
+    device: sde
+    serial: a1f11992-84cb-11ec-9a1a-d89d67199d1c
+    wwn: 5000c50015ea71ac
+    cache: "{{ gv_shared_disks_cache }}"
+    bus: "{{ gv_shared_disks_bus }}"
+    mode: shareable
+  - basename: "asm_{{ hostgroup }}_crs_003"
+    alias: sdf
+    size: 1G
+    device: sdf
+    serial: a1f11992-84cb-11ec-9a1a-d89d67199d1c
+    wwn: 5000c50015ea71ac
+    cache: "{{ gv_shared_disks_cache }}"
+    bus: "{{ gv_shared_disks_bus }}"
+    mode: shareable
+
+  - basename: "asm_{{ hostgroup }}_data_001"
+    alias: sdg
+    size: 10G
+    device: sdg
+    serial: a1f119ec-84cb-11ec-9a1b-d89d67199d1c
+    wwn: 5000c50015ea71ad
+    cache: "{{ gv_shared_disks_cache }}"
+    bus: "{{ gv_shared_disks_bus }}"
+    mode: shareable
+  - basename: "asm_{{ hostgroup }}_data_001"
+    alias: sdh
+    size: 10G
+    device: sdh
+    serial: a1f119ec-84cb-11ec-9a1b-d89d67199d1c
+    wwn: 5000c50015ea71ad
+    cache: "{{ gv_shared_disks_cache }}"
+    bus: "{{ gv_shared_disks_bus }}"
+    mode: shareable
+
+  - basename: "asm_{{ hostgroup }}_data_002"
+    alias: sdo
+    size: 10G
+    device: sdo
+    serial: a1f119ec-84cb-11ec-9a1b-d99d67199d1c
+    wwn: 5000c50015ea71bd
+    cache: "{{ gv_shared_disks_cache }}"
+    bus: "{{ gv_shared_disks_bus }}"
+    mode: shareable
+  - basename: "asm_{{ hostgroup }}_data_002"
+    alias: sdp
+    size: 10G
+    device: sdp
+    serial: a1f119ec-84cb-11ec-9a1b-d99d67199d1c
+    wwn: 5000c50015ea71bd
+    cache: "{{ gv_shared_disks_cache }}"
+    bus: "{{ gv_shared_disks_bus }}"
+    mode: shareable
+
+  - basename: "asm_{{ hostgroup }}_fra_001"
+    alias: sdi
+    size: 10G
+    device: sdi
+    serial: a1f11a46-84cb-11ec-9a1c-d89d67199d1c
+    wwn: 5000c50015ea71ae
+    cache: "{{ gv_shared_disks_cache }}"
+    bus: "{{ gv_shared_disks_bus }}"
+    mode: shareable
+  - basename: "asm_{{ hostgroup }}_fra_001"
+    alias: sdj
+    size: 10G
+    device: sdj
+    serial: a1f11a46-84cb-11ec-9a1c-d89d67199d1c
+    wwn: 5000c50015ea71ae
+    cache: "{{ gv_shared_disks_cache }}"
+    bus: "{{ gv_shared_disks_bus }}"
+    mode: shareable
+
+  - basename: "asm_{{ hostgroup }}_fra_002"
+    alias: sdk
+    size: 10G
+    device: sdk
+    serial: a1f11a46-84cb-11ec-9a1c-d89d67199d1d
+    wwn: 5000c50015ea71af
+    cache: "{{ gv_shared_disks_cache }}"
+    bus: "{{ gv_shared_disks_bus }}"
+    mode: shareable
+  - basename: "asm_{{ hostgroup }}_fra_002"
+    alias: sdl
+    size: 10G
+    device: sdl
+    serial: a1f11a46-84cb-11ec-9a1c-d89d67199d1d
+    wwn: 5000c50015ea71af
+    cache: "{{ gv_shared_disks_cache }}"
+    bus: "{{ gv_shared_disks_bus }}"
+    mode: shareable
+
+  - basename: "asm_{{ hostgroup }}_fra_003"
+    alias: sdm
+    size: 10G
+    device: sdm
+    serial: a1f11a46-84cb-11ec-9a1c-d89d67199d1e
+    wwn: 5000c50015ea71bf
+    cache: "{{ gv_shared_disks_cache }}"
+    bus: "{{ gv_shared_disks_bus }}"
+    mode: shareable
+  - basename: "asm_{{ hostgroup }}_fra_003"
+    alias: sdn
+    size: 10G
+    device: sdn
+    serial: a1f11a46-84cb-11ec-9a1c-d89d67199d1e
+    wwn: 5000c50015ea71bf
+    cache: "{{ gv_shared_disks_cache }}"
+    bus: "{{ gv_shared_disks_bus }}"
+    mode: shareable
+
+#[root@db2 rules.d]# multipath -ll
+#mpatha (35000c50015ea71ae) dm-1 QEMU,QEMU HARDDISK
+#size=10G features='0' hwhandler='0' wp=rw
+#|-+- policy='service-time 0' prio=1 status=active
+#| `- 2:0:0:4 sde 8:64 active ready running
+#`-+- policy='service-time 0' prio=1 status=enabled
+#  `- 2:0:0:5 sdf 8:80 active ready running
+
+
+gv_configure_oracle_sudo:		true
+gv_use_partition_devices: 		true
+
+gv_asm_diskgroups:
+  - diskgroup: crs
+    properties:
+      - {redundancy: normal, ausize: 1}
+    attributes:
+      - {name: 'compatible.rdbms', value: 11.2.0.4.0}
+      - {name: 'compatible.asm', value: 12.1.0.2.0}
+    disk:
+      - {device: /dev/sda, asmlabel: crs01}
+      - {device: /dev/sdb, asmlabel: crs02}
+      - {device: /dev/sdc, asmlabel: crs03}
+  - diskgroup: data
+    properties:
+      - {redundancy: external, ausize: 4}
+    attributes:
+      - {name: compatible.rdbms, value: 11.2.0.4.0}
+      - {name: compatible.asm, value: 12.1.0.2.0}
+    disk:
+      - {device: /dev/sdd, asmlabel: data01}
+  - diskgroup: fra
+    properties:
+      - {redundancy: external, ausize: 4}
+    attributes:
+      - {name: compatible.rdbms, value: 11.2.0.4.0}
+      - {name: compatible.asm, value: 12.1.0.2.0}
+    disk:
+      - {device: /dev/oracleasm/asm_rac21c01_fra_001, asmlabel: fra01}
+      - {device: /dev/oracleasm/asm_rac21c01_fra_002, asmlabel: fra02}
+      - {device: /dev/oracleasm/asm_rac21c01_fra_003, asmlabel: fra03}
+
+scsi_id_bin:		/usr/lib/udev/scsi_id
+gv_udev_rules_file:	/etc/udev/rules.d/99-oracle-asmdevices.rules
+
+gv_disk_discovery_string: 	/dev/oracleasm/asm*	
+gv_disk_group_disks:		/dev/oracleasm/asm_rac21c01_data_001,/dev/oracleasm/asm_rac21c01_data_002
+gv_cluster_nodes:	db1:db1-vip:HUB,db2:db2-vip:HUB
+gv_asm_diskgroup_name:	DATA
+gv_crs_storage_option:	FLEX_ASM_STORAGE
+gv_asm_osdba: asmdba 
+gv_asm_osoper: asmoper
+gv_asm_osasm: asmadmin
+gv_crs_install_option: CRS_CONFIG
+gv_oracle_profile_name:	.oracle_profile
+
+# Dictionary describing the databases to be installed
+
+gv_oracle_databases: 
+        - db_name: 			CDB1                        
+          sys_password:                 Oracle123
+          system_password:              Oracle123
+          character_set: 		we8iso8859p1 
+          national_character_set:       AL16UTF16
+          home_name: 			OraDB19Home1
+          db_type: 			RAC                                   
+          is_cdb:			true
+          storage_type: 		ASM                                     
+          service_name: 		racdb_serv                               
+          init_params: 			"open_cursors=300,processes=500" 
+          database_type: 		MULTIPURPOSE                   
+          redolog_size_in_mb: 		100
+          asmsnmp_password:             Oracle123
+          state: 			present
+          disk_group_name:              +DATA
+          recovery_group_name:          +FRA 		
+          use_omf:                      true
+          pdbs:
+            - name:	pdb1
+              service:  svc1
+            - name:	pdb2
+              service:  svc2
+
+        - db_name: 			CDB2
+          sys_password:                 Oracle123
+          system_password:              Oracle123
+          character_set: 		we8iso8859p1 
+          national_character_set:       AL16UTF16
+          home_name: 			OraDB21Home1
+          db_type: 			RAC                                   
+          is_cdb:			true
+          storage_type: 		ASM                                     
+          service_name: 		racdb_serv                               
+          init_params: 			"open_cursors=300,processes=500" 
+          database_type: 		MULTIPURPOSE                   
+          redolog_size_in_mb: 		100
+          asmsnmp_password:             Oracle123
+          state: 			present
+          disk_group_name:              +DATA
+          recovery_group_name:          +FRA 		
+          use_omf:                      true
+          pdbs:
+
+            - name:	                pdb1
+              service:                  svc1
+              use_omf:                  true
+              create_user_tbs:          true
+              create_from:              default
+              admin_user_name:          pdb1dba
+              adlin_password:           wOnW5WeAg4P9
+              template_name:            GIP.dbt
+
+            - name:	                pdb2
+              service:                  svc2
+              use_omf:                  true
+              create_user_tbs:          true
+              create_from:              default
+              admin_user_name:          pdb1dba
+              adlin_password:           wOnW5WeAg4P9
+              template_name:            GIP.dbt
+
+gv_oracle_products:
+        - home_name: 		OraDB19Home1
+          type:			database
+          release:              19.3.0.0
+          info:            	Whatever
+          present:		yes
+        - home_name: 		OraDB21Home1
+          type:			database
+          release:              21.3.0.0
+          info:            	Whatever
+          present:		yes
+
+gv_haf_data_dir: 		/u01/app/oracle.ahf/data
+gv_haf_loc_dir: 		/u01/app/oracle.ahf
+gv_haf_tmp_dir: 		/u01/app/tmp
