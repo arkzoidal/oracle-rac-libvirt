@@ -1,5 +1,5 @@
 [domblklist]
 domain = rac01db1 
 device = vda
-image = /home/libvirt/rac19c01_shared_pool/rac01db1.img 
-image_size = 20G
+image = /home/libvirt/oracle_rac_libvirt/rac01db1.img 
+image_size = 32G
