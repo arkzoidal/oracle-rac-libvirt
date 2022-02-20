@@ -1,0 +1,4 @@
+
+   - name: enable serial console
+     shell: >
+          grubby --update-kernel=ALL --args='console=tty0 console=ttyS0,9600n8'

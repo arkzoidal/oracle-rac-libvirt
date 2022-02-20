@@ -1,0 +1,23 @@
+- name: Install qemu-guest-agent
+  dnf:
+    name:
+      - qemu-guest-agent
+      - acpid
+    state: latest
+
+- name: enable qemu-guest-agent
+  ansible.builtin.shell: systemctl enable --now qemu-guest-agent
+
+- name: start qemu-guest-agent
+  ansible.builtin.shell: systemctl start qemu-guest-agent
+
+- name: checking service status
+  command: systemctl status "{{ item }}"
+  with_items:
+      - qemu-guest-agent
+  register: result
+  ignore_errors: yes
+
+- name: showing report
+  debug:
+     var: result

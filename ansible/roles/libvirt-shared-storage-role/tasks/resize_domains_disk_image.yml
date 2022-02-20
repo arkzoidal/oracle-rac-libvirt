@@ -34,10 +34,19 @@
       delegate_to: localhost
       ignore_errors: yes
 
-    - name: virsh destroy domain
+    - name: virsh shutdown domain
       shell: >
           virsh destroy {{ ansible_facts['ansible_local']['virsh']['domblklist']['domain'] }}
       delegate_to: localhost
+
+    - name: list all VMs
+      ansible.builtin.shell: virsh list --all | grep {{ hv_virtdomain_name }} 
+      register: vcpuinfo
+      delegate_to: 127.0.0.1
+      until: "'running' not in vcpuinfo.stdout"
+      retries: 20
+      delay: 10
+      ignore_errors: true 
 
     - name: mv -f
       shell: >
@@ -49,16 +58,37 @@
         state: absent
         path: /home/libvirt/images/{{ ansible_facts['ansible_local']['virsh']['domblklist']['domain'] }}.tmp.qcow2
       delegate_to: localhost
+      tags:
+        always
+
+    - debug: msg="start {{ ansible_facts['ansible_local']['virsh']['domblklist']['domain'] }}"
+      tags:
+        always
 
     - name: virsh start domain
       shell: >
           virsh start {{ ansible_facts['ansible_local']['virsh']['domblklist']['domain'] }}
       delegate_to: localhost
+      tags:
+        always
+
+    - name: list all VMs
+      ansible.builtin.shell: virsh list --all | grep {{ hv_virtdomain_name }} 
+      register: vcpuinfo
+      delegate_to: 127.0.0.1
+      until: "'running' in vcpuinfo.stdout"
+      retries: 20
+      delay: 10
+      ignore_errors: true 
 
     - name: fdisk -l
       shell: >
          fdisk -l {{ ansible_facts['ansible_local']['virsh']['domblklist']['image'] }}
       delegate_to: localhost
       register: fdisk
+      tags:
+        always
 
     - debug: msg="{{ fdisk.stdout }}"
+      tags:
+        always
