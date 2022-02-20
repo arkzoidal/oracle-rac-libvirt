@@ -1,0 +1,106 @@
+- name: rv_oracle_database dump
+  debug:
+    msg:
+      - '{{ rv_oracle_database }}'
+  when: inventory_hostname in gv_cluster_first_node
+  tags:
+    - never
+
+#- meta: end_play
+
+# Make temporary list (will get it as tmp_gv_oracle_database.results)
+- name: temporary list
+  when: inventory_hostname in gv_cluster_first_node
+  set_fact:
+      tmp_gv_oracle_database:
+        home: "{{ rv_homes[rv_oracle_database.home_name] }}"
+  register: tmp_gv_oracle_databases 
+  tags:
+    - always
+
+- name: tmp_gv_oracle_databases
+  debug:
+    msg:
+      - '{{ tmp_gv_oracle_databases }}'
+  when: inventory_hostname in gv_cluster_first_node
+  tags:
+    - never
+
+# Join original items with temporary ones
+- name: Join original items with temporary ones
+  when: inventory_hostname in gv_cluster_first_node
+  set_fact:
+      tmp_gv_oracle_database: "{{ rv_oracle_database | combine(tmp_gv_oracle_databases.ansible_facts.tmp_gv_oracle_database) }}"
+  register: tmp_gv_oracle_databases
+  tags:
+    - always
+
+- name: tmp_gv_oracle_database final
+  debug:
+    msg:
+      - '{{ tmp_gv_oracle_database }}'
+  when: inventory_hostname in gv_cluster_first_node
+  tags:
+    - never
+
+- name: create rv_oracle_database var ...
+  when: inventory_hostname in gv_cluster_first_node
+  set_fact:
+      rv_oracle_database: "{{ tmp_gv_oracle_database }}"
+      cacheable: yes
+  tags:
+    - always
+
+
+# Get clean results my mapping only one key from tmp_gv_oracle_database.results
+- name: create rv_oracle_database var ...
+  when: inventory_hostname in gv_cluster_first_node
+  set_fact:
+      rv_oracle_database: "{{ tmp_gv_oracle_databases.results | map(attribute='ansible_facts.tmp_gv_oracle_database') }}"
+      cacheable: yes
+  tags:
+    - never
+
+- name: 
+  when: inventory_hostname in gv_cluster_first_node
+  local_action: copy content={{  tmp_gv_oracle_database | to_nice_json() }} dest=/tmp/rv_oracle_database.json
+  tags:
+    - never
+
+- name: 
+  when: inventory_hostname in gv_cluster_first_node
+  local_action: copy content={{  ansible_facts | to_nice_json() }} dest=/tmp/ansible_facts.json
+  tags:
+    - never
+
+- name: Create directories 
+  when: ansible_hostname == gv_cluster_first_node
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_oracle_user }}"
+  file:
+    path: "/home/{{ gv_oracle_user }}/install/{{ dir_item }}"
+    state: directory
+    owner: "{{ gv_oracle_user }}"
+    group: "{{ gv_oracle_install_group }}"
+    mode: 0775
+    recurse: yes
+  loop:
+    - log
+    - response
+  loop_control:
+      loop_var: dir_item
+
+- name: oracle-db-install | create_database. | Create create_database.sh
+  when: ansible_hostname == gv_cluster_first_node
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_oracle_user }}"
+  template:
+     src: create_db.sh.j2
+     dest: "/home/{{ gv_oracle_user }}/install/create_database_{{rv_oracle_database.db_name}}.sh"
+     owner: "{{ gv_oracle_user }}"
+     group: "{{ gv_oracle_install_group }}"
+     mode: u=rwx,g=rx,o=r

@@ -1,0 +1,97 @@
+- name: exchange_ssh_keys_between_servers_oracle | create .ssh if not exist
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_oracle_user }}"
+  file:
+    path: /home/{{ gv_oracle_user }}/.ssh
+    state: directory
+    owner: "{{ gv_oracle_user }}"
+    group: "{{ gv_oracle_install_group }}"
+    mode: 0700
+
+- name: exchange_ssh_keys_between_servers_root | Generate an OpenSSH keypair with the default values (4096 bits, rsa)
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_oracle_user }}"
+  openssh_keypair:
+    path: /home/{{ gv_oracle_user }}/.ssh/id_rsa
+    owner: "{{ gv_oracle_user }}"
+    group: "{{ gv_oracle_install_group }}"
+
+- name: exchange_ssh_keys_between_servers_root | Fix owner of the generated pub key
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_oracle_user }}"
+  file:
+    path: /home/{{ gv_oracle_user }}/.ssh/id_rsa.pub
+    owner: "{{ gv_oracle_user }}"
+    group: "{{ gv_oracle_install_group }}"
+    mode: 0600
+
+- name: exchange_ssh_keys_between_servers_root | fetch public keys locally
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_oracle_user }}"
+  ansible.builtin.fetch:
+    src: /home/{{ gv_oracle_user }}/.ssh/id_rsa.pub
+    dest: /tmp/id_rsa-{{ ansible_hostname }}.pub
+    flat: yes
+
+- name: exchange_ssh_keys_between_servers_root | copy public keys to remote guests
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_oracle_user }}"
+  ansible.builtin.copy:
+    src: /tmp/id_rsa-{{ server_item }}.pub
+    dest: /home/{{ gv_oracle_user }}/.ssh/id_rsa-{{ server_item }}.pub
+    owner: "{{ gv_oracle_user }}"
+    group: "{{ gv_oracle_install_group }}"
+    remote_src: no
+  with_items:
+    - "{{ gv_gi_server_list }}"
+  loop_control:
+      loop_var: server_item
+
+- name: exchange_ssh_keys_between_servers_root | create authorized_keys
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_oracle_user }}"
+  file: path=/home/{{ gv_oracle_user }}/.ssh/authorized_keys state=touch owner="{{ gv_oracle_user }}" group="{{ gv_oracle_install_group }}" mode=0600
+
+- name: exchange_ssh_keys_between_servers_root | Append public keys to authorized_keys
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_oracle_user }}"
+  lineinfile: dest=/home/{{ gv_oracle_user }}/.ssh/authorized_keys line="{{ lookup('file', '/tmp/id_rsa-{{ server_item }}.pub') }}"
+  with_items:
+    - "{{ gv_gi_server_list }}"
+  loop_control:
+      loop_var: server_item
+
+- name: exchange_ssh_keys_between_servers_root | Add StrictHostKeyChecking to .ssh/config
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_oracle_user }}"
+  blockinfile:
+    path: "/home/{{ gv_oracle_user }}/.ssh/config"
+    state: present
+    create: yes
+    owner: "{{ gv_oracle_user }}"
+    group: "{{ gv_oracle_install_group }}"
+    mode: 0600
+    block: |
+       Host *
+          StrictHostKeyChecking no
+          Compression yes
+          #ControlMaster auto
+          #ControlPath  ~/.ssh/sockets/%r@%h-%p
+          #ControlPersist 600
+    marker: "# {mark} ANSIBLE MANAGED config"

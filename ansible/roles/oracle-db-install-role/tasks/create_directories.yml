@@ -1,0 +1,20 @@
+- debug:
+     msg: inventory_hostname
+
+- name: create_directrories | Creates directory gv_oracle_base
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_root_user }}"
+  #when: inventory_hostname in gv_gi_server_list
+  run_once: false
+  ansible.builtin.shell: |
+      mkdir {{ gv_oracle_base }}
+      chown {{ gv_oracle_user }}:{{ gv_oracle_install_group }} {{ gv_oracle_base }}
+  #file:
+  #  path: "{{ gv_oracle_base }}"
+  #  state: directory
+  #  owner: "{{ gv_oracle_user }}"
+  #  group: "{{ gv_oracle_install_group }}"
+  #  mode: 0775
+  #  recurse: no

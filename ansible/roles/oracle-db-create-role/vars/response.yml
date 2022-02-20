@@ -1,0 +1,51 @@
+          entries:
+          - app-version: 8368-6520
+            current: 'no'
+            downloaded: 'no'
+            filename: panupv2-all-apps-8368-6520
+            version: 8368-6520
+          - app-version: 8369-6522
+            current: 'no'
+            downloaded: 'no'
+            filename: panupv2-all-apps-8369-6522
+            version: 8369-6522
+          - app-version: 8367-6513
+            current: 'no'
+            downloaded: 'no'
+            filename: panupv2-all-apps-8367-6513
+            version: 8367-6513
+          - app-version: 8371-6531
+            current: 'no'
+            downloaded: 'no'
+            filename: panupv2-all-apps-8371-6531
+            version: 8371-6531
+          - app-version: 8366-6503
+            current: 'no'
+            downloaded: 'no'
+            filename: panupv2-all-apps-8366-6503
+            version: 8366-6503
+          - app-version: 8370-6526
+            current: 'no'
+            downloaded: 'no'
+            filename: panupv2-all-apps-8370-6526
+            version: 8370-6526
+          - app-version: 8373-6537
+            current: 'no'
+            downloaded: 'yes'
+            filename: panupv2-all-apps-8373-6537
+            version: 8373-6537
+          - app-version: 8365-6501
+            current: 'no'
+            downloaded: 'no'
+            filename: panupv2-all-apps-8365-6501
+            version: 8365-6501
+          - app-version: 8364-6497
+            current: 'no'
+            downloaded: 'no'
+            filename: panupv2-all-apps-8364-6497
+            version: 8364-6497
+          - app-version: 8372-6534
+            current: 'yes'
+            downloaded: 'yes'
+            filename: panupv2-all-apps-8372-6534
+            version: 8372-6534

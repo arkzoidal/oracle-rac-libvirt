@@ -1,0 +1,27 @@
+export ORACLE_HOME={{ ansible_facts.rv_oracle_database.home }}
+export ORACLE_BASE={{ gv_oracle_base }}
+export PATH=:$ORACLE_HOME/bin:$ORACLE_HOME/OPatch:$PATH:
+
+$ORACLE_HOME/bin/dbca -silent -createDatabase \
+  -templateName {{ ansible_facts.rv_oracle_database.home }}/assistants/dbca/templates/New_Database.dbt \
+  -initParams {{ rv_oracle_database.init_params }} \
+  -responseFile NO_VALUE \
+  -gdbname {{ rv_oracle_database.db_name }} \
+  -characterSet {{ rv_oracle_database.character_set}} \
+  -nationalCharacterSet {{ rv_oracle_database.national_character_set }} \
+  -sysPassword {{ rv_oracle_database.system_password }} \
+  -systemPassword {{ rv_oracle_database.system_password }}  \
+  -createAsContainerDatabase {{ rv_oracle_database.is_cdb }}  \
+  -databaseType {{ rv_oracle_database.database_type }} \
+  -automaticMemoryManagement false \
+  -totalMemory 8048 \
+  -redoLogFileSize 100 \
+  -emConfiguration NONE \
+  -ignorePreReqs \
+  -databaseConfigType {{ rv_oracle_database.db_type }} \
+  -storageType {{ rv_oracle_database.storage_type }} \
+  -diskGroupName {{ rv_oracle_database.disk_group_name }} \
+  -recoveryGroupName {{ rv_oracle_database.recovery_group_name}} \
+  -useOMF {{ rv_oracle_database.use_omf }} \
+  -nodelist {% for host in groups[hostgroup] -%} {{ hostvars[host].node_host_name }}{{ "," if not loop.last else "" }} {%- endfor %} \
+  -asmsnmpPassword {{ rv_oracle_database.asmsnmp_password }}

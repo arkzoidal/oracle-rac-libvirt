@@ -1,0 +1,31 @@
+# tasks file for provision/ansible/roles/oracle_database_preinstall
+# =============================================================================
+# Install Oracle 
+# Summary Steps -
+# =============================================================================
+
+- name: display message
+  debug:
+    msg:
+      - 'This playbook is for Oracle DB Software Only setup, started at {{ansible_date_time.iso8601}}:'
+
+# Variable configuration.
+
+- import_tasks: variables.yml
+
+- name:  main block
+  block:
+    - import_tasks:     unzip_db_software.yml
+    - import_tasks:     update_cvu_config.yml    
+    - import_tasks:     exchange_ssh_keys_between_servers_oracle.yml
+    - import_tasks:     update_known_hosts.yml
+    - import_tasks:     db_softonly_install.yml
+    - import_tasks:     racdb_root.yml
+    - import_tasks:     install_dot_profile.sh
+  become:               yes
+  become_user:          root
+
+tasks:
+    - name: deploy files with network address in them
+      include_tasks:  	main_multi_tasks.yml 
+      loop: "{{  }}"

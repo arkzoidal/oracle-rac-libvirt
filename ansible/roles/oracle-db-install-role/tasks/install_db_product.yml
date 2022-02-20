@@ -1,0 +1,38 @@
+  - debug:
+      msg:
+        - 'This task is for Oracle DB Software Only setup, started at {{ansible_date_time.iso8601}}:'
+
+  #- meta: end_play
+
+  - name : loop
+    when: inventory_hostname in gv_cluster_first_node
+    ansible.builtin.debug:
+       msg: "{{ item.home_name }}"
+    loop: "{{ gv_oracle_products|flatten(levels=1) }}"
+    loop_control:
+      index_var: index
+    tags:
+      - never
+
+  - name : set_fact loop
+    set_fact:
+      dbproducts: "{{ dbproducts | default([]) + [{ 'home_name' : inner_item.home_name, 'release' : inner_item.release }] }}"
+      cacheable: yes
+    when: inner_item.type == "database"
+    loop: "{{ gv_oracle_products|flatten(levels=1) }}"
+    loop_control:
+      index_var: index
+      loop_var: inner_item
+    tags:
+      - always
+
+  - name: install database products in a loop
+    include_tasks: main.yml 
+    loop: "{{ dbproducts }}"
+    vars:
+      oracle_home_name: "{{ product_item.home_name }}"
+      gv_oracle_db_release: "{{ product_item.release }}"
+      gv_oracle_home_db: "/u01/app/oracle/product/{{ gv_oracle_db_release }}/dbhome_1"
+    loop_control:
+      index_var: index
+      loop_var: product_item

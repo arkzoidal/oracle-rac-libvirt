@@ -1,0 +1,23 @@
+- name: oracle-db-install-role | update_cvu_config | Add mappings ORACLE_SRVM_REMOTECOPY to cvu_config
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_oracle_user }}"
+  when: ansible_hostname == gv_cluster_first_node
+  blockinfile:
+    path: "{{ gv_oracle_home_db }}/cv/admin/cvu_config" 
+    block: |
+       ORACLE_SRVM_REMOTECOPY=/etc/oracle/scp
+    marker: "# {mark} ANSIBLE MANAGED BLOCK ORACLE_SRVM_REMOTECOPY"
+
+- name: oracle-db-install-role | update_cvu_config | Add mappings CV_ASSUME_DISTID=OEL8 to cvu_config
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_oracle_user }}"
+  when: ansible_hostname == gv_cluster_first_node
+  blockinfile:
+    path: "{{ gv_oracle_home_db }}/cv/admin/cvu_config" 
+    block: |
+      CV_ASSUME_DISTID=OEL8
+    marker: "# {mark} ANSIBLE MANAGED BLOCK CV_ASSUME_DISTID"

@@ -1,0 +1,77 @@
+#############################################################
+# dbca log is in $ORACLE_BASE/cfgtoollogs/dbca/<DB_NAME>/trace.log-YYYY-MM-DD_HH-MI-SSAM
+#                $ORACLE_BASE/diag/rdbms/<db_name>/$ORACLE_SID/trace/alert_$ORACLE_SID.log
+#############################################################
+
+- name: oracle_create_db | Creates directory scripts
+  when: ansible_hostname == gv_cluster_first_node
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_oracle_user }}"
+  file:
+    path: "/home/{{ gv_oracle_user }}/scripts/{{ file_item }}"
+    state: directory
+    owner: "{{ gv_oracle_user }}"
+    group: "{{ gv_oracle_install_group }}"
+    mode: 0775
+    recurse: yes
+  loop: 
+    - log
+    - response
+  loop_control:
+    loop_var: file_item
+
+- name: oracle_create_db | Create scripts/db_create.sh
+  when: ansible_hostname == gv_cluster_first_node
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_oracle_user }}"
+  template:
+     src: db_create.sh.j2
+     dest: "/home/{{ gv_oracle_user }}/scripts/db_create.sh"
+     owner: "{{ gv_oracle_user }}"
+     group: "{{ gv_oracle_install_group }}"
+     mode: u=rwx,g=rx,o=r
+
+- name: oracle_create_db | Create response/db_create.rsp 
+  when: ansible_hostname == gv_cluster_first_node
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_oracle_user }}"
+  template:
+     src: "grid_configure.rsp.{{ gv_oracle_install_version_gi }}.j2"
+     dest: "/home/{{ gv_oracle_user }}/scripts/response/db_create.rsp"
+     owner: "{{ gv_oracle_user }}"
+     group: "{{ gv_oracle_install_group }}"
+     mode: u=rwx,g=rx,o=r
+
+- name: oracle_create_db | run scripts/db_create.sh
+  when: ansible_hostname == gv_cluster_first_node
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_oracle_user }}"
+  ansible.builtin.shell: "/home/{{ gv_oracle_user }}/scripts/db_create.sh | tee -a /home/{{ gv_oracle_user }}/scripts/log/db_create.log"
+  args:
+      warn: false # set warn=false to prevent warning
+  failed_when: grid_setup_softonly_install.rc != 0   #### This condition is based on my own setup
+  register: grid_setup_softonly_install
+  no_log:             false
+
+- name: oracle_create_db | Get the output log status
+  when: ansible_hostname == gv_cluster_first_node
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_oracle_user }}"
+  shell: grep -ir "Successfully" /home/{{ gv_oracle_user }}/scripts/log/db_create.log
+  register: gisoftinstall_log
+
+- name: oracle_create_db | "Output from Post GI Software Installation Check"
+  debug:
+    var: gisoftinstall_log.stdout
+    verbosity: 0
+  when: ansible_hostname == gv_cluster_first_node and "'Successfully' in gisoftinstall_log.stdout"

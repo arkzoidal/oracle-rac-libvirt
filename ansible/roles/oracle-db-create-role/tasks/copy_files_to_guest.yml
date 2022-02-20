@@ -1,0 +1,31 @@
+- name: oracle-db-create-role | copy_files_to_guest | Creates directory gv_oracle_home_gi/install
+  when: ansible_hostname == gv_cluster_first_node
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_oracle_user }}"
+  file:
+    path: "/home/{{ gv_oracle_user }}/install/{{ file_item }}"
+    state: directory
+    owner: "{{ gv_oracle_user }}"
+    group: "{{ gv_oracle_install_group }}"
+    mode: 0775
+    recurse: yes
+  loop:
+    - log
+    - response
+    - file
+  loop_control:
+      loop_var: file_item
+
+- name: oracle-db-create-role | copy_files_to_guest | Copy database scripts to the target database server
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_oracle_user }}"
+  when: ansible_hostname == gv_cluster_first_node
+  copy: src="{{ home }}/roles/oracle-db-create-role/files/{{ file_item }} dest=/home/{{ gv_oracle_user }}/install/file owner=oracle group=oinstall mode=0775 force=yes
+  loop:
+    - templates.dbt 
+  loop_control:
+      loop_var: file_item

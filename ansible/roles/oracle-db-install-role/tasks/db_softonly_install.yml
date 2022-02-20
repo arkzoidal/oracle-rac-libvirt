@@ -1,0 +1,83 @@
+- name: oracle-db-install | oracle_setup_softonly_install | chmod 775 /u01/app
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_root_user }}"
+  file:
+    path: "/u01/app"
+    owner: root
+    group: oinstall
+    mode: '0775'
+
+- name: oracle-db-install | oracle_setup_softonly_install | Creates directory /home/{{ gv_oracle_user }}/install...
+  when: ansible_hostname == gv_cluster_first_node
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_oracle_user }}"
+  file:
+    path: "/home/{{ gv_oracle_user }}/install/{{ dir_item }}"
+    state: directory
+    owner: "{{ gv_oracle_user }}"
+    group: "{{ gv_oracle_install_group }}"
+    mode: 0775
+    recurse: yes
+  loop:
+    - log
+    - response
+  loop_control:
+      loop_var: dir_item
+
+- name: oracle-db-install | oracle_setup_softonly_install | Create install/oracle_setup_softonly_install.sh
+  when: ansible_hostname == gv_cluster_first_node
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_oracle_user }}"
+  template:
+     src: oracle_setup_softonly_install.yml.j2
+     dest: "/home/{{ gv_oracle_user }}/install/oracle_setup_softonly_install.sh"
+     owner: "{{ gv_oracle_user }}"
+     group: "{{ gv_oracle_install_group }}"
+     mode: u=rwx,g=rx,o=r
+
+- name: oracle-db-install | oracle_setup_softonly_install | Create response/oracle_setup_softonly_install.rsp 
+  when: ansible_hostname == gv_cluster_first_node
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_oracle_user }}"
+  template:
+     src: "rac_ee_sonly.rsp.{{ gv_oracle_install_version_gi }}.j2"
+     dest: "/home/{{ gv_oracle_user }}/install/response/oracle_setup_softonly_install.rsp"
+     owner: "{{ gv_oracle_user }}"
+     group: "{{ gv_oracle_install_group }}"
+     mode: u=rwx,g=rx,o=r
+
+- name: oracle-db-install | oracle_setup_softonly_install | run install/oracle_setup_softonly_install.sh
+  when: ansible_hostname == gv_cluster_first_node
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_oracle_user }}"
+  ansible.builtin.shell: "/home/{{ gv_oracle_user }}/install/oracle_setup_softonly_install.sh | tee -a /home/{{ gv_oracle_user }}/install/log/oracle_setup_softonly_install.log"
+  #args:
+  #    warn: false # set warn=false to prevent warning
+  #failed_when: oracle_setup_softonly_install.rc != 0   #### This condition is based on my own setup
+  register: oracle_setup_softonly_install
+  no_log:             false
+
+- name: Get the output log status
+  when: ansible_hostname == gv_cluster_first_node
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_oracle_user }}"
+  shell: grep -ir "Successfully" /home/{{ gv_oracle_user }}/install/log/oracle_setup_softonly_install.log
+  register: gisoftinstall_log
+
+- name: "Output from Post GI Software Installation Check"
+  debug:
+    var: gisoftinstall_log.stdout
+    verbosity: 0
+  when: ansible_hostname == gv_cluster_first_node and "'Successfully' in gisoftinstall_log.stdout"

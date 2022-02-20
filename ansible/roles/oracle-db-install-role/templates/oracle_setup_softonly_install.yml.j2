@@ -1,0 +1,7 @@
+{{ gv_oracle_home_db }}/runInstaller -silent -ignorePrereqFailure -waitforcompletion \
+    -responseFile /home/{{ gv_oracle_user }}/install/response/oracle_setup_softonly_install.rsp "ORACLE_HOME_NAME={{oracle_home_name}}"  | tee -a /home/{{ gv_oracle_user }}/install/log/oracle_setup_softonly_install.log
+
+
+
+
+

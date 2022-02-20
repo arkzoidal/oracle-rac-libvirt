@@ -1,0 +1,42 @@
+
+- name: oracle-gi-install-role | create_fra_disk_group.yml | Extract fra data from diskgroup
+  when: inventory_hostname in gv_cluster_first_node
+  set_fact: 
+    disks: "{{ disks| default([]) + gv_asm_diskgroups | json_query(jmesquery) }}"
+  vars:
+    jmesquery: "[? diskgroup==`fra`].disk"
+
+- name: oracle-gi-install-role | create_fra_disk_group.yml | Create devtags array
+  when: inventory_hostname in gv_cluster_first_node
+  set_fact: 
+    devtags: "{{ devtags | default([]) + [{ 'dev' : item.device, 'tag' : item.asmlabel }] }}"
+    cacheable: yes
+  loop: "{{ disks|flatten(levels=1) }}"
+  loop_control:
+    index_var: index
+
+- name: oracle-gi-install-role | create_fra_disk_group.yml | Create install/create_fra.sh
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_grid_user }}"
+  when: ansible_hostname == gv_cluster_first_node
+  template:
+     src: create_fra.sh.j2
+     dest: "/home/{{ gv_grid_user }}/install/create_fra.sh"
+     owner: "{{ gv_grid_user }}"
+     group: "{{ gv_oracle_install_group }}"
+     mode: u=rwx,g=rx,o=r
+
+- name: oracle-gi-install-role | create_fra_disk_group.yml | Generate the create disk group sql script
+  when: inventory_hostname in gv_cluster_first_node
+  template: src=create_fra.j2 dest="/home/{{ gv_grid_user }}/install/create_fra.sql"
+
+- name: oracle-gi-install-role | grid_setup_softonly_install | run install/grid_configure.sh
+  when: ansible_hostname == gv_cluster_first_node
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_grid_user }}"
+  ansible.builtin.shell: "/home/{{ gv_grid_user }}/install/create_fra.sh | tee -a /home/{{ gv_grid_user }}/install/log/create_fra.log"
+  no_log:             false

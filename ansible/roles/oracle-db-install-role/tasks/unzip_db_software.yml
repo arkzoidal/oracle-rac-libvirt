@@ -1,0 +1,115 @@
+- name: oracle-db-install-role | unzip_db_software.yml | Check that the cvu pack zip file exists
+  stat:
+   path: "{{ gv_guest_staging_dir }}/{{ rv_db_home_zip_file }}"
+  register: stat_result
+
+- name: oracle-db-install-role | unzip_db_software.yml | copy db 19c grid software home zip file to the target database server
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_root_user }}"
+  when: inventory_hostname in gv_cluster_first_node and not stat_result.stat.exists
+  copy: src={{ v_host_staging_dir }}/{{ unzip_item }} dest={{ gv_guest_staging_dir }} owner={{ gv_oracle_user }} group=oinstall mode=0775 force=no
+  loop:
+    - "{{ rv_db_home_zip_file }}"
+  loop_control:
+      loop_var: unzip_item
+
+- name: oracle-db-install-role | unzip_db_software.yml | Creates directory gv_oracle_base
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_root_user }}"
+  when: inventory_hostname in gv_gi_server_list and not stat_result.stat.exists
+  file:
+    path: "{{ gv_oracle_base }}"
+    state: directory
+    owner: "{{ gv_oracle_user }}"
+    group: "{{ gv_oracle_install_group }}"
+    mode: 0775
+    recurse: no
+
+- name: Check if {{ gv_oracle_home_db }} folder is empty before proceeding
+  find:
+    paths: "{{ gv_oracle_home_db }}"
+  register: filesFound
+
+- name: oracle-db-install-role | unzip_db_software.yml | Creates directory gv_oracle_home_db
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_root_user }}"
+  when: inventory_hostname in gv_gi_server_list and not stat_result.stat.exists
+  file:
+    path: "{{ gv_oracle_home_db }}"
+    state: directory
+    owner: "{{ gv_oracle_user }}"
+    group: "{{ gv_oracle_install_group }}"
+    mode: 0775
+    recurse: yes
+
+- name: oracle-db-install-role | unzip_db_software.yml | Unpack Oracle 19c GI Software
+  when: inventory_hostname == gv_cluster_first_node and filesFound.matched <= 0
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_oracle_user }}"
+  unarchive:
+     src="{{ gv_guest_staging_dir }}/{{ rv_db_home_zip_file }}"
+     dest="{{ gv_oracle_home_db }}"
+     remote_src=yes
+     mode=0775
+     group="{{ gv_oracle_install_group }}"
+     owner="{{ gv_oracle_user }}"
+
+- name: oracle-db-install-role | unzip_db_software.yml | Creates directory gv_oracle_home_gi
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_root_user }}"
+  file:
+    path: "{{ gv_oracle_base }}"
+    state: directory
+    owner: "{{ gv_oracle_user }}"
+    group: "{{ gv_oracle_install_group }}"
+    mode: 0775
+    recurse: yes
+
+- name: Check that the cvu pack zip file exists
+  stat:
+      path: "/home/{{ gv_oracle_user }}/{{ rv_cvu_pack }}"
+  register: stat_result
+
+- name: copy grid zip cvu pack
+  when: inventory_hostname in gv_cluster_first_node and not stat_result.stat.exists
+  copy: src={{ v_host_staging_dir }}/{{ rv_cvu_pack }} dest=/home/{{ gv_oracle_user }} owner={{ gv_oracle_user }} group=oinstall mode=0775 force=no
+
+- name: Creates directory cvu
+  when: inventory_hostname == gv_cluster_first_node and not stat_result.stat.exists
+  file:
+    path: "/home/{{ gv_oracle_user }}/cvu"
+    state: directory
+    owner: "{{ gv_oracle_user }}"
+    group: "{{ gv_oracle_install_group }}"
+    mode: 0775
+    recurse: yes
+
+- name: Check if {{ gv_oracle_home_db }} folder is empty before proceeding
+  find:
+    paths: "/home/{{ gv_oracle_user }}/{{ rv_cvu_pack }}"
+  register: filesFound
+
+- name: Unpack Oracle CVU 
+  when: inventory_hostname == gv_cluster_first_node and filesFound.matched <= 0
+  become: yes
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_oracle_user }}"
+  unarchive:
+     src="/home/{{ gv_oracle_user }}/{{ rv_cvu_pack }}"
+     dest="/home/{{ gv_oracle_user }}/cvu"
+     remote_src=yes
+     mode=0775
+     group="{{ gv_oracle_install_group }}"
+     owner="{{ gv_oracle_user }}"

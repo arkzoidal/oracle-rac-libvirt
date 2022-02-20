@@ -1,0 +1,78 @@
+- name: exchange_ssh_keys_between_servers_root | Generate an OpenSSH keypair with the default values (4096 bits, rsa)
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_root_user }}"
+  openssh_keypair:
+    path: /root/.ssh/id_rsa
+    owner: "{{ gv_root_user }}"
+    group: "{{ gv_root_user }}"
+
+- name: exchange_ssh_keys_between_servers_root | Fix owner of the generated pub key
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_root_user }}"
+  file:
+    path: /root/.ssh/id_rsa.pub
+    owner: "{{ gv_root_user }}"
+    group: "{{ gv_root_user }}"
+    mode: 0600
+
+- name: exchange_ssh_keys_between_servers_root | fetch public keys locally
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_root_user }}"
+  ansible.builtin.fetch:
+    src: /root/.ssh/id_rsa.pub
+    dest: /tmp/id_rsa-{{ ansible_hostname }}.pub
+    flat: yes
+
+- name: exchange_ssh_keys_between_servers_root | copy public keys to remote guests
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_root_user }}"
+  ansible.builtin.copy:
+    src: /tmp/id_rsa-{{ node_item }}.pub
+    dest: /root/.ssh/id_rsa-{{ node_item }}.pub
+    remote_src: no
+  with_items:
+    - "{{ gv_gi_server_list|flatten(levels=1) }}"
+  loop_control:
+      loop_var: node_item
+      index_var: index
+
+- name: exchange_ssh_keys_between_servers_root | Append public keys to authorized_keys
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_root_user }}"
+  lineinfile: dest=/root/.ssh/authorized_keys line="{{ lookup('file', '/tmp/id_rsa-{{ key_item }}.pub') }}"
+  with_items:
+    - "{{ gv_gi_server_list|flatten(levels=1) }}"
+  loop_control:
+      loop_var: key_item
+      index_var: index
+
+- name: exchange_ssh_keys_between_servers_root | Add StrictHostKeyChecking to .ssh/config
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_root_user }}"
+  blockinfile:
+    path: "/root/.ssh/config"
+    state: present
+    create: yes
+    owner: root
+    group: root
+    mode: 0600
+    block: |
+       Host *
+         StrictHostKeyChecking no
+         Compression yes
+         #ControlMaster auto
+         #ControlPath  ~/.ssh/sockets/%r@%h-%p
+         #ControlPersist 600
+    marker: "# {mark} ANSIBLE MANAGED config"

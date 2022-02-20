@@ -1,0 +1,10 @@
+- name: install-home-db | Check if DB-server is already installed
+  shell: cat "{{ gv_inventory_loc }}/ContentsXML/inventory.xml" |grep -w {{ gv_oracle_home_db }} |awk  '{print $3}' | cut -f2 -d'"'
+  when: ansible_hostname == gv_cluster_first_node
+  register: existing_dbhome
+
+- debug: msg="Installing ORACLE_HOME - {{ gv_oracle_home_db }}"
+  when: ansible_hostname == gv_cluster_first_node and gv_oracle_home_db not in existing_dbhome.stdout_lines 
+
+- debug: msg="ORACLE_HOME - {{ gv_oracle_home_db }} Already in inventory {{ gv_inventory_loc }}/ContentsXML/inventory.xml"
+  when: ansible_hostname == gv_cluster_first_node and gv_oracle_home_db in existing_dbhome.stdout_lines 

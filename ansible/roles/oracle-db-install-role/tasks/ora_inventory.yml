@@ -1,0 +1,32 @@
+- name: Get inventory location
+  shell: "grep inventory_loc /etc/oraInst.loc|cut -d '=' -f2|awk '{print $1}'"
+  register: OraInvloc
+  changed_when: false
+
+- name: Read Oracle homes from inventory
+  xml:
+    path: "{{ OraInvloc.stdout|trim }}/ContentsXML/inventory.xml"
+    xpath: "/INVENTORY/HOME_LIST/HOME"
+    content: attribute
+  register: oraHomes
+  changed_when: false
+
+- name: Read Oracle home information
+  xml:
+    path: "{{ item.HOME.LOC }}/inventory/ContentsXML/comps.xml"
+    xpath: "/PRD_LIST/TL_LIST/COMP/EXT_NAME"
+    content: text
+  register: xmloraHomes
+  loop: "{{ oraHomes.matches }}"
+  loop_control:
+    label: "{{ item.HOME.LOC|default('NOTDEFINED') }}"
+  when: "item.HOME.REMOVED is not defined"
+  changed_when: false
+
+- name: Select Oracle home
+  set_fact:
+    oracle_home: "{{ item.item.HOME.LOC }}"
+  loop: "{{ xmloraHomes.results }}"
+  loop_control:
+    label: "{{ item.item.HOME.LOC|default('NOTDEFINED') }}"
+  when: "item.matches is defined and 'Oracle Database' in item.matches[0].EXT_NAME"
