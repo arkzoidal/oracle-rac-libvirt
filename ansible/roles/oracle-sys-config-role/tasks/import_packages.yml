@@ -8,6 +8,8 @@
     name:
       - libvirt-devel
       - libvirt-libs
+      - python3
+      - python-lxml
       - epel-release
       - device-mapper-multipath
       - smartmontools

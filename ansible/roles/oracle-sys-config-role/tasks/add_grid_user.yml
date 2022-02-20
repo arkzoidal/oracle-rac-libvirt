@@ -1,0 +1,60 @@
+# =============================================================================
+# Prepare Cluster for installation ( grid user )
+# =============================================================================
+
+ - name: add_grid_user. | add user for grid
+   remote_user: "{{ gv_root_user }}"
+   become: yes
+   become_method: sudo
+   become_user: "{{ gv_root_user }}"
+   ansible.builtin.user:
+      name: "{{ gv_grid_user }}"
+      uid: 54331
+      password: 'grid'
+      group: "{{ v_oracle_inventory_group }}"
+      groups: # Empty by default, here we give it some groups
+       - dba
+       - asmdba
+       - asmadmin
+       - asmoper
+       - oinstall
+      state: present
+      shell: /bin/bash       # Defaults to /bin/bash
+      system: no             # Defaults to no
+      createhome: no        # Defaults to yes
+      home: "/home/{{ gv_grid_user }}"
+      generate_ssh_key: no
+
+ - name: adding existing user '{{ gv_oracle_dba }}' to group asmdba
+   remote_user: "{{ gv_root_user }}"
+   become: yes
+   become_method: sudo
+   become_user: "{{ gv_root_user }}"
+   user:
+      name: '{{ gv_oracle_user }}'
+      groups: asmdba
+      append: yes
+
+ - name: add_grid_user. | ansible create local directory 
+   remote_user: "{{ gv_root_user }}"
+   become: yes
+   become_method: sudo
+   become_user: "{{ gv_root_user }}"
+   file:
+      path: "/home/{{ gv_grid_user }}"
+      state: directory
+      owner: "{{ gv_grid_user }}"
+      group: "{{ gv_oracle_install_group }}"
+      mode: '0700'
+
+ - name: add_grid_user. | Change file ownership, group and permissions for .ssh
+   remote_user: "{{ gv_root_user }}"
+   become: yes
+   become_method: sudo
+   become_user: "{{ gv_grid_user }}"
+   ansible.builtin.file:
+      path: "/home/{{ gv_grid_user }}/.ssh"
+      owner: "{{ gv_grid_user }}"
+      group: "{{ gv_oracle_install_group }}"
+      mode: '0700'
+      recurse: yes

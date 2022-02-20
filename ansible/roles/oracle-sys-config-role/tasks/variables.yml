@@ -4,7 +4,4 @@
       - 'variable configuration'
 
 - name: Include GI-specific variables
-  include_vars: "grid_{{ gv_oracle_grid_release }}.yml"
-
-- name: Debug
-  debug: msg="imported grid_{{ gv_oracle_grid_release }}.yml"
+  include_vars: "grid_{{ gv_oracle_install_version_gi }}.yml"
