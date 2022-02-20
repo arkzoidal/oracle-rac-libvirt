@@ -288,10 +288,24 @@ gv_oracle_databases:
           recovery_group_name:          +FRA 		
           use_omf:                      true
           pdbs:
+
             - name:	pdb1
               service:  svc1
+              use_omf:                  true
+              create_user_tbs:          true
+              create_from:              default
+              admin_user_name:          pdb1dba
+              adlin_password:           wOnW5WeAg4P9
+              template_name:            GIP.dbt
+
             - name:	pdb2
               service:  svc2
+              use_omf:                  true
+              create_user_tbs:          true
+              create_from:              default
+              admin_user_name:          pdb1dba
+              adlin_password:           wOnW5WeAg4P9
+              template_name:            GIP.dbt
 
         - db_name: 			CDB2
           sys_password:                 Oracle123
