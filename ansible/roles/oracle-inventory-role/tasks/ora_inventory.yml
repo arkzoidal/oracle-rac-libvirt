@@ -1,0 +1,49 @@
+- name: ora_inventory | Get inventory location
+  shell: "grep inventory_loc /etc/oraInst.loc|cut -d '=' -f2|awk '{print $1}'"
+  register: rv_OraInvloc
+  changed_when: false
+
+- name: ora_inventory | Read Oracle homes from inventory
+  xml:
+    path: "{{ rv_OraInvloc.stdout|trim }}/ContentsXML/inventory.xml"
+    xpath: "/INVENTORY/HOME_LIST/HOME"
+    content: attribute
+  register: rv_oraHomes
+  changed_when: false
+
+- name: ora_inventory | Read Oracle home information
+  xml:
+    path: "{{ item.HOME.LOC }}/inventory/ContentsXML/comps.xml"
+    xpath: "/PRD_LIST/TL_LIST/COMP/EXT_NAME"
+    content: text
+  register: rv_xmloraHomes
+  loop: "{{ rv_oraHomes.matches }}"
+  loop_control:
+    label: "{{ item.HOME.LOC|default('NOTDEFINED') }}"
+  when: "item.HOME.REMOVED is not defined"
+  changed_when: false
+
+- name: ora_inventory | Write dest=/tmp/ora_inventory.yml
+  local_action: copy content={{  rv_xmloraHomes | to_nice_yaml() }} dest=/tmp/ora_inventory.yml
+  tags:
+    - never
+
+- set_fact:
+    rv_oracle_inventory_entries: "{{ rv_xmloraHomes.results | map(attribute='item') }}"
+    cacheable: yes
+
+- name: ora_inventory | Write ora_inv dest=/tmp/rv_oracle_inventory_entries.json
+  local_action: copy content={{  rv_oracle_inventory_entries | to_nice_json() }} dest=/tmp/rv_oracle_inventory_entries.json
+  tags:
+    - always
+
+- name: Populate rv_homes K/V
+  set_fact:
+     rv_homes: "{{ rv_homes|default({}) | combine( {inv_item.HOME.NAME: inv_item.HOME.LOC} ) }}"
+  with_items:
+     - "{{ rv_oracle_inventory_entries }}"
+  loop_control:
+     loop_var: inv_item
+
+
+
