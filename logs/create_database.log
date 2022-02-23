@@ -1,0 +1,47 @@
+TASK [oracle-db-create-role : debug] ************************************************************************************************************************************************
+ok: [db1] => 
+  msg: |-
+    [WARNING] [DBT-06801] Specified Fast Recovery Area size (8,000 MB) is less than the recommended value.
+       CAUSE: Fast Recovery Area size should at least be three times the database size (9,952 MB).
+       ACTION: Specify Fast Recovery Area Size to be at least three times the database size.
+    [WARNING] [DBT-11219] Maximum of memory percentage (99) is allocated for the database creation, which might lead to  "ORA-00700: SOFT INTERNAL ERROR" during database creation.
+       CAUSE: Sum of sga and 2*pga is equal to or exceeding 90% of total physical memory.
+       ACTION: Specify lesser values for memory parameters.
+    [WARNING] [DBT-06801] Specified Fast Recovery Area size (8,000 MB) is less than the recommended value.
+       CAUSE: Fast Recovery Area size should at least be three times the database size (10,052 MB).
+       ACTION: Specify Fast Recovery Area Size to be at least three times the database size.
+    Prepare for db operation
+    8% complete
+    Creating and starting Oracle instance
+    11% complete
+    12% complete
+    17% complete
+    Creating database files
+    18% complete
+    25% complete
+    Creating data dictionary views
+    28% complete
+    33% complete
+    35% complete
+    38% complete
+    50% complete
+    Creating cluster database views
+    52% complete
+    67% complete
+    Completing Database Creation
+    71% complete
+    73% complete
+    75% complete
+    Executing Post Configuration Actions
+    100% complete
+    Database creation complete. For details check the logfiles at:
+     /u01/app/oracle/cfgtoollogs/dbca/CDB2.
+    Database Information:
+    Global Database Name:CDB2
+    System Identifier(SID) Prefix:CDB2
+    Look at the log file "/u01/app/oracle/cfgtoollogs/dbca/CDB2/CDB2.log" for further details.
+skipping: [db2]
+
+PLAY RECAP **************************************************************************************************************************************************************************
+db1                        : ok=25   changed=2    unreachable=0    failed=0    skipped=3    rescued=0    ignored=0   
+db2                        : ok=12   changed=0    unreachable=0    failed=0    skipped=16   rescued=0    ignored=0 
