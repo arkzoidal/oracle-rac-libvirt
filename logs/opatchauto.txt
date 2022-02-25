@@ -1,0 +1,23 @@
+[root@db1 stage]# opatchauto apply /u01/shared/patch/33531909
+
+OPatchauto session is initiated at Fri Feb 25 07:54:34 2022
+
+System initialization log file is /u01/app/21.3.0.0/grid/cfgtoollogs/opatchautodb/systemconfig2022-02-25_07-54-39AM.log.
+
+Session log file is /u01/app/21.3.0.0/grid/cfgtoollogs/opatchauto/opatchauto2022-02-25_07-55-21AM.log
+The id for this session is R84D
+
+Wrong OPatch software installed in following homes:
+Host:db1, Home:/u01/app/oracle/product/21.3.0.0/dbhome_1
+
+Host:db2, Home:/u01/app/oracle/product/21.3.0.0/dbhome_1
+
+OPATCHAUTO-72088: OPatch version check failed.
+OPATCHAUTO-72088: OPatch software version in homes selected for patching are different.
+OPATCHAUTO-72088: Please install same OPatch software in all homes.
+OPatchAuto failed.
+
+OPatchauto session completed at Fri Feb 25 07:56:19 2022
+Time taken to complete the session 1 minute, 45 seconds
+
+ opatchauto failed with error code 42
