@@ -1,0 +1,135 @@
+$GI_HOME/OPatch/opatchauto apply $UNZIPPED_PATCH_LOCATION
+
+OPatchauto session is initiated at Fri Feb 25 08:41:34 2022
+
+System initialization log file is /u01/app/21.3.0.0/grid/cfgtoollogs/opatchautodb/systemconfig2022-02-25_08-41-38AM.log.
+
+Session log file is /u01/app/21.3.0.0/grid/cfgtoollogs/opatchauto/opatchauto2022-02-25_08-42-18AM.log
+The id for this session is Z5VR
+
+Executing OPatch prereq operations to verify patch applicability on home /u01/app/21.3.0.0/grid
+
+Executing OPatch prereq operations to verify patch applicability on home /u01/app/oracle/product/21.3.0.0/dbhome_1
+Patch applicability verified successfully on home /u01/app/oracle/product/21.3.0.0/dbhome_1
+
+Patch applicability verified successfully on home /u01/app/21.3.0.0/grid
+
+
+Executing patch validation checks on home /u01/app/21.3.0.0/grid
+Patch validation checks successfully completed on home /u01/app/21.3.0.0/grid
+
+
+Executing patch validation checks on home /u01/app/oracle/product/21.3.0.0/dbhome_1
+Patch validation checks successfully completed on home /u01/app/oracle/product/21.3.0.0/dbhome_1
+
+
+Updating OJVM libraries on all hosts
+Successfully updated OJVM libraries on all hosts
+
+
+Verifying SQL patch applicability on home /u01/app/oracle/product/21.3.0.0/dbhome_1
+SQL patch applicability verified successfully on home /u01/app/oracle/product/21.3.0.0/dbhome_1
+
+
+Preparing to bring down database service on home /u01/app/oracle/product/21.3.0.0/dbhome_1
+Successfully prepared home /u01/app/oracle/product/21.3.0.0/dbhome_1 to bring down database service
+
+
+Performing prepatch operations on CRS - bringing down CRS service on home /u01/app/21.3.0.0/grid
+Prepatch operation log file location: /u01/app/grid/crsdata/db1/crsconfig/crs_prepatch_apply_inplace_db1_2022-02-25_08-44-34AM.log
+CRS service brought down successfully on home /u01/app/21.3.0.0/grid
+
+
+Performing prepatch operation on home /u01/app/oracle/product/21.3.0.0/dbhome_1
+Perpatch operation completed successfully on home /u01/app/oracle/product/21.3.0.0/dbhome_1
+
+
+Start applying binary patch on home /u01/app/oracle/product/21.3.0.0/dbhome_1
+Binary patch applied successfully on home /u01/app/oracle/product/21.3.0.0/dbhome_1
+
+
+Performing postpatch operation on home /u01/app/oracle/product/21.3.0.0/dbhome_1
+Postpatch operation completed successfully on home /u01/app/oracle/product/21.3.0.0/dbhome_1
+
+
+Start applying binary patch on home /u01/app/21.3.0.0/grid
+Binary patch applied successfully on home /u01/app/21.3.0.0/grid
+
+
+Performing postpatch operations on CRS - starting CRS service on home /u01/app/21.3.0.0/grid
+Postpatch operation log file location: /u01/app/grid/crsdata/db1/crsconfig/crs_postpatch_apply_inplace_db1_2022-02-25_08-57-51AM.log
+CRS service started successfully on home /u01/app/21.3.0.0/grid
+
+
+Preparing home /u01/app/oracle/product/21.3.0.0/dbhome_1 after database service restarted
+No step execution required.........
+ 
+
+Trying to apply SQL patch on home /u01/app/oracle/product/21.3.0.0/dbhome_1
+SQL patch applied successfully on home /u01/app/oracle/product/21.3.0.0/dbhome_1
+
+OPatchAuto successful.
+
+--------------------------------Summary--------------------------------
+
+Patching is completed successfully. Please find the summary as follows:
+
+Host:db1
+RAC Home:/u01/app/oracle/product/21.3.0.0/dbhome_1
+Version:21.0.0.0.0
+Summary:
+
+==Following patches were SKIPPED:
+
+Patch: /u01/shared/patch/33531909/33531700
+Reason: This patch is not applicable to this specified target type - "rac_database"
+
+Patch: /u01/shared/patch/33531909/33693511
+Reason: This patch is not applicable to this specified target type - "rac_database"
+
+Patch: /u01/shared/patch/33531909/33276861
+Reason: This patch is not applicable to this specified target type - "rac_database"
+
+Patch: /u01/shared/patch/33531909/33556944
+Reason: This patch is not applicable to this specified target type - "rac_database"
+
+
+==Following patches were SUCCESSFULLY applied:
+
+Patch: /u01/shared/patch/33531909/33516412
+Log: /u01/app/oracle/homes/OraDB21Home1/cfgtoollogs/opatchauto/core/opatch/opatch2022-02-25_08-47-46AM_1.log
+
+Patch: /u01/shared/patch/33531909/33531707
+Log: /u01/app/oracle/homes/OraDB21Home1/cfgtoollogs/opatchauto/core/opatch/opatch2022-02-25_08-47-46AM_1.log
+
+
+Host:db1
+CRS Home:/u01/app/21.3.0.0/grid
+Version:21.0.0.0.0
+Summary:
+
+==Following patches were SUCCESSFULLY applied:
+
+Patch: /u01/shared/patch/33531909/33276861
+Log: /u01/app/21.3.0.0/grid/cfgtoollogs/opatchauto/core/opatch/opatch2022-02-25_08-52-13AM_1.log
+
+Patch: /u01/shared/patch/33531909/33516412
+Log: /u01/app/21.3.0.0/grid/cfgtoollogs/opatchauto/core/opatch/opatch2022-02-25_08-52-13AM_1.log
+
+Patch: /u01/shared/patch/33531909/33531700
+Log: /u01/app/21.3.0.0/grid/cfgtoollogs/opatchauto/core/opatch/opatch2022-02-25_08-52-13AM_1.log
+
+Patch: /u01/shared/patch/33531909/33531707
+Log: /u01/app/21.3.0.0/grid/cfgtoollogs/opatchauto/core/opatch/opatch2022-02-25_08-52-13AM_1.log
+
+Patch: /u01/shared/patch/33531909/33556944
+Log: /u01/app/21.3.0.0/grid/cfgtoollogs/opatchauto/core/opatch/opatch2022-02-25_08-52-13AM_1.log
+
+Patch: /u01/shared/patch/33531909/33693511
+Log: /u01/app/21.3.0.0/grid/cfgtoollogs/opatchauto/core/opatch/opatch2022-02-25_08-52-13AM_1.log
+
+
+
+OPatchauto session completed at Fri Feb 25 09:02:55 2022
+Time taken to complete the session 21 minutes, 22 seconds
+
