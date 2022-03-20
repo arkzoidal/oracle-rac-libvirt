@@ -1,2 +1,0 @@
-2. For a permanent setting on any new shell created after editing /etc/security/limits.conf, add line:
-oracle soft stack 10240

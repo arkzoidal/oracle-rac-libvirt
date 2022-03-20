@@ -1,6 +1,0 @@
-    - set_fact:
-        my_device: "{{ ansible_mounts|json_query(query) }}"
-      vars:
-        query: "[?mount=='/'].device "
-    - debug:
-        var: my_device
