@@ -5,7 +5,7 @@
   setup:
 
 - name: ssh-keyscan ansible_host
-  command: "/usr/bin/ssh-keyscan -t {{ item.1 }} -T 10 {{ item.0 }}"
+  command: "ssh-keyscan -t {{ item.1 }} -T 10 {{ item.0 }}"
   remote_user: "{{ gv_root_user }}"
   become: yes
   become_method: sudo
@@ -18,7 +18,7 @@
   vars:
     protocals:
      - rsa
-     - ecdsa
+#     - ecdsa
 
 - name: set_fact keys
   set_fact: keys="{{ keys| default([]) + item.stdout_lines }}"
@@ -41,7 +41,7 @@
   vars:
     protocals:
      - rsa
-     - ecdsa
+#     - ecdsa
 
 - name: set_fact keys
   set_fact: keys="{{ keys| default([])  + item.stdout_lines }}"

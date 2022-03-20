@@ -1,0 +1,5 @@
+export ORAENV_ASK=NO
+. oraenv -s <<< +ASM1
+{{ gv_oracle_home_gi }}/bin/sqlplus / as sysasm<<EndofSQLPLus
+@/home/{{ gv_grid_user }}/install/create_acfs.sql
+EndofSQLPLus

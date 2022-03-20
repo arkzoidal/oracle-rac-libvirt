@@ -1,0 +1,53 @@
+#  - debug:
+#        #msg: "{{ oracle_databases | selectattr('db_name') | to_nice_yaml( indent=2, width=50, explicit_start=True, explicit_end=True) }}"
+#        msg: "{{ oracle_databases }}"
+#    when: inventory_hostname in gv_cluster_first_node
+#
+#  - set_fact:
+#      group_id: "{{ oracle_databases | json_query(query) | first }}"
+#    vars:
+#      query: "json[?name=='{{ oracle_databases }}'].db_name"
+
+  - name: Include vars of stuff.yaml into the 'stuff' variable (2.2).
+    include_vars:
+      file: response.yml
+      name: entries
+    when: inventory_hostname in gv_cluster_first_node
+
+  - name: "BASIC FILTER"
+    debug:
+      msg: "{{ oracle_databases }}"
+    when: inventory_hostname in gv_cluster_first_node
+
+  - name: "BASIC FILTER"
+    debug:
+      msg: "{{ oracle_databases | json_query('[*].db_name')  }}"
+    when: inventory_hostname in gv_cluster_first_node
+
+  - name: "BASIC FILTER"
+    debug:
+      msg: "{{ oracle_databases | json_query('[*].pdbs')  }}"
+    when: inventory_hostname in gv_cluster_first_node
+
+  - name: first db
+    when: inventory_hostname in gv_cluster_first_node
+    set_fact:
+      db: "{{ db| default([]) + oracle_databases | json_query(jmesquery) }}"
+    vars:
+      jmesquery: "[? db_name==`rac1`].pdbs"
+
+
+#  - name: dbs
+#    debug:
+#        msg: "{{ dbs }}"
+#    when: inventory_hostname in gv_cluster_first_node
+#
+#  - set_fact:
+#      dbs: "{{ dbs | default([]) + oracle_databases | json_query(jmesquery) }}"
+#    vars:
+#      jmesquery: "[*].disk"
+#    when: inventory_hostname in gv_cluster_first_node
+#
+#  - debug:
+#        msg: "{{ dbs }}"
+#    when: inventory_hostname in gv_cluster_first_node

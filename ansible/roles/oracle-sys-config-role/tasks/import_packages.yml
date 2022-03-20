@@ -1,25 +1,64 @@
-# =============================================================================
+- name: update /etc/fstab with iso mount 
+  mount:
+        path: /media
+        src: /dev/cdrom
+        fstype: iso9660
+        opts: loop,ro,auto
+        dump: '0'
+        state: mounted
+  when: ansible_distribution in "RedHat"
 
 - name: Enable powertools
   ansible.builtin.shell: dnf config-manager --set-enabled powertools
+  when: ansible_distribution not in "OracleLinux" and ansible_distribution not in "RedHat" 
 
-- name: Install the latest version of packages
+- name: Enable ol8_codeready_builder
+  ansible.builtin.shell: dnf config-manager --set-enabled ol8_codeready_builder
+  when: ansible_distribution in "OracleLinux"
+
+- name: Install packages ...
   dnf:
     name:
       - libvirt-devel
       - libvirt-libs
       - python3
-      - python-lxml
-      - epel-release
       - device-mapper-multipath
       - smartmontools
       - avahi
       - chrony
+      - acpica-tools
       - net-tools
     state: latest
+  ignore_errors: yes
 
-- name: Install rlwrap
-  ansible.builtin.shell: dnf install -y rlwrap
+- name: Install packages ...
+  dnf:
+    name:
+      - epel-release
+      - rlwrap
+    state: latest
+  ignore_errors: yes
+  when: ansible_distribution not in "OracleLinux" and ansible_distribution not in "RedHat"
+
+- name: Install packages ...
+  dnf:
+    name:
+      - parted
+    state: latest
+  ignore_errors: yes
+  when: ansible_distribution in "OracleLinux"
+
+- name: Install RedHat packages
+  dnf:
+    name:
+      - ecdsautils
+    state: latest
+  ignore_errors: yes
+  when: ansible_distribution in "RedHat"
+
 
 - name: enable multipath
   ansible.builtin.shell: mpathconf --enable --with_multipathd y
+
+- name: pip3 install lxml
+  ansible.builtin.shell: pip3 install lxml

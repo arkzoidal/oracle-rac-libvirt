@@ -4,6 +4,9 @@
       - qemu-guest-agent
       - acpid
     state: latest
+    disable_gpg_check: yes
+  tags:
+    - never
 
 - name: enable qemu-guest-agent
   ansible.builtin.shell: systemctl enable --now qemu-guest-agent

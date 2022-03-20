@@ -1,0 +1,18 @@
+- name: Display all variables/facts known for a host
+  ansible.builtin.debug:
+    var: "hostvars[inventory_hostname].{{ var_item }}"
+  loop:
+     - oracle_gi_cluster_type
+     - configure_cluster
+     - node_host_name
+  loop_control:
+      loop_var: var_item
+  tags:
+     - never
+
+- name: Debug
+  debug: msg="{% for host in groups[hostgroup] %} {{ hostvars[host].node_host_name }} {% endfor %}"
+
+- name: install-home-gi | Setup response file for software only install (GI)
+  template: src=grid-install.rsp.{{ oracle_install_version_gi }}.j2 dest={{ oracle_rsp_stage }}/{{ oracle_grid_responsefile }} owner={{ grid_install_user }} group={{ oracle_group }}
+  when: ansible_hostname == gv_cluster_first_node

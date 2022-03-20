@@ -1,94 +1,118 @@
-    - name: do facts module to get latest information
-      setup:
+    - name: update /etc/fstab with iso mount
+      mount:
+        path: /media
+        src: /dev/cdrom
+        fstype: iso9660
+        opts: loop,ro,auto
+        dump: '0'
+        state: mounted
+      when: ansible_distribution in "RedHat"
 
-    - name: Prints two lines of messages, but only if there is an environment value set
+    - name: Install cloud-utils-growpart gdisk
+      dnf:
+        name: "{{ item }}"
+        state: latest
+      with_items:
+        - cloud-utils-growpart 
+        - gdisk
+
+    - name: display gv_libvirt_vda_disk_size
       ansible.builtin.debug:
         msg:
-        - "{{ ansible_facts['ansible_local']['virsh']['domblklist']['image_size'] }}"
+        - "{{ gv_libvirt_vda_disk_size }}"
 
     - name: fdisk -l root disk
       shell: >
-         fdisk -l {{ ansible_facts['ansible_local']['virsh']['domblklist']['image'] }}
+         fdisk -l {{ hv_libvirt_vda_disk_file }}
       delegate_to: localhost
       register: fdisk
 
     - debug: msg="{{ fdisk.stdout }}"
-    
-
-#   - meta: end_play
-
-    - name: Delete /home/libvirt/images/tmp.qcow2
-      file:
-        state: absent
-        path: /home/libvirt/images/{{ ansible_facts['ansible_local']['virsh']['domblklist']['domain'] }}.tmp.qcow2
-      delegate_to: localhost
-
-    - name: qemu-img create
-      shell: >
-          LIBGUESTFS_BACKEND=direct qemu-img create -f qcow2 -o preallocation=metadata /home/libvirt/images/{{ ansible_facts['ansible_local']['virsh']['domblklist']['domain'] }}.tmp.qcow2 {{ ansible_facts['ansible_local']['virsh']['domblklist']['image_size'] }}
-      delegate_to: localhost
-
-    - name: virt-resize --expand
-      shell: >
-          LIBGUESTFS_BACKEND=direct virt-resize --expand /dev/{{ ansible_facts['ansible_local']['virsh']['domblklist']['device'] }}1  {{ ansible_facts['ansible_local']['virsh']['domblklist']['image'] }} /home/libvirt/images/{{ ansible_facts['ansible_local']['virsh']['domblklist']['domain'] }}.tmp.qcow2
-      delegate_to: localhost
-      ignore_errors: yes
 
     - name: virsh shutdown domain
       shell: >
-          virsh destroy {{ ansible_facts['ansible_local']['virsh']['domblklist']['domain'] }}
+          virsh shutdown {{ hv_libvirt_domain }}
       delegate_to: localhost
+      tags:
+        - never
 
-    - name: list all VMs
-      ansible.builtin.shell: virsh list --all | grep {{ hv_virtdomain_name }} 
+    - name: Wait for shutdown
+      ansible.builtin.shell: virsh list --all | grep {{ hv_libvirt_domain }} 
       register: vcpuinfo
       delegate_to: 127.0.0.1
       until: "'running' not in vcpuinfo.stdout"
       retries: 20
       delay: 10
       ignore_errors: true 
+      tags:
+        - never
 
-    - name: mv -f
+    - name: virsh blockresize
       shell: >
-          mv -f /home/libvirt/images/{{ ansible_facts['ansible_local']['virsh']['domblklist']['domain'] }}.tmp.qcow2 {{ ansible_facts['ansible_local']['virsh']['domblklist']['image'] }}
+           virsh blockresize {{ hv_libvirt_domain }} {{ hv_libvirt_vda_disk_file }} {{ gv_libvirt_vda_disk_size }}
       delegate_to: localhost
 
-    - name: Delete /home/libvirt/images/tmp.qcow2
-      file:
-        state: absent
-        path: /home/libvirt/images/{{ ansible_facts['ansible_local']['virsh']['domblklist']['domain'] }}.tmp.qcow2
-      delegate_to: localhost
-      tags:
-        always
+    - name: growpart /dev/vda 1
+      shell: >
+           growpart /dev/vda 1
+      when: ansible_distribution not in "OracleLinux" and ansible_distribution not in "RedHat"
 
-    - debug: msg="start {{ ansible_facts['ansible_local']['virsh']['domblklist']['domain'] }}"
+    - name: growpart /dev/vda 3
+      shell: >
+           growpart /dev/vda 3
+      when: ansible_distribution in "RedHat"
+
+    - name: Pause
+      pause:
+        prompt: "Check / FS"
       tags:
-        always
+        never
+
+    - name: xfs_growfs /
+      shell: >
+           xfs_growfs /
+      when: ansible_distribution in "RedHat" or ansible_distribution in "Rocky"
+
+    - name: Pause
+      pause:
+        prompt: "Check / FS"
+      tags:
+        never
+
+    - debug: msg="start {{ hv_libvirt_domain }}"
+      tags:
+        never
 
     - name: virsh start domain
       shell: >
-          virsh start {{ ansible_facts['ansible_local']['virsh']['domblklist']['domain'] }}
+          virsh start {{ hv_libvirt_domain }}
       delegate_to: localhost
       tags:
-        always
+        - never
 
     - name: list all VMs
-      ansible.builtin.shell: virsh list --all | grep {{ hv_virtdomain_name }} 
+      ansible.builtin.shell: virsh list --all | grep {{ hv_libvirt_domain }} 
       register: vcpuinfo
       delegate_to: 127.0.0.1
       until: "'running' in vcpuinfo.stdout"
       retries: 20
       delay: 10
       ignore_errors: true 
+      tags:
+        - never
 
-    - name: fdisk -l
+    - name: lsblk
       shell: >
-         fdisk -l {{ ansible_facts['ansible_local']['virsh']['domblklist']['image'] }}
+         lsblk
       delegate_to: localhost
-      register: fdisk
+      register: lsblk
       tags:
         always
 
-    - debug: msg="{{ fdisk.stdout }}"
+    - debug: msg="{{ lsblk.stdout }}"
       tags:
         always
+
+    - name: Pause
+      pause:
+        prompt: "to check reboot"

@@ -1,0 +1,17 @@
+# =============================================================================
+# (Execute orainstRoot.sh scripts
+# =============================================================================
+
+- name: Execute orainstroot.sh on the nodes
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_root_user }}"
+  when: inventory_hostname in gv_gi_server_list
+  shell: /bin/sh "{{ gv_inventory_loc }}/orainstRoot.sh"
+  register: orainstroot
+
+- name: Output from gisw_orainstroonode1
+  debug:
+    var: orainstroot.stdout_lines
+    verbosity: 0

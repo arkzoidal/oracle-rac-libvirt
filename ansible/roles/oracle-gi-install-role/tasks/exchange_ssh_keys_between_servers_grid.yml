@@ -35,13 +35,15 @@
   become_method: sudo
   become_user: "{{ gv_root_user }}"
   ansible.builtin.copy:
-    src: /tmp/id_rsa-{{ item }}.pub
-    dest: /home/{{ gv_grid_user }}/.ssh/id_rsa-{{ item }}.pub
+    src: /tmp/id_rsa-{{ key_item }}.pub
+    dest: /home/{{ gv_grid_user }}/.ssh/id_rsa-{{ key_item }}.pub
     owner: "{{ gv_grid_user }}"
     group: "{{ gv_oracle_install_group }}"
     remote_src: no
   with_items:
     - "{{ gv_gi_server_list }}"
+  loop_control:
+      loop_var: key_item
 
 - name: exchange_ssh_keys_between_servers_root | create authorized_keys
   remote_user: "{{ gv_root_user }}"
@@ -55,9 +57,11 @@
   become: yes
   become_method: sudo
   become_user: "{{ gv_root_user }}"
-  lineinfile: dest=/home/{{ gv_grid_user }}/.ssh/authorized_keys line="{{ lookup('file', '/tmp/id_rsa-{{ item }}.pub') }}"
+  lineinfile: dest=/home/{{ gv_grid_user }}/.ssh/authorized_keys line="{{ lookup('file', '/tmp/id_rsa-{{ key_item }}.pub') }}"
   with_items:
     - "{{ gv_gi_server_list }}"
+  loop_control:
+      loop_var: key_item
 
 - name: exchange_ssh_keys_between_servers_root | Add StrictHostKeyChecking to .ssh/config
   remote_user: "{{ gv_root_user }}"

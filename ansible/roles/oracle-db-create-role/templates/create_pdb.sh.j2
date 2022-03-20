@@ -1,0 +1,14 @@
+export ORACLE_HOME={{ ansible_facts.rv_oracle_database.home }}
+export ORACLE_BASE={{ gv_oracle_base }}
+export PATH=:$ORACLE_HOME/bin:$ORACLE_HOME/OPatch:$PATH:
+
+$ORACLE_HOME/bin/dbca -silent -createPluggableDatabase \
+-sourceDB {{ rv_oracle_database.db_name }}  \
+-useOMF {{ pdb_item.use_omf }} \
+-createUserTableSpace {{ pdb_item.create_user_tbs }} \
+-pdbName {{ pdb_item.pdb_name }} \
+-createPDBFrom {{ pdb_item.create_from }}  \
+-pdbAdminUserName {{ pdb_item.dba_user_name }}  \
+-pdbAdminPassword {{ pdb_item.dba_password }} \
+-TEMPLATENAME files/{{ pdb_item.template_name }} \
+{% if pdb_item.init_param  is defined %}-pdbInitParams={{ pdb_item.init_param  }} {% endif %}

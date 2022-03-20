@@ -5,15 +5,17 @@
   become_method: sudo
   become_user: "{{ gv_grid_user }}"
   file:
-    path: "/home/{{ gv_grid_user }}/install/{{ item }}"
+    path: "/home/{{ gv_grid_user }}/install/{{ file_item }}"
     state: directory
     owner: "{{ gv_grid_user }}"
     group: "{{ gv_oracle_install_group }}"
     mode: 0775
     recurse: yes
-  with_items:
+  loop: 
     - log
     - response
+  loop_control:
+    loop_var: file_item
 
 - name: oracle-gi-install-role | grid_configure | Create install/grid_configure.sh
   when: ansible_hostname == gv_cluster_first_node
@@ -22,7 +24,7 @@
   become_method: sudo
   become_user: "{{ gv_grid_user }}"
   template:
-     src: grid_configure.yml.j2
+     src: grid_configure.sh.j2
      dest: "/home/{{ gv_grid_user }}/install/grid_configure.sh"
      owner: "{{ gv_grid_user }}"
      group: "{{ gv_oracle_install_group }}"
@@ -47,7 +49,7 @@
   become: yes
   become_method: sudo
   become_user: "{{ gv_grid_user }}"
-  ansible.builtin.shell: "/home/{{ gv_grid_user }}/install/grid_configure.sh | tee -a /home/{{ gv_grid_user }}/install/log/grid_setup_softonly_install.log"
+  ansible.builtin.shell: "/home/{{ gv_grid_user }}/install/grid_configure.sh | tee -a /home/{{ gv_grid_user }}/install/log/grid_configure.log"
   args:
       warn: false # set warn=false to prevent warning
   failed_when: grid_setup_softonly_install.rc != 0   #### This condition is based on my own setup
@@ -60,7 +62,7 @@
   become: yes
   become_method: sudo
   become_user: "{{ gv_grid_user }}"
-  shell: grep -ir "Successfully" /home/{{ gv_grid_user }}/install/log/grid_setup_softonly_install.log
+  shell: grep -ir "Successfully" /home/{{ gv_grid_user }}/install/log/grid_configure.log
   register: gisoftinstall_log
 
 - name: oracle-gi-install-role | "Output from Post GI Software Installation Check"

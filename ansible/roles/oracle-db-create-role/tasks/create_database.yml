@@ -89,18 +89,43 @@
   loop:
     - log
     - response
+    - files
   loop_control:
       loop_var: dir_item
 
-- name: oracle-db-install | create_database. | Create create_database.sh
+- name:
+  become_user: "{{ gv_oracle_user }}"
   when: ansible_hostname == gv_cluster_first_node
+  copy: src="{{ home }}/roles/oracle-db-create-role/files/{{ file_item }}" dest="/home/{{ gv_oracle_user }}/install/files/" owner=oracle group=oinstall mode=0775 force=yes
+  loop:
+    - prod_templates.dbt
+  loop_control:
+      loop_var: file_item
+
+- set_fact:
+     tv_script: "/home/{{ gv_oracle_user }}/install/create_database_{{rv_oracle_database.db_name}}.sh"
+  no_log: True
+
+- name: create_database | Create "{{ tv_script }}"
+  when: ansible_hostname == gv_cluster_first_node and rv_oracle_database.state == "present"
   remote_user: "{{ gv_root_user }}"
   become: yes
   become_method: sudo
   become_user: "{{ gv_oracle_user }}"
   template:
      src: create_db.sh.j2
-     dest: "/home/{{ gv_oracle_user }}/install/create_database_{{rv_oracle_database.db_name}}.sh"
+     dest: "{{ tv_script }}"
      owner: "{{ gv_oracle_user }}"
      group: "{{ gv_oracle_install_group }}"
      mode: u=rwx,g=rx,o=r
+
+- name: create_database | run "{{ tv_script }}"
+  when: ansible_hostname == gv_cluster_first_node and rv_oracle_database.state == "present"
+  become: yes
+  become_user: "{{ gv_oracle_user }}"
+  ansible.builtin.shell: "{{ tv_script }}"
+  register: create_database
+
+- debug:
+    msg: "{{ create_database.stdout}}"
+  when: ansible_hostname == gv_cluster_first_node and rv_oracle_database.state == "present"

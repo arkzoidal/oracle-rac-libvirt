@@ -1,0 +1,49 @@
+# =============================================================================
+# Execute config tools thru template generated shell script execute_config_tools.sh
+# =============================================================================
+
+- name: oracle-gi-install-role | run_execute_config_tools | Create install/execute_config_tools.sh
+  when: ansible_hostname == gv_cluster_first_node
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_grid_user }}"
+  template:
+     src: execute_config_tools.sh.j2
+     dest: "/home/{{ gv_grid_user }}/install/execute_config_tools.sh"
+     owner: "{{ gv_grid_user }}"
+     group: "{{ gv_oracle_install_group }}"
+     mode: u=rwx,g=rx,o=r
+
+- name: oracle-gi-install-role | run_execute_config_tools | execute execute_config_tools.sh
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_user: "{{ gv_grid_user }}"
+  when: ansible_hostname == gv_cluster_first_node
+  shell: "/home/{{ gv_grid_user }}/install/grid_configure.sh | tee -a /home/{{ gv_grid_user }}/install/log/execute_config_tools.log" 
+  args:
+      warn: false # set warn=false to prevent warning
+  failed_when: racgi_configtools_result.rc != 0   #### This condition is based on my own setup
+  ignore_errors: yes
+  register: racgi_configtools_result
+
+- name: oracle-gi-install-role | run_execute_config_tools |Get the logfile name ConfigTools
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_user: "{{ gv_grid_user }}"
+  when: ansible_hostname == gv_cluster_first_node
+  shell: "cat /home/{{ gv_grid_user }}/install/log/execute_config_tools.log | grep UpdateNodeList"
+  register: logfile
+
+- name: oracle-gi-install-role | run_execute_config_tools |Get the logfile information for ConfigTools
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_user: "{{ gv_grid_user }}"
+  when: ansible_hostname == gv_cluster_first_node
+  shell: "cat {{ logfile.stdout }} "
+  register: giexecfg
+
+- name: oracle-gi-install-role | run_execute_config_tools | debug
+  debug:
+    var: giexecfg.stdout_lines
+  when: ansible_hostname == gv_cluster_first_node

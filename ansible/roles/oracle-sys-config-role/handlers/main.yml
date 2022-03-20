@@ -1,2 +1,9 @@
 ---
 # handlers file for provision/ansible/roles/oracle_database_preinstall
+
+- name: restart nfs-server
+  service:
+    name: "nfs-server"
+    state: "restarted"
+    enabled: true
+  become: true

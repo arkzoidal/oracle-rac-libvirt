@@ -1,0 +1,4 @@
+rv_grid_home_zip_file: LINUX.X64_213000_grid_home.zip 
+rv_oracle_database_preinstall: oracle-database-preinstall-21c-1.0-1.el8.x86_64.rpm
+rv_cvu_pack: cvupack_linux_ol7_x86_64.zip
+rv_ahf_zip_file: AHF-LINUX_v21.4.2.zip

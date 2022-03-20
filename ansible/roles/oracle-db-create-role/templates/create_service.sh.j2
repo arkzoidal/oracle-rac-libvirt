@@ -1,0 +1,8 @@
+export ORACLE_HOME={{ ansible_facts.rv_oracle_database.home }}
+export ORACLE_BASE={{ gv_oracle_base }}
+export PATH=:$ORACLE_HOME/bin:$ORACLE_HOME/OPatch:$PATH:
+
+$ORACLE_HOME/bin/srvctl add service -d {{}} -s CRM -pdb {{}} \
+    -preferred {{}} -failovertype {{}} -failovermethod {{}} -failoverretry {{}} -failoverdelay {{}}
+
+$ORACLE_HOME/bin/srvctl start service -d {{}} -s {{}}

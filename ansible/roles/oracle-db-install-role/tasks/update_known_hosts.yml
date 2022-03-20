@@ -18,7 +18,7 @@
   vars:
     protocals:
      - rsa
-     - ecdsa
+#     - ecdsa
 
 - name: set_fact keys
   set_fact: keys="{{ keys| default([]) + fact_item.stdout_lines }}"
@@ -42,7 +42,7 @@
   vars:
     protocals:
      - rsa
-     - ecdsa
+#     - ecdsa
 
 - name: set_fact keys
   set_fact: keys="{{ keys| default([])  + fact_item.stdout_lines }}"

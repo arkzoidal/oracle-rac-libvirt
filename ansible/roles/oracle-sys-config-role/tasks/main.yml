@@ -20,5 +20,6 @@
     - import_tasks:     add_grid_user.yml
     - import_tasks:     configuse_tmpfs.yml
     - import_tasks:     create_required_dirs.yml
+    #- import_tasks:     setup_nfs.yml
   become:               yes
   become_user:          root

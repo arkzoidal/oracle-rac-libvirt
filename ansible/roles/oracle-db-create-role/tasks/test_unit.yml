@@ -1,0 +1,18 @@
+- hosts: "{{ hostgroup | default('rac21c01') }}"
+  user: root
+
+  tasks:
+
+    - name: Include vars of /home/vagrant/RACROC/ansible/vars/common
+      include_vars:
+        dir: /home/vagrant/RACROC/ansible/vars/common
+      tags:
+        - always
+
+    #- import_tasks: variables.yml
+
+    - name:  main block
+      block:
+         - import_tasks:     "{{ unit }}" 
+      become:               yes
+      become_user:          root

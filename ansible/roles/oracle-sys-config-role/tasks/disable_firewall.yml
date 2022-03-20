@@ -1,8 +1,20 @@
-# =============================================================================
-# =============================================================================
-
 - name: Stop and disable firewalld.
   service:
     name: firewalld
     state: stopped
     enabled: False
+  tags:
+    - never
+
+- name: 'Populate service facts'
+  service_facts:
+
+- name: 'Disable firewalld Services'
+  service:
+    name: "{{item}}"
+    state: stopped
+    enabled: no
+  loop:
+   - firewalld
+  when: ansible_facts.services[item] is defined
+  ignore_errors: yes

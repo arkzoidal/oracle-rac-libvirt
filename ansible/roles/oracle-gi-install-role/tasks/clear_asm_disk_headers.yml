@@ -15,5 +15,8 @@
   become_method: sudo
   become_user: "{{ gv_root_user }}"
   when: inventory_hostname in gv_cluster_first_node
-  shell: dd if=/dev/zero of=/dev/oracleasm/{{ item }} bs=8192 count=12800
-  with_items: "{{ path_files.stdout_lines }}"
+  shell: dd if=/dev/zero of=/dev/oracleasm/{{ disk_item }} bs=8192 count=12800
+  with_items: 
+     - "{{ path_files.stdout_lines }}"
+  loop_control:
+      loop_var: disk_item

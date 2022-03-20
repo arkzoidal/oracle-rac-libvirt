@@ -1,0 +1,54 @@
+    - name: install nfs-utils
+      yum: name=nfs-utils state=latest
+      become: true
+
+    - name: Create a mountable directory if it does not exist
+      file:
+        path: /u01/shared
+        state: directory
+        owner: root
+        group: root
+        mode: '0775'
+      become: true
+
+    - name: enable nfs-server
+      service:
+        name: nfs-server
+        enabled: yes
+
+    - name: Copy exports file.
+      when: inventory_hostname == gv_cluster_first_node
+      template:
+        src: exports.j2
+        dest: /etc/exports
+        owner: root
+        group: root
+        mode: 0644
+      become: true
+      notify: restart nfs-server
+
+    - name: add /var entry to /etc/fstab
+      when: inventory_hostname not in gv_cluster_first_node
+      mount:
+        path: /u01/shared
+        src: "{{ gv_cluster_first_node}}:/u01/shared"
+        fstype: nfs
+        opts: defaults
+        dump: '0'
+        state: present
+
+    - name: show available FS
+      when: inventory_hostname not in gv_cluster_first_node
+      shell: "showmount -e {{  gv_cluster_first_node }}"
+      register: show
+      become: true
+
+    - name: show available FS
+      when: inventory_hostname not in gv_cluster_first_node
+      debug:
+        msg: "{{ show.stdout }}"
+
+    - name: Mount volume
+      when: inventory_hostname not in gv_cluster_first_node
+      shell: "mount /u01/shared"
+      become: true

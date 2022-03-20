@@ -8,10 +8,12 @@
   delegate_to: localhost
 
 - name: Transfer cvu file from localhost to dbservers
-  copy: src={{ v_host_staging_dir }}/{{ item }} dest=/u01/stage
+  copy: src={{ v_host_staging_dir }}/{{ cvu_item }} dest=/u01/stage
   remote_user: "{{ gv_root_user }}"
-  with_items:
+  loop:
     - cvuqdisk-1.0.10-1.rpm
+  loop_control:
+      loop_var: cvu_item
 
 - name: install cvu rpm from a local file
   remote_user: "{{ gv_root_user }}"

@@ -1,0 +1,74 @@
+    - name: check for iso presence
+      shell: >
+         virsh domblklist {{ hv_libvirt_domain }}
+      delegate_to: localhost
+      register: domblklist
+
+    - debug: msg="{{ fdisk.stdout }}"
+
+    - name: virsh shutdown domain
+      shell: >
+          virsh shutdown {{ hv_libvirt_domain }}
+      delegate_to: localhost
+      tags:
+        - never
+
+    - name: Wait for shutdown
+      ansible.builtin.shell: virsh list --all | grep {{ hv_libvirt_domain }} 
+      register: vcpuinfo
+      delegate_to: 127.0.0.1
+      until: "'running' not in vcpuinfo.stdout"
+      retries: 20
+      delay: 10
+      ignore_errors: true 
+      tags:
+        - never
+
+    - name: virsh blockresize
+      shell: >
+           virsh blockresize {{ hv_libvirt_domain }} {{ hv_libvirt_vda_disk_file }} {{ gv_libvirt_vda_disk_size }}
+      delegate_to: localhost
+
+    - name: growpart /dev/vda 1
+      shell: >
+           growpart /dev/vda 1
+      when: ansible_distribution not in "OracleLinux" and ansible_distribution not in "RedHat"
+
+    - name: xfs_growfs /
+      shell: >
+           xfs_growfs /
+      when: ansible_distribution not in "OracleLinux" and ansible_distribution not in "RedHat"
+
+    - debug: msg="start {{ hv_libvirt_domain }}"
+      tags:
+        never
+
+    - name: virsh start domain
+      shell: >
+          virsh start {{ hv_libvirt_domain }}
+      delegate_to: localhost
+      tags:
+        - never
+
+    - name: list all VMs
+      ansible.builtin.shell: virsh list --all | grep {{ hv_libvirt_domain }} 
+      register: vcpuinfo
+      delegate_to: 127.0.0.1
+      until: "'running' in vcpuinfo.stdout"
+      retries: 20
+      delay: 10
+      ignore_errors: true 
+      tags:
+        - never
+
+    - name: lsblk
+      shell: >
+         lsblk
+      delegate_to: localhost
+      register: lsblk
+      tags:
+        always
+
+    - debug: msg="{{ lsblk.stdout }}"
+      tags:
+        always

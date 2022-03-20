@@ -1,0 +1,98 @@
+#INPUT 
+#
+#gv_asm_diskgroups:
+#  - diskgroup: crs
+#    properties:
+#      - {redundancy: normal, ausize: 1}
+#    attributes:
+#      - {name: 'compatible.rdbms', value: 11.2.0.4.0}
+#      - {name: 'compatible.asm', value: 12.1.0.2.0}
+#    disk:
+#      - {device: /dev/sda, asmlabel: crs01}
+#      - {device: /dev/sdb, asmlabel: crs02}
+#      - {device: /dev/sdc, asmlabel: crs03}
+#  - diskgroup: data
+#    properties:
+#      - {redundancy: external, ausize: 4}
+#    attributes:
+#      - {name: compatible.rdbms, value: 11.2.0.4.0}
+#      - {name: compatible.asm, value: 12.1.0.2.0}
+#    disk:
+#      - {device: /dev/sdd, asmlabel: data01}
+#  - diskgroup: acfs
+#    properties:
+#      - {redundancy: external, ausize: 4}
+#    attributes:
+#      - {name: compatible.rdbms, value: 11.2.0.4.0}
+#      - {name: compatible.asm, value: 12.1.0.2.0}
+#    disk:
+#      - {device: /dev/oracleasm/asm_rac19c01_acfs_001, asmlabel: acfs01}
+#      - {device: /dev/oracleasm/asm_rac19c01_acfs_002, asmlabel: acfs02}
+#      - {device: /dev/oracleasm/asm_rac19c01_acfs_003, asmlabel: acfs03}
+#
+#
+#OUTPUT
+#
+#CREATE DISKGROUP FRA EXTERNAL REDUNDANCY
+#  DISK
+#'/dev/oracleasm/asm_rac19c01_acfs_001' NAME acfs01,
+#'/dev/oracleasm/asm_rac19c01_acfs_002' NAME acfs02,
+#'/dev/oracleasm/asm_rac19c01_acfs_003' NAME acfs03
+
+- name: oracle-gi-install-role | create_acfs_disk_group.yml | Extract acfs data from diskgroup
+  when: inventory_hostname in gv_cluster_first_node
+  set_fact: 
+    disks: "{{ disks| default([]) + gv_asm_diskgroups | json_query(jmesquery) }}"
+  vars:
+    jmesquery: "[? diskgroup==`acfs`].disk"
+
+- name: oracle-gi-install-role | create_acfs_disk_group.yml | Extract acfs data from diskgroup
+  when: inventory_hostname in gv_cluster_first_node
+  set_fact: 
+    attributes: "{{ attributes| default([]) + gv_asm_diskgroups | json_query(jmesquery) }}"
+  vars:
+    jmesquery: "[? diskgroup==`acfs`].attributes"
+
+- name: oracle-gi-install-role | create_acfs_disk_group.yml | Create devtags array
+  when: inventory_hostname in gv_cluster_first_node
+  set_fact: 
+    devtags: "{{ devtags | default([]) + [{ 'dev' : item.device, 'tag' : item.asmlabel }] }}"
+    cacheable: yes
+  loop: "{{ disks|flatten(levels=1) }}"
+  loop_control:
+    index_var: index
+
+- name: oracle-gi-install-role | create_acfs_disk_group.yml | Create attrkv array
+  when: inventory_hostname in gv_cluster_first_node
+  set_fact: 
+    attrkv: "{{ attrkv | default([]) + [{ 'name' : item.name, 'value' : item.value }] }}"
+    cacheable: yes
+  loop: "{{ attributes|flatten(levels=1) }}"
+  loop_control:
+    index_var: index
+
+- name: oracle-gi-install-role | create_acfs_disk_group.yml | Create install/create_acfs.sh
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_grid_user }}"
+  when: ansible_hostname == gv_cluster_first_node
+  template:
+     src: create_acfs.sh.j2
+     dest: "/home/{{ gv_grid_user }}/install/create_acfs.sh"
+     owner: "{{ gv_grid_user }}"
+     group: "{{ gv_oracle_install_group }}"
+     mode: u=rwx,g=rx,o=r
+
+- name: oracle-gi-install-role | create_acfs_disk_group.yml | Generate the create disk group sql script
+  when: inventory_hostname in gv_cluster_first_node
+  template: src=create_acfs.j2 dest="/home/{{ gv_grid_user }}/install/create_acfs.sql"
+
+- name: oracle-gi-install-role | grid_setup_softonly_install | run install/grid_configure.sh
+  when: ansible_hostname == gv_cluster_first_node
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_grid_user }}"
+  ansible.builtin.shell: "/home/{{ gv_grid_user }}/install/create_acfs.sh | tee -a /home/{{ gv_grid_user }}/install/log/create_acfs.log"
+  no_log:             false

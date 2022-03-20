@@ -1,1 +1,1 @@
-./test_unit.sh configuse_tmpfs.yml
+./test_unit.sh disable_firewall.yml

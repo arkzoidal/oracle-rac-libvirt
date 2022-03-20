@@ -1,0 +1,59 @@
+# Make temporary list (will get it as tmp_gv_oracle_database.results)
+- name: temporary list
+  when: inventory_hostname in gv_cluster_first_node
+  set_fact:
+      tmp_gv_oracle_database:
+        home: "{{ rv_homes[rv_oracle_database.home_name] }}"
+  register: tmp_gv_oracle_databases 
+  tags:
+    - always
+
+# Join original items with temporary ones
+- name: Join original items with temporary ones
+  when: inventory_hostname in gv_cluster_first_node
+  set_fact:
+      tmp_gv_oracle_database: "{{ rv_oracle_database | combine(tmp_gv_oracle_databases.ansible_facts.tmp_gv_oracle_database) }}"
+  register: tmp_gv_oracle_databases
+  tags:
+    - always
+
+- name: create rv_oracle_database var ...
+  when: inventory_hostname in gv_cluster_first_node
+  set_fact:
+      rv_oracle_database: "{{ tmp_gv_oracle_database }}"
+      cacheable: yes
+  tags:
+    - always
+
+- name: Create PDBS
+  debug:
+    msg: "{{ pdb_item.pdb_name }}"
+  with_items:
+    - "{{rv_oracle_database|json_query('pdbs')}}"
+  loop_control:
+    loop_var: pdb_item
+  tags:
+    - never
+
+- name: 
+  become_user: "{{ gv_oracle_user }}"
+  when: ansible_hostname == gv_cluster_first_node
+  copy: src="{{ home }}/roles/oracle-db-create-role/files/{{ file_item }}" dest="/home/{{ gv_oracle_user }}/install/files/" owner=oracle group=oinstall mode=0775 force=yes
+  loop:
+    - prod_templates.dbt 
+  loop_control:
+      loop_var: file_item
+
+- name: oracle-db-install | create_database. | Create create_database.sh
+  when: ansible_hostname == gv_cluster_first_node
+  become_user: "{{ gv_oracle_user }}"
+  template:
+     src: create_pdb.sh.j2
+     dest: "/home/{{ gv_oracle_user }}/install/create_pdb_{{ rv_oracle_database.db_name}}_{{ pdb_item.pdb_name}}.sh"
+     owner: "{{ gv_oracle_user }}"
+     group: "{{ gv_oracle_install_group }}"
+     mode: u=rwx,g=rx,o=r
+  with_items:
+    - "{{rv_oracle_database|json_query('pdbs')}}"
+  loop_control:
+    loop_var: pdb_item

@@ -35,20 +35,26 @@
   become_method: sudo
   become_user: "{{ gv_root_user }}"
   ansible.builtin.copy:
-    src: /tmp/id_rsa-{{ item }}.pub
-    dest: /root/.ssh/id_rsa-{{ item }}.pub
+    src: /tmp/id_rsa-{{ node_item }}.pub
+    dest: /root/.ssh/id_rsa-{{ node_item }}.pub
     remote_src: no
   with_items:
-    - "{{ gv_gi_server_list }}"
+    - "{{ gv_gi_server_list|flatten(levels=1) }}"
+  loop_control:
+      loop_var: node_item
+      index_var: index
 
 - name: exchange_ssh_keys_between_servers_root | Append public keys to authorized_keys
   remote_user: "{{ gv_root_user }}"
   become: yes
   become_method: sudo
   become_user: "{{ gv_root_user }}"
-  lineinfile: dest=/root/.ssh/authorized_keys line="{{ lookup('file', '/tmp/id_rsa-{{ item }}.pub') }}"
+  lineinfile: dest=/root/.ssh/authorized_keys line="{{ lookup('file', '/tmp/id_rsa-{{ key_item }}.pub') }}"
   with_items:
-    - "{{ gv_gi_server_list }}"
+    - "{{ gv_gi_server_list|flatten(levels=1) }}"
+  loop_control:
+      loop_var: key_item
+      index_var: index
 
 - name: exchange_ssh_keys_between_servers_root | Add StrictHostKeyChecking to .ssh/config
   remote_user: "{{ gv_root_user }}"

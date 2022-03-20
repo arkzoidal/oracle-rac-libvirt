@@ -25,11 +25,13 @@
     - import_tasks:     install_home_gi.yml
     - import_tasks:     update_known_hosts.yml
     - import_tasks:     create_custom_scp.yml
-    - import_tasks:     update_sudoers.yml
     - import_tasks:     cvu_check_network_setup.yml
     - import_tasks:     cvu_check_grid_prerequisites.yml
+    - import_tasks:     clear_asm_disk_headers.yml
     - import_tasks:     grid_configure.yml
     - import_tasks:     racgi_root.yml
     - import_tasks:     update_oratab.yml
+    - import_tasks:     create_fra_disk_group.yml
+    - import_tasks:     run_execute_config_tools.yml
   become:               yes
   become_user:          root

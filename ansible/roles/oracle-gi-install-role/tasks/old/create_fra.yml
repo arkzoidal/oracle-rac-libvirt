@@ -1,0 +1,81 @@
+- debug:
+    msg: "{{ gv_asm_diskgroups }}"
+  when: inventory_hostname in gv_cluster_first_node
+  tags:
+    - never
+
+- name: Just the Names
+  when: inventory_hostname in gv_cluster_first_node
+  debug: msg="{{ gv_asm_diskgroups | json_query(jmesquery)}}"
+  vars:
+    jmesquery: "[? diskgroup==`fra`].disk"
+
+- name: Just the Names
+  when: inventory_hostname in gv_cluster_first_node
+  set_fact: disks="{{ disks| default([]) + gv_asm_diskgroups | json_query(jmesquery) }}"
+  vars:
+    jmesquery: "[? diskgroup==`fra`].disk"
+  tags:
+    - never
+
+- name: set facts ...
+  when: inventory_hostname in gv_cluster_first_node
+  set_fact: 
+    disks: "{{ disks| default([]) + gv_asm_diskgroups | json_query(jmesquery) }}"
+  vars:
+    jmesquery: "[? diskgroup==`fra`].disk"
+  tags:
+    - always
+
+- name: Just the Disk devices
+  when: inventory_hostname in gv_cluster_first_node
+  debug: msg="{{ item }}"
+  with_items:  
+    - "{{ disks }}"
+  tags:
+    - always
+
+- name: with_indexed_items -> loop
+  when: inventory_hostname in gv_cluster_first_node
+  debug:
+    msg: "{{ item.device }}"
+  loop: "{{ disks|flatten(levels=1) }}"
+  loop_control:
+    index_var: index
+  tags:
+    - never
+
+- name: with_indexed_items -> loop
+  when: inventory_hostname in gv_cluster_first_node
+  set_fact: 
+    devices: "{{ devices| default() }} {{ item.device }}"
+    tags: "{{ tags| default() }} {{ item.asmlabel }}"
+    devtags: "{{ devtags | default([]) + [{ 'dev' : item.device, 'tag' : item.asmlabel }] }}"
+    cacheable: yes
+  loop: "{{ disks|flatten(levels=1) }}"
+  loop_control:
+    index_var: index
+
+- name: Print all available facts
+  when: inventory_hostname in gv_cluster_first_node
+  ansible.builtin.debug:
+     var=hostvars[inventory_hostname]
+  tags:
+    - never
+
+- name: debug hostvars[inventory_hostname]
+  debug: msg="{{ hostvars[inventory_hostname] }}"
+  when: inventory_hostname in gv_cluster_first_node
+  tags:
+    - never
+
+- name: with_indexed_items -> loop
+  when: inventory_hostname in gv_cluster_first_node
+  debug:
+    msg: "{{ devtags }}"
+  tags:
+    - never
+
+- name: Create the Jinja2 based template
+  when: inventory_hostname in gv_cluster_first_node
+  template: src=create_fra.j2 dest=/tmp/output.txt

@@ -7,8 +7,12 @@
     ansible.builtin.debug:
       var: dbs
       verbosity: 2
+    tags:
+      - never
 
   - name: Update oratab
-    lineinfile: dest=/etc/oratab line="{{ item.stdout }}:{{ gv_oracle_home_gi }}:N" state=present
-    with_items:
-    - "{{ dbs }}"
+    lineinfile: dest=/etc/oratab line="{{ dbs_item.stdout }}:{{ gv_oracle_home_gi }}:N" state=present
+    loop:
+      - "{{ dbs }}"
+    loop_control:
+      loop_var: dbs_item

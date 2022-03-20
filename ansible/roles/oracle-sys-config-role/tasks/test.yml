@@ -1,0 +1,9 @@
+- name: adding existing user '{{ gv_oracle_dba }}' to group asmdba
+  remote_user: "{{ gv_root_user }}"
+  become: yes
+  become_method: sudo
+  become_user: "{{ gv_root_user }}"
+  user:
+      name: '{{ gv_oracle_user }}'
+      groups: asmdba
+      append: yes

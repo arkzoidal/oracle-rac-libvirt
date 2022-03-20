@@ -1,4 +1,4 @@
-- hosts: "{{ hostgroup | default('rac19c01') }}"
+- hosts: "{{ hostgroup | default('rac21c01') }}"
   user: root
 
   tasks:

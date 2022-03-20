@@ -1,14 +1,18 @@
 - name: copy grid 19c grid software home zip file to the target database server
   when: inventory_hostname in gv_cluster_first_node
-  copy: src={{ v_host_staging_dir }}/{{ item }} dest={{ gv_guest_staging_dir }} owner={{ gv_grid_user }} group=oinstall mode=0775 force=no
-  with_items:
+  copy: src={{ v_host_staging_dir }}/{{ fact_item }} dest={{ gv_guest_staging_dir }} owner={{ gv_grid_user }} group=oinstall mode=0775 force=no
+  loop:
     - "{{ rv_grid_home_zip_file }}"
+  loop_control:
+      loop_var: fact_item
 
 - name: copy grid zip cvu pack
   when: inventory_hostname in gv_cluster_first_node
-  copy: src={{ v_host_staging_dir }}/{{ item }} dest=/home/{{ gv_grid_user }} owner={{ gv_grid_user }} group=oinstall mode=0775 force=no
-  with_items:
+  copy: src={{ v_host_staging_dir }}/{{ zip_item }} dest=/home/{{ gv_grid_user }} owner={{ gv_grid_user }} group=oinstall mode=0775 force=no
+  loop:
     - "{{ rv_cvu_pack }}"
+  loop_control:
+      loop_var: zip_item
 
 - name: Creates directory gv_oracle_home_gi
   when: inventory_hostname == gv_cluster_first_node

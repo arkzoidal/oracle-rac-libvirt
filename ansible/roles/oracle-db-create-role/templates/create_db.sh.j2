@@ -3,7 +3,7 @@ export ORACLE_BASE={{ gv_oracle_base }}
 export PATH=:$ORACLE_HOME/bin:$ORACLE_HOME/OPatch:$PATH:
 
 $ORACLE_HOME/bin/dbca -silent -createDatabase \
-  -templateName {{ ansible_facts.rv_oracle_database.home }}/assistants/dbca/templates/New_Database.dbt \
+  -templateName /home/{{ gv_oracle_user }}/install/files/{{ rv_oracle_database.template_name }} \
   -initParams {{ rv_oracle_database.init_params }} \
   -responseFile NO_VALUE \
   -gdbname {{ rv_oracle_database.db_name }} \
@@ -14,8 +14,6 @@ $ORACLE_HOME/bin/dbca -silent -createDatabase \
   -createAsContainerDatabase {{ rv_oracle_database.is_cdb }}  \
   -databaseType {{ rv_oracle_database.database_type }} \
   -automaticMemoryManagement false \
-  -totalMemory 8048 \
-  -redoLogFileSize 100 \
   -emConfiguration NONE \
   -ignorePreReqs \
   -databaseConfigType {{ rv_oracle_database.db_type }} \
